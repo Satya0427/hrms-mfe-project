@@ -1,0 +1,97 @@
+@if (requisition) {
+<div class="detail-container">
+
+    <div class="detail-header">
+        <div>
+            <h1>{{requisition.title}}</h1>
+            <div class="meta">
+                <span><mat-icon inline>business</mat-icon> {{requisition.department}}</span>
+                <span><mat-icon inline>location_on</mat-icon> {{requisition.location}}</span>
+                <mat-chip>{{requisition.status}}</mat-chip>
+            </div>
+        </div>
+        <button mat-stroked-button routerLink="/home/recruitment/requisition/requisition-list">Back to List</button>
+    </div>
+
+    <div class="content-layout">
+        <!-- Left Column: Details -->
+        <div class="main-info">
+
+            <!-- Section 1 & 2 Combined View -->
+            <mat-card class="info-card">
+                <mat-card-header><mat-card-title>Job Overview</mat-card-title></mat-card-header>
+                <mat-card-content>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <label>Emp Type</label>
+                            <p>{{requisition.employmentType}}</p>
+                        </div>
+                        <div class="data-item">
+                            <label>Positions</label>
+                            <p>{{requisition.positions}}</p>
+                        </div>
+                        <div class="data-item">
+                            <label>Priority</label>
+                            <p>{{requisition.priority}}</p>
+                        </div>
+                        <div class="data-item">
+                            <label>Salary</label>
+                            <p>{{requisition.salaryMin | currency}} - {{requisition.salaryMax | currency}}</p>
+                        </div>
+                    </div>
+
+                    <mat-divider class="spacer"></mat-divider>
+
+                    <h3>Description</h3>
+                    <p class="desc-text">{{requisition.description}}</p>
+
+                    <h3>Skills</h3>
+                    <mat-chip-set>
+                        @for(skill of requisition.skills; track skill) {
+                        <mat-chip>{{skill}}</mat-chip>
+                        }
+                    </mat-chip-set>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="info-card">
+                <mat-card-header><mat-card-title>Hiring Team</mat-card-title></mat-card-header>
+                <mat-card-content>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <label>Hiring Manager</label>
+                            <p>{{requisition.hiringManager}}</p>
+                        </div>
+                        <div class="data-item">
+                            <label>Recruiter</label>
+                            <p>{{requisition.recruiter}}</p>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- Right Column: Timeline & Approvers -->
+        <div class="sidebar-info">
+            <mat-card class="timeline-card">
+                <mat-card-header><mat-card-title>Approval Workflow</mat-card-title></mat-card-header>
+                <mat-card-content>
+                    <div class="timeline-container">
+                        @for (event of requisition.timeline; track event.step; let last = $last) {
+                        <div class="timeline-item" [class.completed]="event.status === 'Completed'"
+                            [class.current]="event.status === 'Current'">
+                            <div class="marker"></div>
+                            <div class="content">
+                                <span class="step-name">{{event.step}}</span>
+                                <span class="approver">{{event.approver}}</span>
+                                <span class="date">{{event.date | date:'mediumDate'}}</span>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
+}

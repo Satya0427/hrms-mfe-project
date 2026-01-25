@@ -1,0 +1,75 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Edit Global Admin</h1>
+      <p class="page-subtitle">
+        Update global admin configuration
+      </p>
+    </div>
+
+    <!-- Back button (required) -->
+    <button mat-stroked-button class="back-btn" routerLink="/home/paltform-management/global-admin/global-admin-list">
+      Back
+    </button>
+  </div>
+
+  <!-- ADMIN DETAILS -->
+  <mat-card class="card">
+    <h3>Admin Details</h3>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Full Name</mat-label>
+        <input matInput [(ngModel)]="admin.name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="admin.email" disabled />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mobile Number</mat-label>
+        <input matInput [(ngModel)]="admin.mobile" />
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <!-- ORGANIZATION -->
+  <mat-card class="card">
+    <h3>Organization Assignment</h3>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Organization</mat-label>
+        <mat-select [(ngModel)]="admin.organization">
+          <mat-option value="Spryple Technologies">
+            Spryple Technologies
+          </mat-option>
+          <mat-option value="Acme Corp">
+            Acme Corp
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Role</mat-label>
+        <input matInput [value]="admin.role" disabled />
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <!-- ACTIONS -->
+  <div class="action-bar">
+    <button mat-stroked-button>
+      Cancel
+    </button>
+
+    <button mat-flat-button color="primary">
+      Save Changes
+    </button>
+  </div>
+
+</div>

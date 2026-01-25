@@ -1,0 +1,88 @@
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Create Global Admin</h1>
+            <p class="page-subtitle">
+                Add a primary owner for an organization
+            </p>
+        </div>
+
+        <!-- Back button (required) -->
+        <button mat-stroked-button class="back-btn" routerLink="/home/paltform-management/global-admin/global-admin-list">
+            Back
+        </button>
+    </div>
+
+    <!-- BASIC DETAILS -->
+    <mat-card class="card">
+        <h3>Admin Details</h3>
+
+        <div class="form-grid">
+            <mat-form-field appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input matInput placeholder="Enter full name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Email Address</mat-label>
+                <input matInput placeholder="Enter email address" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Mobile Number</mat-label>
+                <input matInput placeholder="+91 XXXXX XXXXX" />
+            </mat-form-field>
+        </div>
+    </mat-card>
+
+    <!-- ORGANIZATION ASSIGNMENT -->
+    <mat-card class="card">
+        <h3>Organization Assignment</h3>
+
+        <div class="form-grid">
+            <mat-form-field appearance="outline">
+                <mat-label>Select Organization</mat-label>
+                <mat-select>
+                    <mat-option value="spryple">
+                        Spryple Technologies
+                    </mat-option>
+                    <mat-option value="acme">
+                        Acme Corp
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <input matInput value="Global Admin" disabled />
+            </mat-form-field>
+        </div>
+    </mat-card>
+
+    <!-- ACCESS SETTINGS -->
+    <mat-card class="card">
+        <h3>Access & Invitation</h3>
+
+        <mat-checkbox checked>
+            Send login invitation email
+        </mat-checkbox>
+
+        <p class="hint">
+            An email will be sent to the user with login instructions.
+        </p>
+    </mat-card>
+
+    <!-- ACTIONS -->
+    <div class="action-bar">
+        <button mat-stroked-button>
+            Cancel
+        </button>
+
+        <button mat-flat-button color="primary">
+            Create Global Admin
+        </button>
+    </div>
+
+</div>

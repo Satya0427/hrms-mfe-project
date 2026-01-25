@@ -1,0 +1,137 @@
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Edit Organization</h1>
+            <p class="page-subtitle">
+                Update organization configuration
+            </p>
+        </div>
+
+        <!-- Back button (required) -->
+        <button mat-stroked-button class="back-btn"
+            routerLink="/home/paltform-management/orginization/orginization-list">
+            Back
+        </button>
+    </div>
+
+    <mat-card class="card">
+        <mat-tab-group>
+
+            <!-- TAB 1: Organization Details -->
+            <mat-tab label="Organization">
+                <div class="tab-content">
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Organization Name</mat-label>
+                            <input matInput value="Spryple Technologies" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Domain</mat-label>
+                            <input matInput value="spryple.com" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Industry</mat-label>
+                            <mat-select value="it">
+                                <mat-option value="it">IT / Software</mat-option>
+                                <mat-option value="finance">Finance</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Country</mat-label>
+                            <mat-select value="india">
+                                <mat-option value="india">India</mat-option>
+                                <mat-option value="usa">USA</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 2: Subscription -->
+            <mat-tab label="Subscription">
+                <div class="tab-content">
+
+                    <div class="plan-grid">
+
+                        <div class="plan-card">
+                            <h4>Starter</h4>
+                            <p class="price">₹999 / month</p>
+                        </div>
+
+                        <div class="plan-card selected">
+                            <h4>Growth</h4>
+                            <p class="price">₹2,999 / month</p>
+                        </div>
+
+                        <div class="plan-card">
+                            <h4>Enterprise</h4>
+                            <p class="price">Custom</p>
+                        </div>
+
+                    </div>
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Employee Limit</mat-label>
+                            <input matInput type="number" value="300" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Trial Days</mat-label>
+                            <input matInput type="number" value="14" />
+                        </mat-form-field>
+                    </div>
+
+                    <mat-hint>
+                        Downgrading may disable modules. Data will be preserved.
+                    </mat-hint>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 3: Global Admin -->
+            <mat-tab label="Global Admin">
+                <div class="tab-content">
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput value="Manikanta Yalla" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput value="admin@spryple.com" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Mobile</mat-label>
+                            <input matInput value="+91 9876543210" />
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </mat-card>
+
+    <!-- Actions -->
+    <div class="action-bar">
+        <button mat-stroked-button>
+            Cancel
+        </button>
+
+        <button mat-flat-button color="primary">
+            Save Changes
+        </button>
+    </div>
+
+</div>

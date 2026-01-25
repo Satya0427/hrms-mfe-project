@@ -1,0 +1,150 @@
+.create-container {
+    padding: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+    /* Space for footer */
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+.section-card {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    mat-card-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: #3f51b5;
+        /* Primary color */
+        margin-bottom: 16px;
+    }
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.column-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.full-width {
+    grid-column: span 2;
+    width: 100%;
+}
+
+/* Section 4 Styling */
+.approval-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.approval-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.step-icon {
+    width: 32px;
+    height: 32px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-input {
+    flex: 1;
+    max-width: 400px;
+}
+
+.approval-line {
+    height: 20px;
+    border-left: 2px dashed #ccc;
+    margin-left: 15px;
+    /* Half of step-icon width */
+}
+
+.timeline-preview {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.timeline-bar {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.timeline-bar .dot {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.timeline-bar .dot.active {
+    background: #3f51b5;
+}
+
+.timeline-bar .line {
+    flex: 1;
+    height: 2px;
+    background: #e0e0e0;
+    margin: 0 4px;
+}
+
+/* Sticky Footer */
+.actions-footer {
+    position: fixed;
+    bottom: 0;
+    left: 250px;
+    /* Adjust based on your SideNav width */
+    right: 0;
+    background: white;
+    padding: 16px 32px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+
+    .right-actions {
+        display: flex;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    .actions-footer {
+        left: 0;
+    }
+}

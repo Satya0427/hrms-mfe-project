@@ -1,0 +1,89 @@
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Create Platform Module</h1>
+            <p class="page-subtitle">
+                Define a system-level module and its features
+            </p>
+        </div>
+
+        <!-- Back button (required) -->
+        <button mat-stroked-button class="back-btn" routerLink="../platform-module-list">
+            Back
+        </button>
+    </div>
+
+    <!-- MODULE DETAILS -->
+    <mat-card class="card">
+        <h3>Module Information</h3>
+
+        <div class="form-grid">
+            <mat-form-field appearance="outline">
+                <mat-label>Module Name</mat-label>
+                <input matInput placeholder="e.g. Recruitment" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Module Code</mat-label>
+                <input matInput placeholder="RECRUITMENT" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput rows="3"></textarea>
+        </mat-form-field>
+
+        <mat-checkbox checked>
+            Enabled by default
+        </mat-checkbox>
+    </mat-card>
+
+    <!-- FEATURES -->
+    <mat-card class="card">
+        <div class="feature-header">
+            <h3>Features</h3>
+
+            <button mat-stroked-button color="primary" (click)="addFeature()">
+                <mat-icon>add</mat-icon>
+                Add Feature
+            </button>
+        </div>
+
+        <div class="feature-row" *ngFor="let feature of module.features; let i = index">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Feature Name</mat-label>
+                <input matInput placeholder="e.g. Job Requisition" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Feature Code</mat-label>
+                <input matInput placeholder="JOB_REQUISITION" />
+            </mat-form-field>
+
+            <mat-checkbox checked>
+                Enabled
+            </mat-checkbox>
+
+            <button mat-icon-button color="warn" (click)="removeFeature(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+
+    </mat-card>
+
+    <!-- ACTIONS -->
+    <div class="action-bar">
+        <button mat-stroked-button>
+            Cancel
+        </button>
+
+        <button mat-flat-button color="primary">
+            Create Module
+        </button>
+    </div>
+
+</div>

@@ -1,0 +1,119 @@
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Create Subscription Plan</h1>
+            <p class="page-subtitle">
+                Define pricing, limits, and available modules
+            </p>
+        </div>
+
+        <!-- Back button (required) -->
+        <button mat-stroked-button class="back-btn" routerLink="/home/paltform-management/subscription-plan/subscription-plan-list">
+            Back
+        </button>
+    </div>
+
+    <mat-card class="card">
+        <mat-tab-group>
+
+            <!-- TAB 1: Basic Info -->
+            <mat-tab label="Basic Info">
+                <div class="tab-content">
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Plan Name</mat-label>
+                            <input matInput [(ngModel)]="plan.name" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Plan Code</mat-label>
+                            <input matInput [(ngModel)]="plan.code" />
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 2: Pricing -->
+            <mat-tab label="Pricing">
+                <div class="tab-content">
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Monthly Price (₹)</mat-label>
+                            <input matInput type="number" [(ngModel)]="plan.monthlyPrice" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Yearly Price (₹)</mat-label>
+                            <input matInput type="number" [(ngModel)]="plan.yearlyPrice" />
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 3: Limits -->
+            <mat-tab label="Limits">
+                <div class="tab-content">
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Employee Limit</mat-label>
+                            <input matInput type="number" [(ngModel)]="plan.employeeLimit" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Storage Limit (GB)</mat-label>
+                            <input matInput type="number" [(ngModel)]="plan.storageLimit" />
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </mat-tab>
+
+            <!-- TAB 4: Modules -->
+            <mat-tab label="Modules">
+                <div class="tab-content">
+
+                    <mat-checkbox [(ngModel)]="plan.modules.recruitment">
+                        Recruitment
+                    </mat-checkbox>
+
+                    <mat-checkbox [(ngModel)]="plan.modules.onboarding">
+                        Onboarding
+                    </mat-checkbox>
+
+                    <mat-checkbox [(ngModel)]="plan.modules.payroll">
+                        Payroll
+                    </mat-checkbox>
+
+                    <mat-checkbox [(ngModel)]="plan.modules.performance">
+                        Performance
+                    </mat-checkbox>
+
+                    <mat-checkbox [(ngModel)]="plan.modules.learning">
+                        Learning
+                    </mat-checkbox>
+
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </mat-card>
+
+    <!-- ACTIONS -->
+    <div class="action-bar">
+        <button mat-stroked-button>
+            Cancel
+        </button>
+
+        <button mat-flat-button color="primary">
+            Create Plan
+        </button>
+    </div>
+
+</div>

@@ -1,0 +1,223 @@
+<form [formGroup]="reqForm" class="create-container">
+
+    <div class="page-header">
+        <h1>Create New Job Requisition</h1>
+        <span class="subtitle">Fill in the details below to initiate hiring.</span>
+    </div>
+
+    <!-- SECTION 1: Basic Job Info -->
+    <mat-card class="section-card">
+        <mat-card-header>
+            <mat-card-title>1. Basic Job Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Job Title</mat-label>
+                <input matInput formControlName="title" placeholder="e.g. Senior Software Engineer">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Department</mat-label>
+                <mat-select formControlName="department">
+                    @for (dept of departments; track dept) {
+                    <mat-option [value]="dept">{{dept}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Location</mat-label>
+                <mat-select formControlName="location">
+                    @for (loc of locations; track loc) {
+                    <mat-option [value]="loc">{{loc}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Employment Type</mat-label>
+                <mat-select formControlName="employmentType">
+                    @for (type of empTypes; track type) {
+                    <mat-option [value]="type">{{type}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Number of Positions</mat-label>
+                <input matInput type="number" formControlName="positions">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Priority</mat-label>
+                <mat-select formControlName="priority">
+                    @for (p of priorities; track p) {
+                    <mat-option [value]="p">{{p}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+        </mat-card-content>
+    </mat-card>
+
+    <!-- SECTION 2: Job Details -->
+    <mat-card class="section-card">
+        <mat-card-header>
+            <mat-card-title>2. Job Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="column-layout">
+
+            <!-- Rich Text Placeholder -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Job Description</mat-label>
+                <textarea matInput formControlName="description" rows="6"
+                    placeholder="Enter detailed job description..."></textarea>
+                <mat-hint>Supports Rich Text (Simulated)</mat-hint>
+            </mat-form-field>
+
+            <!-- Skills Chips -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Required Skills</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Enter skills">
+                    @for (skill of currentSkills; track skill) {
+                    <mat-chip-row (removed)="removeSkill(skill)">
+                        {{skill}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + skill">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                    }
+                    <input placeholder="New skill..." [matChipInputFor]="chipGrid"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        (matChipInputTokenEnd)="addSkill($event)" />
+                </mat-chip-grid>
+            </mat-form-field>
+
+            <div class="grid-layout">
+                <mat-form-field appearance="outline">
+                    <mat-label>Experience Range</mat-label>
+                    <input matInput formControlName="experienceRange" placeholder="e.g. 3-5 Years">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Education</mat-label>
+                    <input matInput formControlName="education" placeholder="e.g. Bachelors Degree">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Min Salary</mat-label>
+                    <input matInput type="number" formControlName="salaryMin">
+                    <span matTextPrefix>$&nbsp;</span>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Max Salary</mat-label>
+                    <input matInput type="number" formControlName="salaryMax">
+                    <span matTextPrefix>$&nbsp;</span>
+                </mat-form-field>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <!-- SECTION 3: Hiring Workflow -->
+    <mat-card class="section-card">
+        <mat-card-header>
+            <mat-card-title>3. Hiring Workflow</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Hiring Manager</mat-label>
+                <mat-select formControlName="hiringManager">
+                    @for (user of managers; track user) {
+                    <mat-option [value]="user">{{user}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Recruiter</mat-label>
+                <mat-select formControlName="recruiter">
+                    @for (user of recruiters; track user) {
+                    <mat-option [value]="user">{{user}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Interview Panel (Optional)</mat-label>
+                <mat-select formControlName="interviewPanel" multiple>
+                    @for (user of managers; track user) {
+                    <mat-option [value]="user">{{user}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+        </mat-card-content>
+    </mat-card>
+
+    <!-- SECTION 4: Approval Flow -->
+    <mat-card class="section-card">
+        <mat-card-header>
+            <mat-card-title>4. Approval Flow</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="approval-layout">
+
+            <div class="approval-step">
+                <div class="step-icon">1</div>
+                <mat-form-field appearance="outline" class="step-input">
+                    <mat-label>Approver 1 (Manager)</mat-label>
+                    <mat-select formControlName="approver1">
+                        @for (user of managers; track user) {
+                        <mat-option [value]="user">{{user}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="approval-line"></div>
+
+            <div class="approval-step">
+                <div class="step-icon">2</div>
+                <mat-form-field appearance="outline" class="step-input">
+                    <mat-label>Approver 2 (HR Head)</mat-label>
+                    <input matInput formControlName="approver2" readonly>
+                    <mat-icon matSuffix>lock</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="timeline-preview">
+                <h4>Approval Status Timeline</h4>
+                <p class="hint-text">Timeline will be generated upon submission.</p>
+                <!-- Static placeholder for visual reference -->
+                <div class="timeline-bar">
+                    <span class="dot active"></span>
+                    <span class="line"></span>
+                    <span class="dot"></span>
+                    <span class="line"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <!-- SECTION 5: Actions (Footer) -->
+    <div class="actions-footer">
+        <button mat-button color="warn" type="button" routerLink="/home/recruitment/requisition/requisition-list">
+            <mat-icon>close</mat-icon> Cancel
+        </button>
+        <div class="right-actions">
+            <button mat-stroked-button color="primary" type="button" (click)="onSubmit('Draft')">
+                <mat-icon>save</mat-icon> Save as Draft
+            </button>
+            <button mat-flat-button color="primary" type="submit" (click)="onSubmit('Submit')"
+                [disabled]="reqForm.invalid">
+                <mat-icon>send</mat-icon> Submit for Approval
+            </button>
+        </div>
+    </div>
+
+</form>

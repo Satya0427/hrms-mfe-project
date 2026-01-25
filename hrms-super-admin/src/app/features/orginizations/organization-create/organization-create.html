@@ -1,0 +1,143 @@
+<div class="page-container">
+
+    <div class="page-header">
+        <div>
+            <h1>Create Organization</h1>
+            <p class="page-subtitle">
+                Set up a new customer organization and assign subscription
+            </p>
+        </div>
+
+        <!-- Back button (required) -->
+        <button mat-stroked-button class="back-btn"
+            routerLink="/home/paltform-management/orginization/orginization-list">
+            Back
+        </button>
+    </div>
+
+    <mat-card class="stepper-card">
+        <mat-horizontal-stepper linear>
+
+            <!-- STEP 1: Organization Details -->
+            <mat-step label="Organization">
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Organization Name</mat-label>
+                        <input matInput placeholder="Company legal name" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Domain</mat-label>
+                        <input matInput placeholder="example.com" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Industry</mat-label>
+                        <mat-select>
+                            <mat-option value="it">IT / Software</mat-option>
+                            <mat-option value="finance">Finance</mat-option>
+                            <mat-option value="manufacturing">Manufacturing</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Country</mat-label>
+                        <mat-select>
+                            <mat-option value="india">India</mat-option>
+                            <mat-option value="usa">USA</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="step-actions">
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                    </button>
+                </div>
+            </mat-step>
+
+            <!-- STEP 2: Subscription -->
+            <mat-step label="Subscription">
+                <div class="plan-grid">
+                    <mat-card class="plan-card selected">
+                        <h3>Starter</h3>
+                        <p class="price">₹999 / month</p>
+                        <p class="desc">For small teams</p>
+                    </mat-card>
+                    <mat-card class="plan-card">
+                        <h3>Growth</h3>
+                        <p class="price">₹2,999 / month</p>
+                        <p class="desc">For growing companies</p>
+                    </mat-card>
+                    <mat-card class="plan-card">
+                        <h3>Enterprise</h3>
+                        <p class="price">Custom</p>
+                        <p class="desc">Advanced HRMS features</p>
+                    </mat-card>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Employee Limit</mat-label>
+                        <input matInput type="number" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Trial Period (days)</mat-label>
+                        <input matInput type="number" />
+                    </mat-form-field>
+                </div>
+
+                <div class="step-actions">
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                    </button>
+                </div>
+            </mat-step>
+
+            <!-- STEP 3: Global Admin -->
+            <mat-step label="Global Admin">
+                <div class="form-grid">
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Admin Name</mat-label>
+                        <input matInput />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input matInput />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Mobile Number</mat-label>
+                        <input matInput />
+                    </mat-form-field>
+
+                </div>
+                <mat-hint>
+                    This user will become the primary owner of the organization.
+                </mat-hint>
+                <div class="step-actions">
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Review
+                    </button>
+                </div>
+            </mat-step>
+
+            <!-- STEP 4: Review -->
+            <mat-step label="Review & Confirm">
+                <div class="review-box">
+                    <p><strong>Organization:</strong> Spryple Technologies</p>
+                    <p><strong>Plan:</strong> Enterprise</p>
+                    <p><strong>Admin:</strong> admin@spryple.com</p>
+                    <p><strong>Status:</strong> Trial</p>
+                </div>
+                <div class="step-actions">
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-flat-button color="primary">
+                        Create Organization
+                    </button>
+                </div>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </mat-card>
+
+</div>
