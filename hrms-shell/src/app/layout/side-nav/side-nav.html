@@ -1,0 +1,87 @@
+<div class="glass-sidebar" [class.collapsed]="isCollapsed()">
+
+  <!-- <div class="window-controls">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+  </div> -->
+
+  <div class="profile-section">
+    <div class="avatar">
+      <img src="https://i.pravatar.cc/150?img=11" alt="User">
+      <!-- <img src="../../../../public/image.png" alt="User"> -->
+
+    </div>
+
+    @if (!isCollapsed()) {
+    <div class="profile-info fade-in">
+      <span class="role">SUPER ADMIN</span>
+      <span class="name">Satya Manikanta</span>
+    </div>
+    }
+  </div>
+
+  <div class="nav-menu">
+    <!-- @if (!isCollapsed()) {
+    <span class="menu-label">MAIN</span>
+    } -->
+
+    @for (item of menuItems(); track item.label; let i = $index) {
+    <div class="menu-item-wrapper">
+
+      <!-- MAIN MENU ITEM -->
+      @if (isCollapsed() && item.subItems?.length) {
+      <!-- Collapsed state with submenu -->
+      <button type="button" class="nav-item" [class.active]="item.active" [matMenuTriggerFor]="subMenu">
+        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+      </button>
+
+      <mat-menu #subMenu="matMenu" class="glass-menu" xPosition="after">
+        @for (sub of item.subItems; track sub.label) {
+        <button mat-menu-item [routerLink]="sub.route" (click)="activateSubItem(item, sub)">
+          {{ sub.label }}
+        </button>
+        }
+      </mat-menu>
+      }
+      @else {
+      <!-- Expanded state or item without submenu -->
+      <button type="button" class="nav-item" [class.active]="item.active" (click)="onMenuItemClick(item)"
+        [attr.aria-expanded]="item.expanded">
+        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+        @if (!isCollapsed()) {
+        <span class="nav-label">{{ item.label }}</span>
+        @if (item.subItems?.length) {
+        <mat-icon class="chevron" [class.rotated]="item.expanded">
+          expand_more
+        </mat-icon>
+        }
+        }
+      </button>
+      }
+
+      <!-- SUBMENU (only shown in expanded state) -->
+      @if (!isCollapsed() && item.subItems?.length) {
+      <div class="sub-menu-container" [@expandCollapse]="item.expanded ? 'expanded' : 'collapsed'">
+        <div class="tree-line"></div>
+        @for (sub of item.subItems; track sub.label) {
+        <a class="sub-item" [routerLink]="sub.route" [class.active-sub]="sub.active" routerLinkActive="active-sub"
+          (click)="activateSubItem(item, sub)">
+          <span class="tree-curve"></span>
+          <span class="sub-label">{{ sub.label }}</span>
+        </a>
+        }
+      </div>
+      }
+
+    </div>
+    }
+  </div>
+
+  <button class="toggle-btn" type="button" (click)="toggleSidebar()">
+    <mat-icon>
+      {{ isCollapsed() ? 'chevron_right' : 'chevron_left' }}
+    </mat-icon>
+  </button>
+
+</div>
