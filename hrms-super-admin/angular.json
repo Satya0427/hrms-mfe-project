@@ -62,6 +62,12 @@
 					},
 					"configurations": {
 						"production": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								}
+							],
 							"budgets": [
 								{
 									"type": "initial",
@@ -78,6 +84,12 @@
 							"extraWebpackConfig": "webpack.prod.config.js"
 						},
 						"development": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.dev.ts"
+								}
+							],
 							"optimization": false,
 							"extractLicenses": false,
 							"sourceMap": true
@@ -89,8 +101,7 @@
 					"builder": "ngx-build-plus:dev-server",
 					"configurations": {
 						"production": {
-							"buildTarget": "hrms-super-admin:build:production",
-							"extraWebpackConfig": "webpack.prod.config.js"
+							"buildTarget": "hrms-super-admin:build:production"
 						},
 						"development": {
 							"buildTarget": "hrms-super-admin:build:development"
