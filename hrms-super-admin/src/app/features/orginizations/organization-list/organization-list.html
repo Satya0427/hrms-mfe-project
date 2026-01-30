@@ -97,22 +97,20 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let org">
-          <button mat-icon-button routerLink="/home/paltform-management/orginization/orginization-view">
+          <button mat-icon-button [routerLink]="['/home/paltform-management/orginization/orginization-view',org.id]">
             <mat-icon>visibility</mat-icon>
           </button>
-          <button mat-icon-button routerLink="/home/paltform-management/orginization/orginization-edit">
+          <button mat-icon-button [routerLink]="['/home/paltform-management/orginization/orginization-create',org.id]">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button (click)="openStatusDialog(org)"
-            matTooltip="{{ org.status === 'Suspended' ? 'Activate' : 'Suspend' }}">
+            matTooltip="{{ org.status === 'suspended' ? 'Activate' : 'Suspend' }}">
             <mat-icon>
-              {{ org.status === 'Suspended'
+              {{ org.status === 'suspended'
               ? 'play_circle'
               : 'pause_circle' }}
             </mat-icon>
-
           </button>
-
         </td>
       </ng-container>
 

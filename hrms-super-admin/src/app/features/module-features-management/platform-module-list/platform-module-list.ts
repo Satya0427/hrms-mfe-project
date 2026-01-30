@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../shared/material/materials';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HttpClientService } from '../../../core/services/http_client.service';
+import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-platform-module-list',
@@ -18,28 +22,36 @@ export class PlatformModuleList {
     'status',
     'actions'
   ];
+  modules: any[] = [];
 
-  modules = [
-    {
-      id: 'recruitment',
-      name: 'Recruitment',
-      code: 'RECRUITMENT',
-      features: 8,
-      status: 'Enabled'
-    },
-    {
-      id: 'payroll',
-      name: 'Payroll',
-      code: 'PAYROLL',
-      features: 5,
-      status: 'Disabled'
-    },
-    {
-      id: 'performance',
-      name: 'Performance',
-      code: 'PERFORMANCE',
-      features: 4,
-      status: 'Enabled'
-    }
-  ];
+  private _http = inject(HttpClientService);
+  private _toastr = inject(ToastrService);
+  private destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.getModuleList();
+  }
+
+  getModuleList() {
+    this._http.get(API_ENDPOINTS.platformModules.get_all).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (Array.isArray(data)) {
+          this.modules = data.map((m: any) => ({
+            id: m._id || m.id,
+            name: m.module_name || m.module_name || '',
+            code: m.module_code || m.module_code || '',
+            icon: m.icon || '',
+            features: Array.isArray(m.features) ? m.features.length : 0,
+            status: m.active ? 'Enabled' : 'Disabled',
+            createdAt: m.createdAt
+          }));
+        }
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch modules', err);
+        this._toastr.error('Failed to load platform modules');
+      }
+    });
+  }
 }

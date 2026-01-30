@@ -3,10 +3,10 @@
     <!-- Header -->
     <div class="page-header">
         <div>
-            <h1>{{ plan.name }} Plan</h1>
+            <h1>{{ plan.plan_name }} Plan</h1>
 
             <div class="meta-row">
-                <span class="code">Code: {{ plan.code }}</span>
+                <span class="code">Code: {{ plan.plan_code }}</span>
 
                 <span class="status-chip" [ngClass]="plan.status.toLowerCase()">
                     {{ plan.status }}
@@ -88,7 +88,7 @@
             <mat-card class="card">
                 <h3>Actions</h3>
 
-                <button mat-stroked-button>
+                <button mat-stroked-button [routerLink]="['/home/paltform-management/subscription-plan/subscription-plan-edit', planId]">
                     Edit Plan
                 </button>
 

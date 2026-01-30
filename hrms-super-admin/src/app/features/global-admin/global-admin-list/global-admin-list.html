@@ -66,11 +66,12 @@
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let admin">
 
-                    <button mat-icon-button routerLink="/home/paltform-management/global-admin/global-admin-view">
+                    <button mat-icon-button [routerLink]="['/home/paltform-management/global-admin/global-admin-view',admin.id]">
                         <mat-icon>visibility</mat-icon>
                     </button>
 
-                    <button mat-icon-button routerLink="/home/paltform-management/global-admin/global-admin-edit">
+                    <button mat-icon-button
+                        [routerLink]="['/home/paltform-management/global-admin/global-admin-edit',admin.id]">
                         <mat-icon>edit</mat-icon>
                     </button>
 

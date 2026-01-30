@@ -3,21 +3,21 @@
   <!-- Header -->
   <div class="page-header">
     <div class="title-section">
-      <h1>Spryple Technologies</h1>
+      <h1>{{ organizationData()?.organization?.name }}</h1>
 
       <div class="meta-row">
         <span class="meta-item">
           <mat-icon>business</mat-icon>
-          IT / Software
+          {{ organizationData()?.organization?.industry }}
         </span>
 
         <span class="meta-item">
           <mat-icon>public</mat-icon>
-          India
+          {{ organizationData()?.organization?.country }}
         </span>
 
-        <span class="status-chip active">
-          Active
+        <span class="status-chip" [ngClass]="organizationData()?.lifecycle?.status?.toLowerCase()">
+          {{ organizationData()?.lifecycle?.status }}
         </span>
       </div>
     </div>
@@ -41,43 +41,40 @@
         <div class="info-grid">
           <div>
             <label>Subscription Plan</label>
-            <p>Enterprise</p>
+            <p>{{ organizationData()?.subscription?.plan_name }}</p>
           </div>
 
           <div>
-            <label>Employee Usage</label>
-            <p>245 / 300</p>
+            <label>Employee Size</label>
+            <p>{{ organizationData()?.organization?.company_size }} / {{ organizationData()?.subscription?.employee_limit }}</p>
           </div>
 
           <div>
             <label>Trial Status</label>
-            <p>Active</p>
+            <p>{{ organizationData()?.subscription?.trial_status }}</p>
           </div>
 
           <div>
             <label>Created On</label>
-            <p>12 Jan 2026</p>
+            <p>{{ organizationData()?.lifecycle?.created_on }}</p>
           </div>
         </div>
 
         <mat-divider></mat-divider>
 
         <div class="section">
-          <h4>Description</h4>
+          <h4>Domain</h4>
           <p class="muted">
-            Enterprise customer using full HRMS suite including Recruitment,
-            Payroll, Performance, and Learning modules.
+            {{ organizationData()?.organization?.domain }}
           </p>
         </div>
 
         <div class="section">
           <h4>Enabled Modules</h4>
           <div class="chip-group">
-            <span class="module-chip">Recruitment</span>
-            <span class="module-chip">Onboarding</span>
-            <span class="module-chip">Payroll</span>
-            <span class="module-chip">Performance</span>
-            <span class="module-chip">Learning</span>
+            @for (module of organizationData()?.subscription?.enabled_modules; track $index) {
+              <span class="module-chip">{{ module }}</span>
+            }
           </div>
         </div>
       </mat-card>
@@ -89,17 +86,17 @@
         <div class="info-grid">
           <div>
             <label>Name</label>
-            <p>Manikanta Yalla</p>
+            <p>{{ organizationData()?.global_admin?.name }}</p>
           </div>
 
           <div>
             <label>Email</label>
-            <p>admin@spryple.com</p>
+            <p>{{ organizationData()?.global_admin?.email }}</p>
           </div>
 
           <div>
             <label>Last Login</label>
-            <p>Today, 10:32 AM</p>
+            <p>{{ organizationData()?.global_admin?.last_login }}</p>
           </div>
         </div>
       </mat-card>
@@ -117,7 +114,7 @@
             <span class="dot"></span>
             <div>
               <strong>Created</strong>
-              <p>12 Jan 2026</p>
+              <p>{{ organizationData()?.lifecycle?.created_on }}</p>
             </div>
           </div>
 
@@ -125,14 +122,14 @@
             <span class="dot"></span>
             <div>
               <strong>Trial Started</strong>
-              <p>12 Jan 2026</p>
+              <p>{{ organizationData()?.lifecycle?.trial_started_on }}</p>
             </div>
           </div>
 
           <div class="timeline-item active">
             <span class="dot"></span>
             <div>
-              <strong>Active</strong>
+              <strong>{{ organizationData()?.lifecycle?.status }}</strong>
               <p>Subscription Enabled</p>
             </div>
           </div>
@@ -147,8 +144,8 @@
           View Usage & Limits
         </button>
 
-        <button mat-stroked-button routerLink="/home/paltform-management/orginization/orginization-edit">
-          Change Subscription
+        <button mat-stroked-button [routerLink]="['/home/paltform-management/orginization/orginization-create',orgId]">
+          Edit Orginization
         </button>
 
         <button mat-stroked-button color="warn" (click)="openSuspendDialog()">

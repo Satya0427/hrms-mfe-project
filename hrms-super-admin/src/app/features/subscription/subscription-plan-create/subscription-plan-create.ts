@@ -7,45 +7,47 @@ import { HttpClientService } from '../../../core/services/http_client.service';
 import { SubscriptionPlan, ApiResponse } from '../../../core/models/subscription-plan.model';
 import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
 import { Subject, takeUntil } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-subscription-plan-create',
-  imports: [MATERIAL, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [MATERIAL, CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './subscription-plan-create.html',
   styleUrl: './subscription-plan-create.scss',
 })
 export class SubscriptionPlanCreate implements OnInit {
 
   private utils = inject(UtilsService);
-  private httpClient = inject(HttpClientService);
-  private router = inject(Router);
-  private fb = inject(FormBuilder);
+  private _httpClient = inject(HttpClientService);
+  private _router = inject(Router);
+  private _route = inject(ActivatedRoute)
+  private _fb = inject(FormBuilder);
   private _toastr = inject(ToastrService)
 
   // Reactive Form
   planForm!: FormGroup;
   destroy$ = new Subject<void>();
+  private planId!: string
 
   ngOnInit(): void {
-    const token = this.utils.getSessionData();
-    console.log('User Token:', token);
+    this.planId = this._route.snapshot.paramMap.get('id')!;
+    if (this.planId) {
+      this.get_plan_details();
+    }
     this.initializeForm();
   }
 
-  /**
-   * Initialize reactive form with validation
-   */
+  // Initialize reactive form with validation
   initializeForm(): void {
-    this.planForm = this.fb.group({
+    this.planForm = this._fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       plan_code: ['', [Validators.required, Validators.pattern(/^[A-Z0-9_]+$/)]],
       monthlyPrice: [0, [Validators.required, Validators.min(1)]],
       yearlyPrice: [0, [Validators.required, Validators.min(1)]],
       employeeLimit: [0, [Validators.required, Validators.min(1)]],
       storageLimit: [0, [Validators.required, Validators.min(1)]],
-      modules: this.fb.group({
+      modules: this._fb.group({
         recruitment: [false],
         onboarding: [false],
         payroll: [false],
@@ -55,23 +57,49 @@ export class SubscriptionPlanCreate implements OnInit {
     });
   }
 
-  /**
-   * Get modules form group
-   */
+  // Get Plan Details API Call
+  get_plan_details() {
+    const payload = {
+      plan_id: this.planId
+    }
+    this._httpClient.post(API_ENDPOINTS.subscription.get_plan_by_id, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (_res: any) => {
+        console.log(_res);
+        const data = _res.data;
+        this.planForm.patchValue({
+          name: data.plan_name,
+          plan_code: data.plan_code,
+          monthlyPrice: data.pricing?.monthly_price,
+          yearlyPrice: data.pricing?.yearly_price,
+          employeeLimit: data.limits?.employee_limit,
+          storageLimit: data.limits?.storage_limit_gb,
+          modules: {
+            recruitment: data.modules?.recruitment,
+            onboarding: data.modules?.onboarding,
+            payroll: data.modules?.payroll,
+            performance: data.modules?.performance,
+            learning: data.modules?.learning
+          }
+        });
+      },
+      error: () => {
+
+      }
+    })
+  }
+
+
+  //  Get modules form group
   get modules() {
     return this.planForm.get('modules') as FormGroup;
   }
 
-  /**
-   * Check if at least one module is selected
-   */
+  // Check if at least one module is selected
   isAtLeastOneModuleSelected(): boolean {
     return Object.values(this.modules.value).some((value: any) => value === true);
   }
 
-  /**
-   * Create subscription plan
-   */
+  //  Create subscription plan
   createPlan(): void {
     if (!this.planForm.valid) {
       return;
@@ -79,17 +107,26 @@ export class SubscriptionPlanCreate implements OnInit {
     if (!this.isAtLeastOneModuleSelected()) {
       return;
     }
-    const planData: SubscriptionPlan = this.planForm.value;
-    this.httpClient.post<ApiResponse<SubscriptionPlan>>(API_ENDPOINTS.subscription.create_plan, planData).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (response) => {
-        if (response.success) {
-          console.log('Plan created:', response.data);
-          // this._toastr.success(response.msg)
-          setTimeout(() => {
-            this.router.navigate(['/home/platform-management/subscription-plan/subscription-plan-list']);
-          }, 2000);
-        } else {
-        }
+    const data = this.planForm.value;
+    const payload: any = {
+      "plan_name": data?.name,
+      "plan_code": data?.plan_code,
+      "monthlyPrice": data?.monthlyPrice,
+      "yearlyPrice": data?.yearlyPrice,
+      "employeeLimit": data?.employeeLimit,
+      "storageLimit": data?.storageLimit,
+      "modules": data.modules
+    }
+    if (this.planId) {
+      payload['plan_id'] = this.planId
+    }
+    this._httpClient.post<ApiResponse<SubscriptionPlan>>(API_ENDPOINTS.subscription.create_plan, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (_res: any) => {
+        console.log('Plan created:', _res.data);
+        this._toastr.success(_res.msg)
+        setTimeout(() => {
+          this._router.navigate(['/home/paltform-management/subscription-plan/subscription-plan-list']);
+        }, 2000);
       },
       error: (error) => {
         console.error('Error creating plan:', error);
@@ -97,16 +134,7 @@ export class SubscriptionPlanCreate implements OnInit {
     });
   }
 
-  /**
-   * Cancel and go back
-   */
-  cancel(): void {
-    this.router.navigate(['/home/platform-management/subscription-plan/subscription-plan-list']);
-  }
-
-  /**
-   * Reset form to initial state
-   */
+  // Reset form to initial state
   resetForm(): void {
     this.planForm.reset({
       name: '',

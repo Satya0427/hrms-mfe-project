@@ -1,9 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../shared/material/materials';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from "@angular/router";
 import { GlobalAdminStatusDialog } from '../global-admin-status-dialog/global-admin-status-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpClientService } from '../../../core/services/http_client.service';
+import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-global-admin-list',
@@ -11,8 +15,11 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './global-admin-list.html',
   styleUrl: './global-admin-list.scss',
 })
-export class GlobalAdminList {
+export class GlobalAdminList implements OnInit {
   private dialog = inject(MatDialog)
+  private _http = inject(HttpClientService);
+  private _toastr = inject(ToastrService);
+  private destroy$ = new Subject<void>();
   displayedColumns = [
     'name',
     'email',
@@ -22,24 +29,38 @@ export class GlobalAdminList {
     'actions'
   ];
 
-  globalAdmins = [
-    {
-      id: '1',
-      name: 'Manikanta Yalla',
-      email: 'admin@spryple.com',
-      organization: 'Spryple Technologies',
-      status: 'Active',
-      created: new Date()
-    },
-    {
-      id: '2',
-      name: 'Satya',
-      email: 'satya@acme.io',
-      organization: 'Acme Corp',
-      status: 'Inactive',
-      created: new Date()
-    }
-  ];
+  globalAdmins: any[] = [];
+
+  ngOnInit(): void {
+    this.getAdminList();
+  }
+
+  getAdminList() {
+    const payload = {
+      page: '1',
+      limit: '100',
+      search_key: ''
+    };
+    this._http.post(API_ENDPOINTS.globalAdmin.get_all, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (_res: any) => {
+        const data = _res?.data?.admin_data || []
+        if (data && Array.isArray(data)) {
+          this.globalAdmins = data.map((a: any) => ({
+            id: a.id || a._id,
+            name: a.name || a.admin_name || '',
+            email: a.email || a.contact_email || '',
+            organization: a.organization_name || a.organization?.name || '',
+            status: (a.status && typeof a.status === 'string') ? (a.status.toLowerCase() === 'active' ? 'Active' : a.status) : (a.is_active ? 'Active' : 'Inactive'),
+            created: a.createdAt || a.created || new Date()
+          }));
+        }
+      },
+      error: (err: any) => {
+        console.error('Failed to load admins', err);
+        this._toastr.error('Failed to load global admins');
+      }
+    });
+  }
 
   openStatusDialog(admin: any) {
     const dialogRef = this.dialog.open(GlobalAdminStatusDialog, {

@@ -1,24 +1,28 @@
 export const API_ENDPOINTS = {
 
+    lookups: {
+        orginization_dropdown:'/lookup/organizations-dropdown'
+    },
     // Global Admin Users Management
     globalAdmin: {
-        get_all: `/global-admin`,
-        get_by_id: `/global-admin/:id`,
-        create: `/global-admin`,
-        update: `/global-admin/:id`,
-        delete: `/global-admin/:id`,
-        change_status: `/global-admin/:id/status`,
+        get_all: `/org-admin/get_admins`,
+        get_by_id: `/org-admin/get_details`,
+        create: `/org-admin/create`,
+        update: `/org-admin/:id`,
+        delete: `/org-admin/:id`,
+        change_status: `/org-admin/:id/status`,
     },
 
     // Organizations Management
     organizations: {
-        get_all: `/organizations`,
-        get_by_id: `/organizations/:id`,
-        create: `/organizations`,
-        update: `/organizations/:id`,
-        delete: `/organizations/:id`,
-        change_status: `/organizations/:id/status`,
-        get_usage: `/organizations/:id/usage`,
+        get_all: `/organization/orginization_list`,
+        get_by_id: `/organization/org_dtls_by_id`,
+        get_org_details: `/organization/orginization_view_details`,
+        create: `/organization/create`,
+        update: `/organization/:id`,
+        delete: `/organization/:id`,
+        change_status: `/organization/:id/status`,
+        get_usage: `/organization/:id/usage`,
     },
 
     // Subscription Plans Management
@@ -34,8 +38,8 @@ export const API_ENDPOINTS = {
     // Subscription Plan Endpoints
     subscription: {
         create_plan: `/subscription/create`,
-        get_all_plans: `/subscription/subscription-plans`,
-        get_plan_by_id: `/subscription/subscription-plans/:id`,
+        get_all_plans: `/subscription/get_list`,
+        get_plan_by_id: `/subscription/edit_plan`,
         update_plan: `/subscription/subscription-plans/:id`,
         delete_plan: `/subscription/subscription-plans/:id`,
         get_plan_features: `/subscription/subscription-plans/:id/features`,
@@ -43,12 +47,12 @@ export const API_ENDPOINTS = {
 
     // Platform Modules Management
     platformModules: {
-        get_all: `/platform-modules`,
-        get_by_id: `/platform-modules/:id`,
-        create: `/platform-modules`,
-        update: `/platform-modules/:id`,
-        delete: `/platform-modules/:id`,
-        toggle_status: `/platform-modules/:id/toggle`,
+        get_all: `/module-feature/get_modules_list`,
+        get_by_id: `/module-feature/:id`,
+        create: `/module-feature/create`,
+        update: `/module-feature/:id`,
+        delete: `/module-feature/:id`,
+        toggle_status: `/module-feature/:id/toggle`,
     },
 
     // Platform Dashboard
