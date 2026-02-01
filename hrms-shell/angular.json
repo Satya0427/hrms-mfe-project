@@ -26,7 +26,7 @@
 						],
 						"main": "src/main.ts",
 						"outputPath": "dist/Hrms_Shell",
-						"index": "src\\index.html",
+						"index": "src/index.html",
 						"extraWebpackConfig": "webpack.config.js",
 						"commonChunk": false
 					},

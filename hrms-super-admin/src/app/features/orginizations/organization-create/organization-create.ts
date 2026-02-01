@@ -47,11 +47,11 @@ export class OrganizationCreate implements OnInit {
   });
 
   // STEP 3: Global Admin Form
-  globalAdminForm: FormGroup = this._fb.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    contact_email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
-    contact_phone: ['', [Validators.maxLength(15)]]
-  });
+  // globalAdminForm: FormGroup = this._fb.group({
+  //   name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+  //   contact_email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
+  //   contact_phone: ['', [Validators.maxLength(15)]]
+  // });
 
   async ngOnInit() {
     this.orgId = this._route.snapshot.paramMap.get('id')!;
@@ -91,12 +91,12 @@ export class OrganizationCreate implements OnInit {
   // Create Orginization API Call
   createOrganization() {
     const organizationPayload = this.organizationForm.getRawValue();
-    const globalAdminPayload = this.globalAdminForm.getRawValue();
+    // const globalAdminPayload = this.globalAdminForm.getRawValue();
     const subscriptionPlanPayload = this.subscriptionForm.getRawValue();
     const payload: any = {
       "organization": organizationPayload,
       "subscription": subscriptionPlanPayload,
-      "global_admin": globalAdminPayload
+      // "global_admin": globalAdminPayload
     }
     if (this.orgId) payload['organizationId'] = this.orgId
 
@@ -143,11 +143,11 @@ export class OrganizationCreate implements OnInit {
           });
 
           // Populate Global Admin Form
-          this.globalAdminForm.patchValue({
-            name: orgData.global_admin?.name,
-            contact_email: orgData.global_admin?.contact_email,
-            contact_phone: orgData.global_admin?.contact_phone || ''
-          });
+          // this.globalAdminForm.patchValue({
+          //   name: orgData.global_admin?.name,
+          //   contact_email: orgData.global_admin?.contact_email,
+          //   contact_phone: orgData.global_admin?.contact_phone || ''
+          // });
           const plan_id = this.subscriptionForm?.value?.subscription_plan_id || ''
           const idx = this.plans().findIndex(e => (e.id == plan_id))
           this.onPlanSelect(this.plans()[idx || 0]);
@@ -184,7 +184,7 @@ export class OrganizationCreate implements OnInit {
     return this.subscriptionForm.getRawValue();
   }
   // Global Admin
-  get globalAdminReview() {
-    return this.globalAdminForm.getRawValue();
-  }
+  // get globalAdminReview() {
+  //   return this.globalAdminForm.getRawValue();
+  // }
 }

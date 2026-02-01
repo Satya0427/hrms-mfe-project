@@ -22,6 +22,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
+import {MatStepperModule} from '@angular/material/stepper';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 export const MATERIAL = [
     MatButtonModule,
     MatCardModule,
@@ -44,5 +47,8 @@ export const MATERIAL = [
     MatSlideToggleModule,
     MatTabsModule,
     MatChipsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatStepperModule,
+    MatDatepickerModule,
+    MatNativeDateModule
 ];

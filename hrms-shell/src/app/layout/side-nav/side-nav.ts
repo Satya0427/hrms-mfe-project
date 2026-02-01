@@ -178,7 +178,7 @@ export class SideNav implements OnInit {
     //   scope: userDetails,
     //   organization_id: 
     // }
-    this._httpClient.post(API_ENDPOINTS.sideNav.get_menus_by_role,userDetails).pipe(takeUntil(this.destroy$)).subscribe({
+    this._httpClient.get(API_ENDPOINTS.sideNav.get_menus).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
         const data = res?.data || res;
         if (Array.isArray(data)) {
@@ -194,14 +194,14 @@ export class SideNav implements OnInit {
 
   mapModulesToSidebar(modules: any[]) {
     return modules.map(module => ({
-      label: module.label,
+      label: module.module_name,
       icon: module.icon || 'folder',
       active: false,
       expanded: false,
       id: module._id,
-      subItems: (module.subItems || []).map((feature: any) => ({
-        label: feature.label,
-        route: feature.route,
+      subItems: (module.features || []).map((feature: any) => ({
+        label: feature.feature_name,
+        route: feature.route_path,
         icon: 'chevron_right', // or any default icon
         active: false
       }))

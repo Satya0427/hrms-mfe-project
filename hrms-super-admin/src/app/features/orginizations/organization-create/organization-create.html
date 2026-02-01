@@ -151,7 +151,7 @@
             </mat-step>
 
             <!-- STEP 3: Global Admin -->
-            <mat-step label="Global Admin" [stepControl]="globalAdminForm">
+            <!-- <mat-step label="Global Admin" [stepControl]="globalAdminForm">
                 <form [formGroup]="globalAdminForm">
                     <div class="form-grid">
                         <mat-form-field appearance="outline">
@@ -190,7 +190,7 @@
                         </button>
                     </div>
                 </form>
-            </mat-step>
+            </mat-step> -->
 
 
             <!-- STEP 4: Review -->
@@ -260,7 +260,7 @@
                     <mat-divider></mat-divider>
 
                     <!-- GLOBAL ADMIN DETAILS -->
-                    <p>
+                    <!-- <p>
                         <strong>Admin Name:</strong>
                         {{ globalAdminReview.name }}
                     </p>
@@ -275,7 +275,7 @@
                         <strong>Admin Phone:</strong>
                         {{ globalAdminReview.contact_phone }}
                     </p>
-                    }
+                    } -->
 
                     <mat-divider></mat-divider>
 
@@ -291,8 +291,7 @@
                     <button mat-button matStepperPrevious>Back</button>
 
                     <button mat-flat-button color="primary" (click)="createOrganization()" [disabled]="organizationForm.invalid
-                || subscriptionForm.invalid
-                || globalAdminForm.invalid">
+                || subscriptionForm.invalid">
                         Create Organization
                     </button>
                 </div>

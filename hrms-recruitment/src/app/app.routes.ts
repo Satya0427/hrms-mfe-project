@@ -15,6 +15,12 @@ export const RECRUITMENT_ROUTES: Routes = [
                 .then(m => m.REQUISITION_ROUTES),
     },
     {
+        path: 'onboarding',
+        loadChildren: () =>
+            import('./features/onboarding/onboarding.routes')
+                .then(m => m.onboardingRoutes),
+    },
+    {
         path: '**',
         redirectTo: 'recruitment',
     },

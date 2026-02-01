@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
         getImages:`/gallery/view_images`
     },
     sideNav:{
-        get_menus_by_role:`/module-feature/get_modules_list_by_role`
+        get_menus_by_role:`/module-feature/get_modules_list_by_role`,
+        get_menus:`/module-feature/get_modules_list`
     }
 };

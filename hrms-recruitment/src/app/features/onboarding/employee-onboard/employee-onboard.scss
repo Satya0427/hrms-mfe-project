@@ -1,0 +1,107 @@
+// Theme Colors from your image
+$primary-blue: #0061bd;
+$bg-light: #f8fafc;
+$input-bg: #f9fafb;
+$border-color: #e2e8f0;
+$text-dark: #1e293b;
+
+.page-container {
+  padding: 24px;
+  background-color: $bg-light;
+  min-height: 100vh;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .title-group {
+      h1 { margin: 0; font-size: 24px; font-weight: 700; color: $text-dark; }
+      p { margin: 4px 0 0; color: #64748b; font-size: 14px; }
+    }
+
+    .back-btn {
+      border-radius: 20px;
+      border: 1px solid $border-color;
+      padding: 0 24px;
+    }
+  }
+
+  .form-section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid $border-color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: $text-dark;
+      margin-bottom: 20px;
+      display: block;
+    }
+  }
+
+  // Matching your input style (gray background inside)
+  ::ng-deep {
+    .mat-mdc-form-field {
+      width: 100%;
+      .mat-mdc-text-field-wrapper {
+        background-color: $input-bg !important;
+        border-radius: 8px !important;
+      }
+      .mdc-notched-outline__list { border-color: $border-color !important; }
+    }
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+    padding-bottom: 40px;
+
+    .btn-reset, .btn-cancel {
+      border-radius: 20px;
+      border: 1px solid $border-color;
+      min-width: 100px;
+    }
+
+    .btn-save {
+      background-color: $primary-blue !important;
+      color: white;
+      border-radius: 20px;
+      padding: 0 32px;
+    }
+  }
+}
+
+.emergency-row {
+  position: relative;
+  padding: 15px;
+  border: 1px dashed $border-color;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  
+  .remove-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: white;
+  }
+}

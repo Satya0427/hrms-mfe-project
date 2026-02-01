@@ -1,0 +1,182 @@
+<div class="page-container">
+  <header class="header-section">
+    <div class="title-group">
+      <h1>Employee Management</h1>
+      <p>Configure employee profile, payroll, and compliance details</p>
+    </div>
+    <button mat-button class="back-btn">Back</button>
+  </header>
+
+  <form [formGroup]="employeeForm">
+    
+    <!-- SECTION 1: PROFILE -->
+    <div class="form-section-card" formGroupName="profile">
+      <span class="section-title">Employment Profile</span>
+      <div class="grid-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Employee Code **</mat-label>
+          <input matInput formControlName="employee_code">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Joining Date **</mat-label>
+          <input matInput [matDatepicker]="jdp" formControlName="joining_date">
+          <mat-datepicker-toggle matIconSuffix [for]="jdp"></mat-datepicker-toggle>
+          <mat-datepicker #jdp></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="grid-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Employment Type</mat-label>
+          <mat-select formControlName="employment_type">
+            @for (type of ['PERMANENT', 'CONTRACT', 'INTERN']; track type) {
+              <mat-option [value]="type">{{type}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Work Mode</mat-label>
+          <mat-select formControlName="work_mode">
+            @for (mode of ['WFH', 'WFO', 'HYBRID']; track mode) {
+              <mat-option [value]="mode">{{mode}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (st of ['ACTIVE', 'ON_NOTICE', 'RESIGNED', 'TERMINATED']; track st) {
+              <mat-option [value]="st">{{st}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PERSONAL & JOB -->
+    <div class="grid-2">
+      <div class="form-section-card" formGroupName="personal">
+        <span class="section-title">Personal Details</span>
+        <mat-form-field appearance="outline">
+          <mat-label>Personal Email</mat-label>
+          <input matInput formControlName="personal_email" placeholder="email@example.com">
+        </mat-form-field>
+        <div class="grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="dobp" formControlName="dob">
+            <mat-datepicker-toggle matIconSuffix [for]="dobp"></mat-datepicker-toggle>
+            <mat-datepicker #dobp></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option value="MALE">Male</mat-option>
+              <mat-option value="FEMALE">Female</mat-option>
+              <mat-option value="OTHER">Other</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-section-card" formGroupName="job">
+        <span class="section-title">Job Assignment</span>
+        <mat-form-field appearance="outline">
+          <mat-label>Manager</mat-label>
+          <mat-select formControlName="manager_id">
+            <mat-option value="1">Reporting Manager A</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Grade</mat-label>
+            <input matInput formControlName="grade">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Cost Center</mat-label>
+            <input matInput formControlName="cost_center">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: PAYROLL -->
+    <div class="form-section-card" formGroupName="payroll">
+      <span class="section-title">Payroll & Bank Details</span>
+      <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Annual CTC **</mat-label>
+          <input matInput type="number" formControlName="ctc">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Bank Name</mat-label>
+          <input matInput formControlName="bank_name">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Account Number</mat-label>
+          <input matInput formControlName="account_number">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>IFSC Code</mat-label>
+          <input matInput formControlName="ifsc_code">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION 4: COMPLIANCE & EMERGENCY -->
+    <div class="grid-2">
+      <div class="form-section-card" formGroupName="compliance">
+        <span class="section-title">Compliance</span>
+        <div class="grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>PAN Number</mat-label>
+            <input matInput formControlName="pan_number">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Aadhaar Number</mat-label>
+            <input matInput formControlName="aadhaar_number">
+          </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>UAN Number</mat-label>
+          <input matInput formControlName="uan_number">
+        </mat-form-field>
+      </div>
+
+      <div class="form-section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <span class="section-title" style="margin: 0;">Emergency Contacts</span>
+          <button mat-button color="primary" type="button" (click)="addEmergency()">+ Add</button>
+        </div>
+        
+        <div formArrayName="emergency">
+          @for (contact of emergencyControls.controls; track contact; let i = $index) {
+            <div [formGroupName]="i" class="emergency-row">
+              <div class="grid-2">
+                <mat-form-field appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Phone</mat-label>
+                  <input matInput formControlName="phone">
+                </mat-form-field>
+              </div>
+              <button mat-icon-button class="remove-btn" color="warn" (click)="removeEmergency(i)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </div>
+          } @empty {
+            <p style="color: #94a3b8; font-size: 13px;">No emergency contacts added.</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-actions">
+      <button mat-button class="btn-reset">Reset</button>
+      <button mat-button class="btn-cancel">Cancel</button>
+      <button mat-raised-button class="btn-save" (click)="submit()">Save Employee Record</button>
+    </footer>
+  </form>
+</div>
