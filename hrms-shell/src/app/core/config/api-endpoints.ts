@@ -12,5 +12,8 @@ export const API_ENDPOINTS = {
     },
     gallery:{
         getImages:`/gallery/view_images`
+    },
+    sideNav:{
+        get_menus_by_role:`/module-feature/get_modules_list_by_role`
     }
 };

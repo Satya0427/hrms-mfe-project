@@ -40,8 +40,11 @@ export class Login extends BaseComponent implements OnInit {
     };
     this._apiService.post(API_ENDPOINTS.auth.login, payload, { withCredentials: true }).subscribe({
       next: (_res: any) => {
-        const responsedata = _res ? _res?.token?.accessToken : "";
+        const responsedata = _res ? _res?.data?.token?.accessToken : "";
+        const userDetails = _res ? _res?.data?.user_details : "";
+        // const responsedata = _res ? _res?.token?.accessToken : "";
         sessionStorage.setItem('Token', JSON.stringify(responsedata));
+        sessionStorage.setItem('userDetails', JSON.stringify(userDetails));
         this.navigateTo('/home');
       },
     })
