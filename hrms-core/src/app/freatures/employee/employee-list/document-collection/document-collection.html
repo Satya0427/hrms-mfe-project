@@ -1,0 +1,88 @@
+<!-- =========================== -->
+<!-- NEW: DOCUMENTS TAB          -->
+<!-- =========================== -->
+<div class="docs-wrapper" [formGroup]="documentForm">
+    <div class="docs-header">
+        <h3>Required Documents</h3>
+        <button mat-stroked-button color="primary" (click)="openAddDocDialog()">
+            <mat-icon>add</mat-icon> Add Other Document
+        </button>
+    </div>
+
+    <!-- Loop through Document Array -->
+    <div formArrayName="documents">
+        @for (doc of docArray.controls; track doc; let i = $index) {
+        <div [formGroupName]="i" class="doc-row-card">
+
+            <!-- LEFT SIDE: DOCUMENT PREVIEW/UPLOAD -->
+            <div class="doc-visual-side" (click)="fileInput.click()">
+                <input #fileInput type="file" hidden (change)="onRowFileSelected($event, i)"
+                    accept="image/*,application/pdf">
+
+                @if (doc.get('previewUrl')?.value) {
+                <!-- If File Exists -->
+                <div class="preview-container">
+                    @if (isImage(doc.get('fileName')?.value)) {
+                    <img [src]="doc.get('previewUrl')?.value" class="doc-img">
+                    } @else {
+                    <mat-icon class="pdf-icon">picture_as_pdf</mat-icon>
+                    }
+                    <div class="overlay">
+                        <mat-icon>edit</mat-icon> Change
+                    </div>
+                </div>
+                } @else {
+                <!-- Empty State -->
+                <div class="upload-placeholder">
+                    <mat-icon>cloud_upload</mat-icon>
+                    <span>Upload {{ doc.get('docName')?.value }}</span>
+                </div>
+                }
+            </div>
+
+            <!-- RIGHT SIDE: FIELDS -->
+            <div class="doc-fields-side">
+                <div class="fields-header">
+                    <h4 class="doc-title">
+                        {{ doc.get('docName')?.value }}
+                        @if(doc.get('isMandatory')?.value) { <span class="required">*</span> }
+                    </h4>
+
+                    @if(!doc.get('isMandatory')?.value) {
+                    <button mat-icon-button color="warn" (click)="removeDoc(i)" matTooltip="Remove">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    }
+                </div>
+
+                <div class="fields-grid">
+                    <!-- Doc Name (Readonly for default, Editable for custom) -->
+                    <mat-form-field appearance="outline" class="dense-field">
+                        <mat-label>Document Type</mat-label>
+                        <input matInput formControlName="docName" [readonly]="doc.get('isMandatory')?.value">
+                    </mat-form-field>
+
+                    <!-- Doc Number -->
+                    <mat-form-field appearance="outline" class="dense-field">
+                        <mat-label>Document Number / ID</mat-label>
+                        <input matInput formControlName="docNumber" placeholder="e.g. ABCD1234F">
+                        @if (doc.get('docNumber')?.hasError('required')) {
+                        <mat-error>ID is required</mat-error>
+                        }
+                    </mat-form-field>
+
+                    <!-- File Name Display -->
+                    <mat-form-field appearance="outline" class="dense-field full">
+                        <mat-label>Attached File</mat-label>
+                        <input matInput formControlName="fileName" readonly placeholder="No file selected">
+                        <mat-icon matSuffix [class.uploaded]="doc.get('file')?.value">
+                            {{ doc.get('file')?.value ? 'check_circle' : 'attach_file' }}
+                        </mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+
+        </div>
+        }
+    </div>
+</div>

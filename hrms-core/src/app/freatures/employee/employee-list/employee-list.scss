@@ -1,0 +1,199 @@
+/* Variables for colors */
+$primary-bg: #f4f6f9;
+$card-bg: #ffffff;
+$text-dark: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+
+/* Icon Colors */
+$icon-phone: #28a745;
+$icon-date: #8d6e63;
+$icon-email: #dc3545;
+$icon-loc: #007bff;
+
+/* Gender Badge Colors */
+$male-bg: #e8f5e9;
+$male-text: #2e7d32;
+$female-bg: #f3e5f5;
+$female-text: #7b1fa2;
+
+// .main-container {
+//     padding: 20px;
+//     background-color: $primary-bg;
+//     min-height: 100vh;
+//     font-family: 'Roboto', sans-serif;
+// }
+/* Header Section */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .page-title h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+        color: $text-dark;
+    }
+
+    .breadcrumbs {
+        display: flex;
+        align-items: center;
+        color: $text-light;
+        font-size: 14px;
+
+        .home-icon {
+            font-size: 18px;
+            height: 18px;
+            width: 18px;
+            margin-right: 5px;
+        }
+    }
+}
+
+/* Table Card Container */
+.table-card {
+    background: $card-bg;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* Toolbar Style */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #e8ecf3;
+    /* Light blueish gray header */
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border-radius: 4px;
+        padding: 0 10px;
+        height: 40px;
+        width: 250px;
+
+        mat-icon {
+            color: $text-light;
+            margin-right: 8px;
+        }
+
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+
+        .add-btn {
+            color: #28a745;
+        }
+
+        .action-btn {
+            color: #555;
+        }
+    }
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.employee-table {
+    width: 100%;
+
+    th.mat-header-cell {
+        font-weight: 600;
+        color: $text-dark;
+        font-size: 14px;
+        padding: 15px 10px;
+    }
+
+    td.mat-cell {
+        color: $text-light;
+        font-size: 14px;
+        padding: 10px;
+        border-bottom: 1px solid $border-color;
+        white-space: nowrap;
+    }
+}
+
+/* Column Specific Styling */
+.name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: $text-dark;
+    font-weight: 500;
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.icon-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .icon-phone {
+        color: $icon-phone;
+    }
+
+    .icon-date {
+        color: $icon-date;
+    }
+
+    .icon-email {
+        color: $icon-email;
+    }
+
+    .icon-loc {
+        color: $icon-loc;
+    }
+
+    .email-text,
+    .address-text {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Gender Badges */
+.gender-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+
+    &.male {
+        background-color: $male-bg;
+        color: $male-text;
+    }
+
+    &.female {
+        background-color: $female-bg;
+        color: $female-text;
+    }
+}

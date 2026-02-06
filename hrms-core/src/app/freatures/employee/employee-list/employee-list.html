@@ -1,0 +1,140 @@
+<div>
+    <!-- Breadcrumb & Header -->
+    <div class="header-section">
+        <div class="page-title">
+            <h2>All Employees</h2>
+        </div>
+        <div class="breadcrumbs">
+            <mat-icon class="home-icon">home</mat-icon>
+            <span> > Employees > All Employees</span>
+        </div>
+    </div>
+    <!-- Toolbar Section -->
+    <div class="table-card">
+        <div class="table-toolbar">
+            <div class="search-box">
+                <mat-icon>search</mat-icon>
+                <input type="text" placeholder="Search" (keyup)="applyFilter($event)">
+            </div>
+
+            <div class="actions">
+                <button mat-icon-button color="primary" class="action-btn">
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+                <button mat-icon-button class="add-btn" routerLink="/home/hrms-core/employees/employee-onboarding">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                <button mat-icon-button class="action-btn">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <button mat-icon-button class="action-btn">
+                    <mat-icon>download</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="employee-table">
+
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="name-cell">
+                            <img [src]="element.avatar" alt="avatar" class="avatar">
+                            <span>{{element.name}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Role Column -->
+                <ng-container matColumnDef="role">
+                    <th mat-header-cell *matHeaderCellDef> Role </th>
+                    <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+                </ng-container>
+
+                <!-- Department Column -->
+                <ng-container matColumnDef="department">
+                    <th mat-header-cell *matHeaderCellDef> Department </th>
+                    <td mat-cell *matCellDef="let element"> {{element.department}} </td>
+                </ng-container>
+
+                <!-- Mobile Column -->
+                <ng-container matColumnDef="mobile">
+                    <th mat-header-cell *matHeaderCellDef> Mobile </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="icon-text">
+                            <mat-icon class="icon-phone">phone</mat-icon>
+                            {{element.mobile}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Joining Date Column -->
+                <ng-container matColumnDef="joiningDate">
+                    <th mat-header-cell *matHeaderCellDef> Joining Date </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="icon-text">
+                            <mat-icon class="icon-date">calendar_today</mat-icon>
+                            {{element.joiningDate | date:'MM/dd/yyyy'}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef> Email </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="icon-text">
+                            <mat-icon class="icon-email">email</mat-icon>
+                            <span class="email-text">{{element.email}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Gender Column -->
+                <ng-container matColumnDef="gender">
+                    <th mat-header-cell *matHeaderCellDef> Gender </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="gender-badge" [ngClass]="element.gender.toLowerCase()">
+                            {{element.gender}}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Address Column -->
+                <ng-container matColumnDef="address">
+                    <th mat-header-cell *matHeaderCellDef> Address </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="icon-text">
+                            <mat-icon class="icon-loc">location_on</mat-icon>
+                            <span class="address-text">{{element.address}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+                </tr>
+            </table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

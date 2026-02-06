@@ -1,0 +1,330 @@
+<div class="onboarding-container">
+
+    <header class="page-header">
+        <div class="header-left">
+            <div class="title-row">
+                <div class="heading-group">
+                    <h2>Onboard New Employee</h2>
+                    <p class="sub-heading">Complete the steps below to onboard a new employee into the system.</p>
+                </div>
+                <button mat-stroked-button class="back-btn" routerLink="/home/hrms-core/employees/employee-list">
+                    Back
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="card-content">
+
+        <!-- Linear Stepper -->
+        <mat-stepper [linear]="true" #stepper class="dense-stepper">
+
+            <!-- STEP 1: PROFESSIONAL DETAILS -->
+            <mat-step [stepControl]="proForm" label="Professional Details">
+                <form [formGroup]="proForm" class="step-content">
+
+                    <div class="section-title">
+                        <mat-icon>badge</mat-icon> Account & Role
+                    </div>
+
+                    <div class="grid-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>First Name</mat-label>
+                            <input matInput formControlName="firstName" placeholder="e.g. John">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput formControlName="lastName" placeholder="e.g. Doe">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Official Email</mat-label>
+                            <input matInput formControlName="email" type="email" placeholder="john@company.com">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Employee Code</mat-label>
+                            <input matInput formControlName="employeeCode" placeholder="EMP-001">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Role</mat-label>
+                            <mat-select formControlName="role">
+                                @for (role of roles; track role) {
+                                <mat-option [value]="role">{{role}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Joining Date</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="joiningDate">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-divider></mat-divider>
+
+                    <div class="section-title mt-3">
+                        <mat-icon>work</mat-icon> Job Profile
+                    </div>
+
+                    <div class="grid-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Department</mat-label>
+                            <mat-select formControlName="department" (valueChange)="loadDesignations($event)">
+                                @for (dept of departmentList(); track dept._id) {
+                                <mat-option [value]="dept._id">{{dept.department_name}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Designation</mat-label>
+                            <mat-select formControlName="designation">
+                                @for (dept of designationList(); track dept._id) {
+                                <mat-option [value]="dept._id">{{dept.designation_name}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Work Mode</mat-label>
+                            <mat-select formControlName="workMode">
+                                @for (mode of workModeList; track mode.lookup_key) {
+                                <mat-option [value]="mode.lookup_key">{{mode.lookup_value}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Employment Type</mat-label>
+                            <mat-select formControlName="employmentType">
+                                @for (type of employmentTypeList; track type.lookup_key) {
+                                <mat-option [value]="type.lookup_key">{{type.lookup_value}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Reported To</mat-label>
+                            <mat-select formControlName="reported_to">
+                                @for (emp of employeesList(); track emp.id) {
+                                <mat-option [value]="emp.id">{{emp.emp_name}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Status</mat-label>
+                            <mat-select formControlName="status">
+                                @for (status of statusList; track status.lookup_key) {
+                                <mat-option [value]="status.lookup_key">{{status.lookup_value}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="actions-row">
+                        <button mat-button color="primary">Save Draft</button>
+                        <button mat-flat-button color="primary" matStepperNext>Next Step</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 2: PERSONAL INFO -->
+            <mat-step [stepControl]="persForm" label="Personal Info">
+                <form [formGroup]="persForm" class="step-content">
+
+                    <div class="section-title">
+                        <mat-icon>person</mat-icon> Basic Details
+                    </div>
+
+                    <div class="grid-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Date of Birth</mat-label>
+                            <input matInput [matDatepicker]="dobPicker" formControlName="dob">
+                            <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #dobPicker></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Gender</mat-label>
+                            <mat-select formControlName="gender">
+                                @for (g of genderList; track g.lookup_key) {
+                                <mat-option [value]="g.lookup_key">{{g.lookup_value}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Marital Status</mat-label>
+                            <mat-select formControlName="maritalStatus">
+                                @for (m of maritalStatuses; track m) {
+                                <mat-option [value]="m">{{m}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nationality</mat-label>
+                            <input matInput formControlName="nationality" placeholder="e.g. Indian">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Blood Group</mat-label>
+                            <input matInput formControlName="bloodGroup" placeholder="e.g. O+">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Personal Email</mat-label>
+                            <input matInput formControlName="personalEmail" type="email"
+                                placeholder="personal@email.com">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contact Number</mat-label>
+                            <input matInput formControlName="contactNumber" placeholder="e.g. 9876543210">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="full-width">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Current Residential Address</mat-label>
+                            <textarea matInput formControlName="address" rows="2"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-divider></mat-divider>
+
+                    <div class="section-title mt-3">
+                        <mat-icon>favorite</mat-icon> Emergency Contact
+                    </div>
+
+                    <div class="grid-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contact Name</mat-label>
+                            <input matInput formControlName="emergencyName">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Relation</mat-label>
+                            <mat-select formControlName="emergencyRelation">
+                                @for (r of relations; track r) {
+                                <mat-option [value]="r">{{r}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Phone Number</mat-label>
+                            <input matInput formControlName="emergencyPhone">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="actions-row">
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-flat-button color="primary" matStepperNext>Next Step</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 3: FINANCE & DOCUMENTS -->
+            <mat-step [stepControl]="finForm" label="Bank & Documents">
+                <form [formGroup]="finForm" class="step-content">
+
+                    <div class="grid-2-col">
+                        <!-- Column 1: Bank -->
+                        <div class="col">
+                            <div class="section-title">
+                                <mat-icon>account_balance</mat-icon> Bank Details
+                            </div>
+
+                            <div class="vertical-stack">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Bank Name</mat-label>
+                                    <input matInput formControlName="bankName">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Account Number</mat-label>
+                                    <input matInput formControlName="accountNumber">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>IFSC Code</mat-label>
+                                    <input matInput formControlName="ifscCode">
+                                </mat-form-field>
+
+                                <mat-checkbox formControlName="isSalaryAccount" color="primary">
+                                    This is the Salary Account
+                                </mat-checkbox>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Documents -->
+                        <div class="col">
+                            <div class="section-title">
+                                <mat-icon>folder</mat-icon> Documents
+                            </div>
+
+                            <div class="vertical-stack">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>PAN Number</mat-label>
+                                    <input matInput formControlName="pan" placeholder="ABCDE1234F">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Aadhar Number</mat-label>
+                                    <input matInput formControlName="aadhar" placeholder="1234 1234 1234">
+                                </mat-form-field>
+
+                                <div class="upload-list">
+                                    <!-- AADHAR Upload -->
+                                    <div class="upload-item">
+                                        <div class="file-info">
+                                            <span class="label">Aadhar Card</span>
+                                            @if (finForm.get('aadharFile')?.value) {
+                                            <span class="file-name">{{ finForm.get('aadharFile')?.value }}</span>
+                                            }
+                                        </div>
+                                        <button type="button" mat-stroked-button (click)="aadharInput.click()">
+                                            <mat-icon>upload_file</mat-icon> Upload
+                                        </button>
+                                        <input #aadharInput type="file" hidden
+                                            (change)="onFileSelected($event, 'aadharFile')">
+                                    </div>
+
+                                    <!-- PAN Upload -->
+                                    <div class="upload-item">
+                                        <div class="file-info">
+                                            <span class="label">PAN Card</span>
+                                            @if (finForm.get('panFile')?.value) {
+                                            <span class="file-name">{{ finForm.get('panFile')?.value }}</span>
+                                            }
+                                        </div>
+                                        <button type="button" mat-stroked-button (click)="panInput.click()">
+                                            <mat-icon>upload_file</mat-icon> Upload
+                                        </button>
+                                        <input #panInput type="file" hidden
+                                            (change)="onFileSelected($event, 'panFile')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions-row final-actions">
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-flat-button color="accent" (click)="onSubmit()">
+                            <mat-icon>check</mat-icon> Complete Onboarding
+                        </button>
+                    </div>
+                </form>
+            </mat-step>
+
+        </mat-stepper>
+    </div>
+</div>
