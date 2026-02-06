@@ -1,0 +1,35 @@
+/* Global Dialog Panel Styles */
+.dynamic-dialog-panel {
+    /* Override Angular Material's default max-width */
+    max-width: 90vw !important;
+
+    .mat-mdc-dialog-container {
+        padding: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* Fix datepicker toggle alignment inside dialog */
+    .mat-mdc-form-field {
+        mat-datepicker-toggle {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .mat-mdc-form-field-icon-suffix {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+/* Global Datepicker Fix */
+.mat-mdc-form-field-has-icon-suffix {
+    .mat-mdc-text-field-wrapper {
+        padding-right: 40px;
+    }
+}

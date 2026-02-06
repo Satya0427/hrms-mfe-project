@@ -2,10 +2,10 @@ const { shareAll, withModuleFederationPlugin } = require('@angular-architects/mo
 
 module.exports = withModuleFederationPlugin({
 
-  name: 'hrms-recruitment',
+  name: 'hrms-core',
 
   exposes: {
-    './HRMS_ROUTES': './src/app/app.routes.ts',
+    './HRMS_CORE_ROUTES': './src/app/app.routes.ts',
   },
 
   shared: {

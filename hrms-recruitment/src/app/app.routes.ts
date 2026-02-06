@@ -1,27 +1,20 @@
 import { Routes } from '@angular/router';
-import { RequisitionList } from './features/job-requisition/requisition-list/requisition-list';
 // import { Recruitment } from './features/recruitment/recruitment';
 
-export const RECRUITMENT_ROUTES: Routes = [
+export const HRMS_ROUTES: Routes = [
     {
         path: '',
-        redirectTo: 'requisition',
+        redirectTo: 'employee',
         pathMatch: 'full',
     },
     {
-        path: 'requisition',
+        path: 'employee',
         loadChildren: () =>
-            import('./routes/job-requisition.routes')
-                .then(m => m.REQUISITION_ROUTES),
-    },
-    {
-        path: 'onboarding',
-        loadChildren: () =>
-            import('./features/onboarding/onboarding.routes')
-                .then(m => m.onboardingRoutes),
+            import('./features/employee/employee.router')
+                .then(m => m.EMPLOYEE_ROUTES),
     },
     {
         path: '**',
-        redirectTo: 'recruitment',
+        redirectTo: 'employee',
     },
 ];

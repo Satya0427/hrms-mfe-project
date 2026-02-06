@@ -1,72 +1,280 @@
-.page-container {
-  padding: 16px 20px;
-}
+/* Variables for colors */
+$primary-bg: #f4f6f9;
+$card-bg: #ffffff;
+$text-dark: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
 
-.page-header {
+/* Icon Colors */
+$icon-users: #5c6bc0;
+$icon-date: #8d6e63;
+$icon-view: #007bff;
+$icon-edit: #ff9800;
+$icon-activate: #28a745;
+$icon-suspend: #dc3545;
+
+/* Status Badge Colors */
+$active-bg: #e8f5e9;
+$active-text: #2e7d32;
+$trial-bg: #fff8e1;
+$trial-text: #ff8f00;
+$suspended-bg: #fdecea;
+$suspended-text: #d32f2f;
+
+/* Plan Badge Colors */
+$starter-bg: #e3f2fd;
+$starter-text: #1976d2;
+$growth-bg: #f3e5f5;
+$growth-text: #7b1fa2;
+$enterprise-bg: #fff3e0;
+$enterprise-text: #e65100;
+
+/* Header Section */
+.header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 
-  h1 {
+  .page-title h2 {
     margin: 0;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 500;
+    color: $text-dark;
   }
 
-  .page-subtitle {
-    font-size: 13px;
-    color: rgba(0, 0, 0, 0.6);
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    color: $text-light;
+    font-size: 14px;
+
+    .home-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      margin-right: 5px;
+    }
   }
 }
 
-.filter-bar {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.table-container {
-  background: #fff;
-  border-radius: 12px;
+/* Table Card Container */
+.table-card {
+  background: $card-bg;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
-.org-name {
+/* Toolbar Style */
+.table-toolbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #e8ecf3;
 
-  span {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 4px;
+    padding: 0 10px;
+    height: 40px;
+    width: 280px;
+
+    mat-icon {
+      color: $text-light;
+      margin-right: 8px;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+
+    .add-btn {
+      color: #28a745;
+    }
+
+    .action-btn {
+      color: #555;
+    }
   }
 }
 
-.plan-chip {
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-size: 12px;
-  background: #eef2ff;
+/* Table Styling */
+.table-responsive {
+  overflow-x: auto;
 }
 
-.status-chip {
-  padding: 4px 10px;
-  border-radius: 16px;
+.organization-table {
+  width: 100%;
+
+  th.mat-header-cell {
+    font-weight: 600;
+    color: $text-dark;
+    font-size: 14px;
+    padding: 15px 10px;
+  }
+
+  td.mat-cell {
+    color: $text-light;
+    font-size: 14px;
+    padding: 10px;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+}
+
+/* Name Cell with Avatar */
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .org-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      color: #fff;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .org-info {
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      color: $text-dark;
+      font-weight: 500;
+    }
+
+    .domain-text {
+      font-size: 12px;
+      color: $text-light;
+    }
+  }
+}
+
+/* Icon Text Styling */
+.icon-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .icon-users {
+    color: $icon-users;
+  }
+
+  .icon-date {
+    color: $icon-date;
+  }
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
   font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
 
   &.active {
-    background: #e8f5e9;
-    color: #2e7d32;
+    background-color: $active-bg;
+    color: $active-text;
   }
 
   &.trial {
-    background: #fff8e1;
-    color: #ff8f00;
+    background-color: $trial-bg;
+    color: $trial-text;
   }
 
   &.suspended {
-    background: #fdecea;
-    color: #d32f2f;
+    background-color: $suspended-bg;
+    color: $suspended-text;
   }
+}
+
+/* Plan Badges */
+.plan-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.starter {
+    background-color: $starter-bg;
+    color: $starter-text;
+  }
+
+  &.growth {
+    background-color: $growth-bg;
+    color: $growth-text;
+  }
+
+  &.enterprise {
+    background-color: $enterprise-bg;
+    color: $enterprise-text;
+  }
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 4px;
+
+  button {
+    width: 32px;
+    height: 32px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .action-view {
+    color: $icon-view;
+  }
+
+  .action-edit {
+    color: $icon-edit;
+  }
+
+  .action-activate {
+    color: $icon-activate;
+  }
+
+  .action-suspend {
+    color: $icon-suspend;
+  }
+}
+
+/* Paginator Styling */
+mat-paginator {
+  border-top: 1px solid $border-color;
 }
