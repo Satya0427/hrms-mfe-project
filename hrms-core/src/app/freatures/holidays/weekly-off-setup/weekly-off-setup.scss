@@ -1,0 +1,136 @@
+$primary: #3f51b5;
+$bg: #f3f4f6;
+
+.page-container {
+    padding: 24px;
+    background: $bg;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+
+    .title {
+        margin: 0;
+        font-size: 24px;
+        color: #1e293b;
+    }
+
+    .breadcrumb {
+        font-size: 13px;
+        color: #64748b;
+    }
+}
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+}
+
+.config-card {
+    padding: 24px;
+    height: fit-content;
+    border-radius: 12px;
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+.matrix-card {
+    padding: 24px;
+    border-radius: 12px;
+
+    .matrix-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        h3 {
+            margin: 0;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #666;
+        }
+    }
+}
+
+// THE MATRIX GRID
+.wo-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr); // Label + 7 Days
+    gap: 8px;
+}
+
+.grid-header {
+    font-weight: 600;
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    padding-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.week-label {
+    font-weight: 500;
+    color: #334155;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.all-label {
+    color: $primary;
+    font-weight: 600;
+}
+
+.grid-cell {
+    height: 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+
+    &:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    &.selected {
+        background: #eef2ff;
+        border-color: $primary;
+        color: $primary;
+
+        mat-icon {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    }
+}
+
+.grid-footer-btn {
+    font-size: 11px;
+    text-align: center;
+    color: $primary;
+    cursor: pointer;
+    text-decoration: underline;
+    padding-top: 4px;
+}

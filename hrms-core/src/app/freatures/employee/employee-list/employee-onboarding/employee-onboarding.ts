@@ -2,95 +2,132 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL } from '../../../../shared/material/materials';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 import { CommonService } from '../../../../core/services/common.service';
 import { ApiClient } from '../../../../core/services/api-client.service';
 import { Subject, takeUntil } from 'rxjs';
+import { DocumentCollection } from '../document-collection/document-collection';
+import { Compensation } from '../compensation/compensation';
+import { environment } from '../../../../../environments/environment.dev';
 
 @Component({
   selector: 'app-employee-onboarding',
-  imports: [MATERIAL, FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [MATERIAL, FormsModule, CommonModule, ReactiveFormsModule, RouterModule, DocumentCollection, Compensation],
   templateUrl: './employee-onboarding.html',
   styleUrl: './employee-onboarding.scss',
 })
 export class EmployeeOnboarding implements OnInit {
   private _formBuilder = inject(FormBuilder);
   private _commonService = inject(CommonService);
-  private _httpClient = inject(ApiClient)
+  private _httpClient = inject(ApiClient);
+  private _route = inject(ActivatedRoute);
   // Enum Options based on your Schema
   // Dynamic Lookup Options
   roles = ['EMPLOYEE', 'MANAGER', 'HR_ADMIN', 'SUPER_ADMIN'];
-  relations = ['SPOUSE', 'PARENT', 'SIBLING', 'FRIEND'];
   maritalStatuses = ['SINGLE', 'MARRIED'];
-
-  genderList: any[] = [];
-  employmentTypeList: any[] = [];
-  workModeList: any[] = [];
-  statusList: any[] = [];
+  activeTab = signal<number>(0);
+  genderList = signal<any[]>([]);
+  employmentTypeList = signal<any[]>([]);
+  workModeList = signal<any[]>([]);
+  statusList = signal<any[]>([]);
   departmentList = signal<any[]>([]);
   designationList = signal<any[]>([]);
   employeesList = signal<any[]>([]);
-
+  emergencyRelationList = signal<any[]>([]);
+  probationStatusList = signal<any[]>([]);
   // Main Form Group
-  onboardingForm = this._formBuilder.group({
-
-    // STEP 1: Professional (Profile + User + Job)
-    professional: this._formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: [''],
-      email: ['', [Validators.required, Validators.email]],
-      role: ['EMPLOYEE', Validators.required],
-      employeeCode: [''],
-      joiningDate: [new Date(), Validators.required],
-      department: [''],
-      designation: [''],
-      manager: [''],
-      workMode: ['WFO'],
-      employmentType: ['FULL_TIME'],
-      location: [''],
-      reported_to: [''],
-      status: ['ACTIVE']
-    }),
-
-    // STEP 2: Personal (Personal + Emergency)
-    personal: this._formBuilder.group({
-      dob: [''],
-      gender: ['MALE'],
-      maritalStatus: ['SINGLE'],
-      nationality: [''],
-      bloodGroup: [''],
-      personalEmail: ['', Validators.email],
-      contactNumber: [''],
-      // Emergency Contact Nested Group
-      emergencyName: [''],
-      emergencyRelation: [''],
-      emergencyPhone: [''],
-      address: ['']
-    }),
-
-    // STEP 3: Finance & Docs (Bank + Documents)
-    finance: this._formBuilder.group({
-      bankName: [''],
-      accountNumber: [''],
-      ifscCode: [''],
-      isSalaryAccount: [true],
-      pan: [''],
-      aadhar: [''],
-      // File tracking
-      aadharFile: [null],
-      panFile: [null]
-    })
+  // --- INDIVIDUAL FORM GROUPS ---
+  personalDetails: FormGroup = this._formBuilder.group({
+    profileImage: [null],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+    dob: [null],
+    gender: ['male', Validators.required],
+    address: [''],
+    maritalStatus: [''],
+    nationality: [''],
   });
-  destroy$ = new Subject<void>();
 
+  jobDetails: FormGroup = this._formBuilder.group({
+    designation_id: ['', Validators.required],
+    department_id: ['', Validators.required],
+    joiningDate: [new Date(), Validators.required],
+    workEmail: ['', [Validators.required, Validators.email]],
+    reported_to: [''],
+    work_location: [''],
+    workMode: [''],
+    role_id: [''],
+    probationStartDate: [null],
+    probationEndDate: [null],
+    probationStatus: [''],
+    probationNotes: [''],
+    employee_id: ['', Validators.required],
+    employmentType: [''],
+  });
+
+  emergencyContactDetails: FormGroup = this._formBuilder.group({
+    contactName: [''],
+    relation: [''],
+    phone: ['']
+  });
+
+
+  destroy$ = new Subject<void>();
+  previewUrl = signal<string | null>(null);
+  id!: string;
+  constructor() {
+
+  }
   ngOnInit(): void {
+    this.id = this._route.snapshot.paramMap.get('id')!;
     this.loadLookupData();
     this.loadDepartments();
     this.loadEmployees();
     this.getAutoGeneratedId();
-    this.getEmployeeDetails();
+    if (this.id) {
+      this.getEmployeeDetails();
+    }
+    // this.bindDummyData();
     // this.loadDesignations();
+  }
+
+  bindDummyData() {
+    if (dummydata.personal_details) {
+      this.personalDetails.patchValue({
+        ...dummydata.personal_details,
+        dob: dummydata.personal_details.dob ? new Date(dummydata.personal_details.dob) : null
+      });
+    }
+
+    if (dummydata.job_details) {
+      this.jobDetails.patchValue({
+        ...dummydata.job_details,
+        joiningDate: dummydata.job_details.joiningDate ? new Date(dummydata.job_details.joiningDate) : null,
+        probationStartDate: dummydata.job_details.probationStartDate ? new Date(dummydata.job_details.probationStartDate) : null,
+        probationEndDate: dummydata.job_details.probationEndDate ? new Date(dummydata.job_details.probationEndDate) : null,
+      });
+    }
+
+    if (dummydata.emergency_contact) {
+      this.emergencyContactDetails.patchValue({
+        ...dummydata.emergency_contact
+      });
+    }
+  }
+
+
+  // --- LOGIC: File Upload ---
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.personalDetails.get('profileImage')?.setValue(file);
+      const reader = new FileReader();
+      reader.onload = () => this.previewUrl.set(reader.result as string);
+      reader.readAsDataURL(file);
+    }
   }
 
   async loadLookupData() {
@@ -99,41 +136,91 @@ export class EmployeeOnboarding implements OnInit {
       categories.gender,
       categories.employee_type,
       categories.work_mode,
-      categories.status
+      categories.status,
+      categories.emergency_relation,
+      categories.probation_status
     ]);
 
     if (lookupData) {
-      this.genderList = lookupData[categories.gender] || [];
-      this.employmentTypeList = lookupData[categories.employee_type] || [];
-      this.workModeList = lookupData[categories.work_mode] || [];
-      this.statusList = lookupData[categories.status] || [];
+      this.genderList.set(lookupData[categories.gender] || []);
+      this.employmentTypeList.set(lookupData[categories.employee_type] || []);
+      this.workModeList.set(lookupData[categories.work_mode] || []);
+      this.statusList.set(lookupData[categories.status] || []);
+      this.emergencyRelationList.set(lookupData[categories.emergency_relation] || []);
+      this.probationStatusList.set(lookupData[categories.probation_status] || []);
     }
   }
 
+  constructEmployeePayload() {
+    const personal = this.personalDetails.value;
+    const job = this.jobDetails.value;
+    const emergency = this.emergencyContactDetails.value;
 
-  // Getter for easy access in template
-  get proForm() { return this.onboardingForm.get('professional') as FormGroup; }
-  get persForm() { return this.onboardingForm.get('personal') as FormGroup; }
-  get finForm() { return this.onboardingForm.get('finance') as FormGroup; }
+    // Helper to format date to YYYY-MM-DD
+    const formatDate = (date: any) => {
+      if (!date) return null;
+      const d = new Date(date);
+      return !isNaN(d.getTime()) ? d.toISOString().split('T')[0] : null;
+    };
 
-  // File Upload Handler (Mock)
-  onFileSelected(event: any, controlName: string) {
-    const file = event.target.files[0];
-    if (file) {
-      this.finForm.patchValue({ [controlName]: file.name });
+    // Constructing the specific JSON structure for API
+    const apiPayload: any = {
+      "personal_details": {
+        "firstName": personal.firstName,
+        "lastName": personal.lastName,
+        "email": personal.email,
+        "phone": personal.phone,
+        "dob": formatDate(personal.dob),
+        "gender": personal.gender,
+        "address": personal.address,
+        "maritalStatus": personal.maritalStatus,
+        "nationality": personal.nationality
+      },
+
+      "job_details": {
+        "designation_id": job.designation_id || null,
+        "department_id": job.department_id || null,
+        "joiningDate": formatDate(job.joiningDate),
+        "workEmail": job.workEmail,
+        "reported_to": job.reported_to || null,
+        "work_location": job.work_location || null,
+        "workMode": job.workMode || null,
+        "role_id": job.role_id || null,
+        "probationStartDate": formatDate(job.probationStartDate),
+        "probationEndDate": formatDate(job.probationEndDate),
+        "probationStatus": job.probationStatus,
+        "probationNotes": job.probationNotes,
+        "employee_id": job.employee_id || null,
+        "employmentType": job.employmentType || null
+      },
+
+      "emergency_contact": {
+        "contactName": emergency.contactName,
+        "relation": emergency.relation,
+        "phone": emergency.phone
+      },
+    };
+    let formData = new FormData();
+    formData.append('personal_details', JSON.stringify(apiPayload.personal_details));
+    formData.append('job_details', JSON.stringify(apiPayload.job_details));
+    formData.append('emergency_contact', JSON.stringify(apiPayload.emergency_contact));
+    formData.append('profileImage', this.personalDetails.get('profileImage')?.value);
+    if (this.id) {
+      formData.append('employee_uuid', this.id);
     }
+    console.log('Constructed API Payload:', JSON.stringify(apiPayload, null, 2));
+    alert('Payload generated! Check Console.');
+    return formData;
   }
 
   onSubmit() {
-    if (this.onboardingForm.invalid) {
-      return;
-    }
-    this._httpClient.post(API_ENDPOINTS.employee.create, this.onboardingForm.value).subscribe({
+    const payload = this.constructEmployeePayload();
+    this._httpClient.post(API_ENDPOINTS.employee.create, payload).subscribe({
       next: (res) => {
-        console.log(res);
+        console.log('Onboarding Success:', res);
       },
       error: (err) => {
-        console.log(err);
+        console.error('Onboarding Error:', err);
       }
     })
   }
@@ -184,9 +271,7 @@ export class EmployeeOnboarding implements OnInit {
     this._httpClient.get(API_ENDPOINTS.employee.auto_generated_emp_id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (_res: any) => {
         const emp_code = _res.data.emp_code;
-        this.onboardingForm
-          .get('professional.employeeCode')
-          ?.patchValue(emp_code);
+        this.jobDetails.get('employee_id')?.patchValue(emp_code);
       },
       error: (_err: any) => {
         console.error('Error loading employees:', _err);
@@ -199,15 +284,94 @@ export class EmployeeOnboarding implements OnInit {
       page: 1,
       limit: 10,
       search_key: '',
-      id: '69848fc3b834505ef3a85583'
+      id: this.id
     }
     this._httpClient.post(API_ENDPOINTS.employee.get, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
+        const employee = res?.data?.data?.[0];
+        if (!employee) return;
+        this.loadDesignations(employee.job_details?.department_id || '');
+        this.personalDetails.patchValue({
+          profileImage: employee.profileImageUrl ? `${environment.apiUrl}${employee.profileImageUrl}` :
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(`${employee.personal_details?.firstName || 'Emp'}`)}&background=random`,
 
+          firstName: employee.personal_details?.firstName || '',
+          lastName: employee.personal_details?.lastName || '',
+          email: employee.personal_details?.email || '',
+          phone: employee.personal_details?.phone || '',
+          dob: employee.personal_details?.dob
+            ? new Date(employee.personal_details.dob)
+            : null,
+          gender: employee.personal_details?.gender || 'male',
+          address: employee.personal_details?.address || '',
+          maritalStatus: employee.personal_details?.maritalStatus || '',
+          nationality: employee.personal_details?.nationality || ''
+        });
+
+        this.jobDetails.patchValue({
+          // designation_id: employee.job_details?.designation_id || '',
+          department_id: employee.job_details?.department_id || '',
+          joiningDate: employee.job_details?.joiningDate ? new Date(employee.job_details.joiningDate) : null,
+          workEmail: employee.job_details?.workEmail || '',
+          reported_to: employee.job_details?.reported_to || '',
+          work_location: employee.job_details?.work_location || '',
+          workMode: employee.job_details?.workMode || '',
+          role_id: employee.job_details?.role_id || '',
+          probationStartDate: employee.job_details?.probationStartDate ? new Date(employee.job_details.probationStartDate) : null,
+          probationEndDate: employee.job_details?.probationEndDate ? new Date(employee.job_details.probationEndDate) : null,
+          probationStatus: employee.job_details?.probationStatus || '',
+          probationNotes: employee.job_details?.probationNotes || '',
+          employee_id: employee.job_details?.employee_id || '',
+          employmentType: employee.job_details?.employmentType || ''
+        });
+
+        this.emergencyContactDetails.patchValue({
+          contactName: employee.emergency_contact?.contactName || '',
+          relation: employee.emergency_contact?.relation || '',
+          phone: employee.emergency_contact?.phone || ''
+        });
+
+        this.loadDesignations(employee.job_details?.department_id || '');
+
+        this.previewUrl.set(employee.profileImageUrl ? `${environment.apiUrl}${employee.profileImageUrl}` :
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(`${employee.personal_details?.firstName || 'Emp'}`)}&background=random`,)
+
+        this.jobDetails.get('designation_id')?.patchValue(employee.job_details?.designation_id || '');
       },
       error: (err) => {
-        console.log(err);
+        console.error('Error fetching employees:', err);
       }
     })
   }
+
 }
+
+const dummydata = {
+  "personal_details": {
+    "firstName": "Koushik",
+    "lastName": "Petluri",
+    "email": "koushik@gmail.com",
+    "phone": "9000000001",
+    "dob": "1998-06-15",
+    "gender": "male",
+    "address": "Madhapur, Hyderabad, Telangana, India",
+    "maritalStatus": "Single",
+    "nationality": "Indian"
+  },
+
+  "job_details": {
+    "joiningDate": "2026-02-01",
+    "workEmail": "koushik@assettl.com",
+    "work_location": "Hyderabad Office",
+    "probationStartDate": "2026-02-01",
+    "probationEndDate": "2026-05-01",
+    "probationNotes": "Initial probation period",
+    "employmentType": "FULL_TIME"
+  },
+
+  "emergency_contact": {
+    "contactName": "Karthik",
+    "phone": "9000000002"
+  }
+}
+

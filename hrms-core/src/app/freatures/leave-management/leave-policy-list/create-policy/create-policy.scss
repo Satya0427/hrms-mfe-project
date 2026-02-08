@@ -1,0 +1,167 @@
+$primary: #3f51b5;
+$bg-color: #f3f4f6;
+
+.page-container {
+    padding: 24px;
+    background-color: $bg-color;
+    min-height: 100vh;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h2 {
+        margin: 0;
+        color: #333;
+        font-weight: 500;
+    }
+}
+
+.step-content {
+    padding: 16px 4px;
+}
+
+// Layout Grids
+.row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.mt-3 {
+    margin-top: 16px;
+}
+
+.hint-text {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 16px;
+    margin-top: -10px;
+}
+
+// Toggle Wrappers
+.toggles-wrapper {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.toggle-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    span {
+        font-size: 13px;
+        font-weight: 500;
+        color: #444;
+    }
+
+    mat-button-toggle-group {
+        height: 36px;
+        align-items: center;
+    }
+}
+
+// Section Headers inside Expansion
+.section-head {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: $primary;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.config-section {
+    margin-bottom: 24px;
+}
+
+.toggle-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e0e0e0;
+    padding: 0 12px;
+    height: 50px;
+    border-radius: 4px;
+
+    span {
+        font-size: 14px;
+        color: #333;
+    }
+}
+
+.toggle-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    mat-checkbox {
+        margin-bottom: 4px;
+    }
+}
+
+.panel-title {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+// Sandwich Card
+.sandwich-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .card-head {
+        padding: 16px;
+        background: #fff0f0;
+        border-bottom: 1px solid #ffe0e0;
+    }
+
+    .desc {
+        font-size: 12px;
+        color: #666;
+        margin: 8px 0 0 0;
+    }
+
+    .card-body {
+        padding: 24px;
+        display: flex;
+        gap: 32px;
+    }
+}
+
+.action-bar {
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+
+    &.final {
+        justify-content: flex-end;
+    }
+}

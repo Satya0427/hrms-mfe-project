@@ -6,7 +6,9 @@ export const API_ENDPOINTS = {
             gender: 'GENDER',
             employee_type: 'EMPLOYEE_TYPE',
             work_mode: 'WORK_MODE',
-            status: 'STATUS'
+            status: 'STATUS',
+            emergency_relation: 'EMERGENCY_RELATION',
+            probation_status: 'PROBATION_STATUS'
         }
     },
     dropdown: {
@@ -17,6 +19,10 @@ export const API_ENDPOINTS = {
     employee: {
         create: `/onboarding/employee-onboarding`,
         get: `/onboarding/employee-list`,
-        auto_generated_emp_id : `/onboarding/auto_generated_emp_id`
+        auto_generated_emp_id: `/onboarding/auto_generated_emp_id`,
+        uploadDocument: `/onboarding/upload-document`,
+        getDocuments: `/onboarding/get-document`,
+        saveCompensation: `/onboarding/save-compensation`,
+        getCompensation: `/onboarding/get-compensation`
     }
 };

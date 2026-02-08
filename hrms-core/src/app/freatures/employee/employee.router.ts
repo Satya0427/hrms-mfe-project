@@ -9,7 +9,8 @@ export const EMPLOYEE_ROUTES: Routes = [
     {
         path: '', component: Employee, children: [
             { path: 'employee-list', component: EmployeeList },
-            { path: 'employee-onboarding', component: TestingComponent },
+            { path: 'employee-onboarding', component: EmployeeOnboarding },
+            { path: 'employee-edit/:id', component: EmployeeOnboarding },
             { path: '', redirectTo: 'employee-list', pathMatch: 'full', },
             { path: '**', redirectTo: 'employee-list', },
         ]

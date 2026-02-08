@@ -1,0 +1,68 @@
+<div class="page-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="title">Leave Policies</h1>
+            <span class="breadcrumb">Configuration > Leave > Policies</span>
+        </div>
+        <button mat-flat-button color="primary" [routerLink]="['/home/hrms-core/leave/leave-policy/create']">
+            <mat-icon>add</mat-icon> Create Policy
+        </button>
+    </div>
+
+    <!-- Table -->
+    <mat-card class="content-card">
+        <table mat-table [dataSource]="policies()" class="mat-elevation-z0">
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Policy Name </th>
+                <td mat-cell *matCellDef="let p">
+                    <span class="fw-500">{{ p.basicInfo.policyName }}</span> <br>
+                    <span class="sub-text">{{ p.basicInfo.effectiveFrom | date }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Applicability -->
+            <ng-container matColumnDef="applicability">
+                <th mat-header-cell *matHeaderCellDef> Applies To </th>
+                <td mat-cell *matCellDef="let p"> {{ p.applicability.employeeType }} Employees </td>
+            </ng-container>
+
+            <!-- Leave Types -->
+            <ng-container matColumnDef="types">
+                <th mat-header-cell *matHeaderCellDef> Leaves Included </th>
+                <td mat-cell *matCellDef="let p">
+                    <div class="chip-gap">
+                        @for(rule of p.leaveRules; track rule) {
+                        <span class="mini-chip">{{ rule.leaveType }}</span>
+                        }
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let p">
+                    <span class="status-badge" [class.active]="p.basicInfo.status === 'Active'">
+                        {{ p.basicInfo.status }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let p">
+                    <button mat-icon-button color="primary"
+                        [routerLink]="['/home/hrms-core/leave/leave-policy/edit', p.id]"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </mat-card>
+</div>

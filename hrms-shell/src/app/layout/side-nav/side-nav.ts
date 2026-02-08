@@ -70,6 +70,16 @@ export class SideNav implements OnInit {
           // { label: 'Assets', route: '/employees/assets', icon: 'inventory_2', active: false }
         ]
       },
+      {
+        label: 'Leave & Attendance',
+        icon: 'badge',
+        active: false,
+        expanded: false,
+        subItems: [
+          { label: 'Leave Management', route: '/home/hrms-core/leave', icon: 'list', active: false },
+          { label: 'Leave Policy', route: '/home/hrms-core/leave/leave-policy', icon: 'list', active: false },
+        ]
+      },
       // {
       //   label: 'Onboarding & Exit',
       //   icon: 'how_to_reg',

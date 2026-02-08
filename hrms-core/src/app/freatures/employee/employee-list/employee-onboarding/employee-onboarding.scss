@@ -1,220 +1,231 @@
 // Variables
-$primary-color: #3f51b5;
-$bg-color: #F3F4F6;
-$card-radius: 12px;
+$bg-color: #f3f4f6;
+$primary: #3f51b5;
+$success: #10b981;
+$warn: #ef4444;
+$text-dark: #1e293b;
+$border-radius: 12px;
 
-:host {
-    display: block;
-    height: 100%;
-    // background-color: $bg-color;
-    padding: 16px;
-    box-sizing: border-box;
-}
-
-// Global Material Overrides for High Density (Small Spacing)
-::ng-deep {
-
-    // Makes the input fields shorter
-    .mat-mdc-form-field-flex {
-        height: 44px !important;
-        align-items: center !important;
-    }
-
-    .mdc-notched-outline__leading,
-    .mdc-notched-outline__notch,
-    .mdc-notched-outline__trailing {
-        border-color: #e0e0e0 !important;
-    }
-
-    // Adjust label position for shorter height
-    .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-    }
-
-    // Remove huge padding from stepper header
-    .mat-horizontal-stepper-header {
-        padding: 0 16px !important;
-        height: 56px !important;
-    }
-}
-
-.onboarding-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    margin: 0 auto;
+.page-container {
+    background-color: $bg-color;
+    min-height: 100vh;
+    padding: 6px;
+    padding-bottom: 80px; // Space for fixed footer
+    font-family: 'Roboto', sans-serif;
 }
 
 // Header
 .page-header {
-    margin-bottom: 24px;
+    position: sticky;
+    top: -24px; // Pull up to the edge of the padding
+    margin: -24px -24px 20px -24px; // Full width inside the padded container
+    z-index: 100; // Lowered from 1010
+    background: white;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e2e8f0;
 
-    .header-left {
-        width: 100%;
-    }
-
-    .main-title {
+    .title {
         margin: 0;
         font-size: 20px;
-        font-weight: 700;
-        color: #1a237e;
-        letter-spacing: 0.5px;
+        color: $text-dark;
+        font-weight: 600;
     }
 
     .breadcrumb {
+        color: #64748b;
         font-size: 12px;
-        color: #777;
-        margin-bottom: 20px;
+        margin-top: 2px;
+        display: block;
     }
 
-    .title-row {
+    .header-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-top: 10px;
-    }
-
-    .heading-group {
-        h2 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .sub-heading {
-            margin: 4px 0 0 0;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-    }
-
-    .back-btn {
-        border-radius: 20px;
-        border-color: #6a74db !important;
-        color: #6a74db !important;
-        padding: 0 24px;
-        height: 36px;
-        font-weight: 500;
-        font-size: 14px;
+        gap: 12px;
     }
 }
 
-// Card
-.card-content {
-    background: white;
-    border-radius: $card-radius;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    overflow: hidden; // Keeps corners rounded
-    flex: 1;
+// Tabs
+.custom-tabs {
+    background: transparent;
+
+    ::ng-deep .mat-mdc-tab-header {
+        position: sticky;
+        top: 44px; // Sticks right below the sticky header (height of header - padding)
+        z-index: 99; // Lowered from 1009
+        background: #f8fafc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        margin-bottom: 12px;
+    }
+
+    ::ng-deep .mat-mdc-tab-body-wrapper {
+        margin-top: 0;
+    }
+
+    ::ng-deep .mat-mdc-tab-body-content {
+        overflow: visible !important;
+    }
+
+    ::ng-deep .mat-mdc-tab-body.mat-mdc-tab-body-active {
+        overflow: visible !important;
+    }
+}
+
+// --- TAB 1 LAYOUT (Grid) ---
+.tab-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; // Match sketch ratio
+    gap: 24px;
+
+    @media(max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.column-left,
+.column-right {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+}
 
-    // Make form scrollable
-    .step-content {
-        padding: 24px;
-        height: calc(100vh - 220px); // Adjust based on header
-        overflow-y: auto;
+// Cards
+.form-card {
+    border-radius: $border-radius;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    background: white;
+
+    mat-card-header {
+        padding: 0 0 16px 0;
+
+        mat-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+
+    mat-card-content {
+        padding: 0;
     }
 }
 
-// Form Typography
-.section-title {
+// Image Upload
+.img-upload-container {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: $primary-color;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
+    justify-content: center;
+    margin-bottom: 24px;
 
-    mat-icon {
-        font-size: 18px;
-        height: 18px;
-        width: 18px;
-    }
+    .avatar-circle {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        border: 2px dashed #cbd5e1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        background: #f8fafc;
+        transition: all 0.2s;
 
-    &.mt-3 {
-        margin-top: 24px;
+        &:hover {
+            border-color: $primary;
+            background: #eef2ff;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-text {
+            font-size: 12px;
+            color: #64748b;
+        }
     }
 }
 
-// Grids - The key to "Compact" design
-.grid-3 {
+// Form Utilities
+.full-width {
+    width: 100%;
+}
+
+.row-2 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px; // Small gap
-    margin-bottom: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .grid-2-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    gap: 16px;
 }
 
-.w-100 {
-    width: 100%;
-}
-
-.full-width {
-    width: 100%;
-    margin-top: 8px;
-}
-
-.vertical-stack {
+.radio-group-section {
+    margin-top: 12px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-// File Upload Styles
-.upload-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.upload-item {
-    display: flex;
-    justify-content: space-between;
+    gap: 16px;
     align-items: center;
-    padding: 12px;
-    border: 1px dashed #ccc;
-    border-radius: 8px;
-    background-color: #fafafa;
-    transition: 0.2s;
 
-    &:hover {
-        background-color: #f0f7ff;
-        border-color: $primary-color;
-    }
-
-    .file-info {
-        display: flex;
-        flex-direction: column;
-
-        .label {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .file-name {
-            font-size: 11px;
-            color: green;
-        }
+    label {
+        font-size: 14px;
+        color: #64748b;
     }
 }
 
-// Action Buttons
-.actions-row {
-    margin-top: 24px;
+.my-3 {
+    margin: 16px 0;
+}
+
+.subsection-title {
+    font-size: 14px;
+    color: $primary;
+    margin-bottom: 12px;
+}
+
+// --- TAB 2: COMPENSATION STYLES ---
+
+
+
+// Fixed Footer Styles
+.fixed-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px 32px;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    border-top: 1px solid #eee;
-    padding-top: 16px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid #e2e8f0;
+    z-index: 100; // Lowered from 1000
+
+    .save-btn {
+        height: 44px;
+        padding: 0 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+
+        mat-icon {
+            margin-right: 8px;
+        }
+    }
+}
+
+// Force Dialog Overlay on top (Backup Fix)
+::ng-deep .cdk-overlay-container {
+    z-index: 10000 !important;
 }

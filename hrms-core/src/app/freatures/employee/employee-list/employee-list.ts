@@ -12,6 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
 import { CommonService } from '../../../core/services/common.service';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../../environments/environment.dev';
 
 
 
@@ -282,32 +283,30 @@ export class EmployeeList {
     const payload = {
       page: 1,
       limit: 10,
-      // status: '',
-      // employment_type: '',
       search_key: ''
     }
     this._httpClient.post(API_ENDPOINTS.employee.get, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
-        if (res.sts === 200 && res.data?.emp_list) {
-          // Map API response to table format if field names differ
-          const mappedData = res.data.emp_list.map((emp: any) => ({
-            ...emp,
-            name: `${emp.first_name} ${emp.last_name}`.trim() || 'N/A',
-            email: emp.email,
-            joiningDate: emp.joining_date,
-            mobile: emp.account_last4 ? `***${emp.account_last4}` : 'N/A',
-            role: emp.designation || 'N/A',
-            department: emp.department || 'N/A',
-            gender: emp.gender || 'N/A',
-            address: emp.work_location || 'N/A',
-            avatar: `https://i.pravatar.cc/150?seed=${emp.first_name}${emp.last_name}`
+        if (res.sts === 200 && res.data?.data) {
+          const mappedData = res.data.data.map((emp: any) => ({
+            _id: emp._id,
+            name: emp.personal_details ? `${emp.personal_details.firstName || ''} ${emp.personal_details.lastName || ''}`.trim() : 'N/A',
+            email: emp.job_details?.workEmail || emp.personal_details?.email || 'N/A',
+            role: emp.job_details?.role_id || 'N/A',
+            department: emp.job_details?.department_id || 'N/A',
+            mobile: emp.personal_details?.phone || 'N/A',
+            joiningDate: emp.job_details?.joiningDate || null,
+            gender: emp.personal_details?.gender || 'N/A',
+            address: emp.personal_details?.address || 'N/A',
+            avatar: emp.profileImageUrl ? `${environment.apiUrl}${emp.profileImageUrl}` :
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(`${emp.personal_details?.firstName || 'Emp'}`)}&background=random`
           }));
           this.dataSource.data = mappedData;
-          console.log(this.dataSource.data);
+          console.log('Employees loaded:', this.dataSource.data);
         }
       },
       error: (err) => {
-        console.log(err);
+        console.error('Error fetching employees:', err);
       }
     })
   }

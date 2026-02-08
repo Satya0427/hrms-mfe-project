@@ -11,9 +11,7 @@ import { DocumentCollection } from '../../../freatures/employee/employee-list/do
   styleUrl: './testing-component.scss',
 })
 export class TestingComponent implements OnInit {
-
   private fb = inject(FormBuilder);
-
   previewUrl = signal<string | null>(null);
 
   // Tab State

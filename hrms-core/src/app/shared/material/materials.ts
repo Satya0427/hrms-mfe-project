@@ -26,7 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatStepperModule } from '@angular/material/stepper';
-
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 export const MATERIAL = [
     MatButtonModule,
     MatCardModule,
@@ -53,5 +53,6 @@ export const MATERIAL = [
     MatProgressBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatStepperModule
+    MatStepperModule,
+    MatButtonToggleModule
 ];
