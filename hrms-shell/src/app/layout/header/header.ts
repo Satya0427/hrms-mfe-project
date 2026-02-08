@@ -1,11 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, input, model, output, Output, signal, TemplateRef, ViewChild } from '@angular/core';
 import { MATERIAL } from '../../shared/material/materials';
 import { Theme, ThemeService } from '../../core/services/theme.service';
 import { BaseComponent } from '../../shared/components/base-component/base-component';
 import { takeUntil } from 'rxjs';
 import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import { DialogService } from '../../core/services/dialog-service';
+
+export interface HeaderTab {
+  label: string;
+  id: string | number;
+}
 
 @Component({
   selector: 'app-header',
@@ -14,6 +19,27 @@ import { DialogService } from '../../core/services/dialog-service';
   styleUrl: './header.scss',
 })
 export class Header extends BaseComponent {
+
+  // Inputs
+  title = signal<string>('New Employee Onboarding');
+  breadcrumbs = signal<string[]>(['HRMS', 'Employees', 'Add New']);
+  tabs = signal<HeaderTab[]>([
+    { id: 'details', label: 'Employee Details' },
+    { id: 'docs', label: 'Bank & Documents' },
+    { id: 'comp', label: 'Compensation' }
+  ]);
+
+  // Model allows two-way binding [(activeTab)]="currentTab"
+  activeTab = model<string | number | null>("details");
+
+  // Outputs
+  onBack = output<void>();
+
+  selectTab(id: string | number) {
+    this.activeTab.set(id);
+  }
+
+
   public themeService = inject(ThemeService);
   private dialog = inject(DialogService);
   @Output() menuToggle = new EventEmitter<void>();

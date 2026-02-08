@@ -71,95 +71,17 @@ export class SideNav implements OnInit {
         ]
       },
       {
-        label: 'Leave & Attendance',
+        label: 'Leave',
         icon: 'badge',
         active: false,
         expanded: false,
         subItems: [
-          { label: 'Leave Management', route: '/home/hrms-core/leave', icon: 'list', active: false },
-          { label: 'Leave Policy', route: '/home/hrms-core/leave/leave-policy', icon: 'list', active: false },
+          { label: 'My Leave', route: '/home/hrms-core/leave', icon: 'list', active: false, key: 'MY_LEAVE' },
+          { label: 'Team Leave', route: '/home/hrms-core/leave/leave-policy', icon: 'list', active: false, key: 'TEAM_LEAVE' },
+          { label: 'Leave Requests', route: '', icon: 'list', active: false, key: 'LEAVE_REQUESTS' },
+          { label: 'Leave Admin', route: '', icon: 'list', active: false, key: 'LEAVE_ADMIN' },
         ]
       },
-      // {
-      //   label: 'Onboarding & Exit',
-      //   icon: 'how_to_reg',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Onboarding Stages', route: '/home/onboarding-exit', icon: 'timeline', active: false },
-      //     { label: 'Tasks & Checklist', route: '/onboarding/tasks', icon: 'checklist', active: false },
-      //     { label: 'Exit Management', route: '/exit', icon: 'logout', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Attendance & Leave',
-      //   icon: 'schedule',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Attendance', route: '/attendance', icon: 'fingerprint', active: false },
-      //     { label: 'Leave Management', route: '/leave', icon: 'beach_access', active: false },
-      //     { label: 'Holidays', route: '/holidays', icon: 'event_available', active: false },
-      //     { label: 'Shifts', route: '/shifts', icon: 'swap_horiz', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Payroll',
-      //   icon: 'payments',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Salary Structure', route: '/payroll/salary', icon: 'account_balance', active: false },
-      //     { label: 'Payroll Processing', route: '/payroll/process', icon: 'sync', active: false },
-      //     { label: 'Payslips', route: '/payroll/payslips', icon: 'receipt', active: false },
-      //     { label: 'Tax Declarations', route: '/payroll/tax', icon: 'gavel', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Performance',
-      //   icon: 'trending_up',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Goals (OKRs)', route: '/performance/goals', icon: 'flag', active: false },
-      //     { label: 'Reviews', route: '/performance/reviews', icon: 'rate_review', active: false },
-      //     { label: 'Feedback', route: '/performance/feedback', icon: 'forum', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Learning',
-      //   icon: 'school',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Courses', route: '/learning/courses', icon: 'menu_book', active: false },
-      //     { label: 'Certifications', route: '/learning/certifications', icon: 'verified', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Organization',
-      //   icon: 'apartment',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Departments', route: '/org/departments', icon: 'domain', active: false },
-      //     { label: 'Designations', route: '/org/designations', icon: 'work', active: false },
-      //     { label: 'Locations', route: '/org/locations', icon: 'location_on', active: false }
-      //   ]
-      // },
-      // {
-      //   label: 'Admin & Settings',
-      //   icon: 'admin_panel_settings',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Roles & Permissions', route: '/admin/roles', icon: 'security', active: false },
-      //     { label: 'Users', route: '/admin/users', icon: 'group', active: false },
-      //     { label: 'Approval Flows', route: '/admin/approvals', icon: 'rule', active: false },
-      //     { label: 'Integrations', route: '/admin/integrations', icon: 'hub', active: false },
-      //     { label: 'System Settings', route: '/settings', icon: 'settings', active: false }
-      //   ]
-      // },
       {
         label: 'Platform Management',
         icon: 'space_dashboard',

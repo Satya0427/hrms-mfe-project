@@ -1,16 +1,7 @@
+<app-page-header title="Employee Profile" [breadcrumbs]="['Home', 'Employees', 'Profile']" [tabs]="pageTabs"
+    [(activeTab)]="currentTab">
+</app-page-header>
 <div class="page-container">
-
-    <!-- Header Section -->
-    <div class="page-header">
-        <div class="header-text">
-            <h1 class="title">Leave Types</h1>
-            <span class="breadcrumb">Configuration > Leave Management > Leave Types</span>
-        </div>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-            <mat-icon>add</mat-icon> Add Leave Type
-        </button>
-    </div>
-
     <!-- Content Card -->
     <mat-card class="content-card">
         <div class="table-container">

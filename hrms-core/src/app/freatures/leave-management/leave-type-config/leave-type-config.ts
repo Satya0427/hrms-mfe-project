@@ -5,6 +5,7 @@ import { MATERIAL } from '../../../shared/material/materials';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LeaveTypeDialog } from '../../../shared/dialogs/leave-type-dialog/leave-type-dialog';
+import { HeaderTab, PageHeader } from '../../../shared/components/page-header/page-header';
 
 // --- 1. INTERFACE ---
 export interface LeaveType {
@@ -20,11 +21,22 @@ export interface LeaveType {
 
 @Component({
   selector: 'app-leave-type-config',
-  imports: [MATERIAL, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [MATERIAL, FormsModule, ReactiveFormsModule, CommonModule, PageHeader],
   templateUrl: './leave-type-config.html',
   styleUrl: './leave-type-config.scss',
 })
 export class LeaveTypeConfig implements OnInit {
+
+  // Define tabs configuration
+  pageTabs: HeaderTab[] = [
+    { id: 'details', label: 'Personal Details' },
+    { id: 'documents', label: 'Documents' },
+    { id: 'history', label: 'Job History' }
+  ];
+
+  // Signal for the active tab (defaults to first one)
+  currentTab = signal<string | number>('details');
+
   dialog = inject(MatDialog);
 
   // Table Columns

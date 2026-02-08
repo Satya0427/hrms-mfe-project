@@ -1,14 +1,10 @@
+<app-page-header title="Employee Profile" [breadcrumbs]="['Home', 'Employees', 'Profile']" [tabs]="pageTabs"
+    [(activeTab)]="currentTab">
+</app-page-header>
+
 <div class="page-container">
     <!-- Header -->
-    <div class="page-header">
-        <div>
-            <h1 class="title">Leave Policies</h1>
-            <span class="breadcrumb">Configuration > Leave > Policies</span>
-        </div>
-        <button mat-flat-button color="primary" [routerLink]="['/home/hrms-core/leave/leave-policy/create']">
-            <mat-icon>add</mat-icon> Create Policy
-        </button>
-    </div>
+
 
     <!-- Table -->
     <mat-card class="content-card">
