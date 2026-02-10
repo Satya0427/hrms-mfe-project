@@ -8,6 +8,7 @@ import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../core/services/common.service';
+import { MODULE_FEATURES } from './menus';
 @Component({
   selector: 'app-side-nav',
   imports: [
@@ -41,63 +42,7 @@ export class SideNav implements OnInit {
   isCollapsed = signal<boolean>(false);
   destroy$ = new Subject<void>()
 
-  menuItems = signal<any[]>(
-    [
-      // {
-      //   label: 'Recruitment',
-      //   icon: 'work_outline',
-      //   active: false,
-      //   expanded: false,
-      //   subItems: [
-      //     { label: 'Job Requisitions', route: '/home/recruitment/requisition', icon: 'assignment', active: false },
-      //     { label: 'Job Postings', route: '/recruitment/jobs', icon: 'campaign', active: false },
-      //     { label: 'Candidates', route: '/recruitment/candidates', icon: 'people', active: false },
-      //     { label: 'Candidate Pipeline', route: '/recruitment/pipeline', icon: 'account_tree', active: false },
-      //     { label: 'Interviews', route: '/recruitment/interviews', icon: 'event', active: false },
-      //     { label: 'Offers', route: '/recruitment/offers', icon: 'handshake', active: false },
-      //     { label: 'Talent Pool', route: '/recruitment/talent-pool', icon: 'groups', active: false }
-      //   ]
-      // },
-      {
-        label: 'Employee',
-        icon: 'badge',
-        active: false,
-        expanded: false,
-        subItems: [
-          { label: 'Employee Onboarding', route: '/home/hrms-core/employees', icon: 'list', active: false },
-          // { label: 'Employee Profile', route: '/employees/profile', icon: 'person', active: false },
-          // { label: 'Documents', route: '/employees/documents', icon: 'folder', active: false },
-          // { label: 'Assets', route: '/employees/assets', icon: 'inventory_2', active: false }
-        ]
-      },
-      {
-        label: 'Leave',
-        icon: 'badge',
-        active: false,
-        expanded: false,
-        subItems: [
-          { label: 'My Leave', route: '/home/hrms-core/leave', icon: 'list', active: false, key: 'MY_LEAVE' },
-          { label: 'Team Leave', route: '/home/hrms-core/leave/leave-policy', icon: 'list', active: false, key: 'TEAM_LEAVE' },
-          { label: 'Leave Requests', route: '', icon: 'list', active: false, key: 'LEAVE_REQUESTS' },
-          { label: 'Leave Admin', route: '', icon: 'list', active: false, key: 'LEAVE_ADMIN' },
-        ]
-      },
-      {
-        label: 'Platform Management',
-        icon: 'space_dashboard',
-        active: false,
-        expanded: false,
-        subItems: [
-          { label: 'Platform Dashboard', route: '/home/paltform-management/platform-dashboard', icon: 'dashboard', active: false },
-          { label: 'Organizations', route: '/home/paltform-management/orginization', icon: 'business', active: false },
-          { label: 'Global Admin Users', route: '/home/paltform-management/global-admin', icon: 'supervisor_account', active: false },
-          { label: 'Subscription & Plans', route: '/home/paltform-management/subscription-plan', icon: 'workspace_premium', active: false },
-          { label: 'Module & Feature Management', route: '/home/paltform-management/module-featurs-management', icon: 'view_module', active: false },
-          { label: 'Usage & Limits', route: '/home/paltform-management/usage-limit', icon: 'insights', active: false }
-        ]
-      }
-    ]
-  );
+  menuItems = signal<any[]>(MODULE_FEATURES);
 
   ngOnInit(): void {
     // this.getModuleList()
@@ -134,8 +79,14 @@ export class SideNav implements OnInit {
       subItems: (module.features || []).map((feature: any) => ({
         label: feature.feature_name,
         route: feature.route_path,
-        icon: 'chevron_right', // or any default icon
-        active: false
+        icon: 'chevron_right',
+        active: false,
+        expanded: false,
+        subFeatures: (feature.sub_features || []).map((subFeature: any) => ({
+          label: subFeature.sub_feature_name,
+          route: subFeature.route_path,
+          active: false
+        }))
       }))
     }));
   }
@@ -179,6 +130,35 @@ export class SideNav implements OnInit {
     );
   }
 
+  toggleSubFeature(parent: any, subItem: any) {
+    if (this.isCollapsed()) return;
+
+    this.menuItems.update(items =>
+      items.map(item => {
+        if (item.label === parent.label) {
+          return {
+            ...item,
+            expanded: true,
+            active: true,
+            subItems: item.subItems?.map((sub: any) => {
+              if (sub.label === subItem.label) {
+                return {
+                  ...sub,
+                  expanded: !sub.expanded
+                };
+              }
+              return {
+                ...sub,
+                expanded: false
+              };
+            })
+          };
+        }
+        return item;
+      })
+    );
+  }
+
   activateSubItem(parent: any, sub: any) {
     this.menuItems.update(items =>
       items.map(item => {
@@ -189,7 +169,8 @@ export class SideNav implements OnInit {
             active: true,
             subItems: item.subItems?.map((s: any) => ({
               ...s,
-              active: s.label === sub.label
+              active: s.label === sub.label,
+              expanded: s.label === sub.label ? s.expanded : false
             }))
           };
         } else {
@@ -199,10 +180,61 @@ export class SideNav implements OnInit {
             active: false,
             subItems: item.subItems?.map((s: any) => ({
               ...s,
-              active: false
+              active: false,
+              expanded: false
             }))
           };
         }
+      })
+    );
+  }
+
+  activateSubFeature(parent: any, subItem: any, subFeature: any) {
+    this.menuItems.update(items =>
+      items.map(item => {
+        if (item.label === parent.label) {
+          return {
+            ...item,
+            expanded: true,
+            active: true,
+            subItems: item.subItems?.map((sub: any) => {
+              if (sub.label === subItem.label) {
+                return {
+                  ...sub,
+                  expanded: true,
+                  active: true,
+                  subFeatures: sub.subFeatures?.map((sf: any) => ({
+                    ...sf,
+                    active: sf.label === subFeature.label
+                  }))
+                };
+              }
+              return {
+                ...sub,
+                active: false,
+                expanded: false,
+                subFeatures: sub.subFeatures?.map((sf: any) => ({
+                  ...sf,
+                  active: false
+                }))
+              };
+            })
+          };
+        }
+        return {
+          ...item,
+          expanded: false,
+          active: false,
+          subItems: item.subItems?.map((sub: any) => ({
+            ...sub,
+            active: false,
+            expanded: false,
+            subFeatures: sub.subFeatures?.map((sf: any) => ({
+              ...sf,
+              active: false
+            }))
+          }))
+        };
       })
     );
   }

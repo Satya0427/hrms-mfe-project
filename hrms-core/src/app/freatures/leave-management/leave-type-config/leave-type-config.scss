@@ -1,51 +1,89 @@
 // Variables matching your theme
 $primary: #3f51b5;
-$bg-color: #f3f4f6;
-$text-dark: #1e293b;
+$primary-bg: #f4f6f9;
+$card-bg: #ffffff;
+$text-dark: #333;
+$text-light: #666;
 $text-gray: #64748b;
+$border-color: #e0e0e0;
 
-.page-container {
-    padding: 24px;
-    background-color: $bg-color;
-    min-height: 100vh;
+/* Main wrapper for the entire page */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
 }
 
-// Header
-.page-header {
+/* Table Card Container */
+.table-card {
+    background: $card-bg;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Toolbar Style */
+.table-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    padding: 10px 16px;
+    background: #e8ecf3;
+    flex-shrink: 0;
 
-    .header-text {
-        .title {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 500;
-            color: $text-dark;
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border-radius: 4px;
+        padding: 0 10px;
+        height: 40px;
+        width: 250px;
+
+        mat-icon {
+            color: $text-light;
+            margin-right: 8px;
         }
 
-        .breadcrumb {
-            font-size: 13px;
-            color: $text-gray;
-            margin-top: 4px;
-            display: block;
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
         }
     }
-}
 
-// Card & Table
-.content-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    background: white;
-    overflow: hidden; // Keeps table corners rounded
-    padding: 0;
+    .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        .add-btn {
+            height: 40px;
+            border-radius: 6px;
+            font-weight: 500;
+            
+            mat-icon {
+                margin-right: 4px;
+            }
+        }
+
+        .action-btn {
+            color: #555;
+        }
+    }
 }
 
 .table-container {
     width: 100%;
     overflow-x: auto;
+    flex: 1;
+    min-height: 0;
 
     table {
         width: 100%;

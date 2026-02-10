@@ -1,14 +1,9 @@
-<div>
-    <!-- Breadcrumb & Header -->
-    <div class="header-section">
-        <div class="page-title">
-            <h2>All Employees</h2>
-        </div>
-        <div class="breadcrumbs">
-            <mat-icon class="home-icon">home</mat-icon>
-            <span> > Employees > All Employees</span>
-        </div>
-    </div>
+<div class="page-wrapper">
+    <!-- Reusable Page Header -->
+    <app-page-header title="All Employees"
+                     [breadcrumbs]="['Home', 'Employees', 'All Employees']"
+                     (onBack)="handleBack()">
+    </app-page-header>
     <!-- Toolbar Section -->
     <div class="table-card">
         <div class="table-toolbar">
@@ -33,109 +28,105 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <div class="table-responsive">
-            <table mat-table [dataSource]="dataSource" class="employee-table">
+        <!-- Virtual Scroll Table -->
+        <div class="table-container">
+            <!-- Debug info -->
+            <div style="padding: 8px; background: #f0f0f0; font-size: 12px;">
+                Total Employees: {{ employees.length }}
+            </div>
+            
+            <!-- Table Header -->
+            <div class="table-header">
+                <div class="header-cell checkbox-col">
+                    <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </div>
+                <div class="header-cell name-col">Name</div>
+                <div class="header-cell">Role</div>
+                <div class="header-cell">Department</div>
+                <div class="header-cell">Mobile</div>
+                <div class="header-cell">Joining Date</div>
+                <div class="header-cell email-col">Email</div>
+                <div class="header-cell">Gender</div>
+                <div class="header-cell address-col">Address</div>
+            </div>
 
-                <!-- Checkbox Column -->
-                <ng-container matColumnDef="select">
-                    <th mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+            <!-- Virtual Scroll Viewport -->
+            <cdk-virtual-scroll-viewport 
+                [itemSize]="itemSize"
+                [minBufferPx]="200"
+                [maxBufferPx]="400"
+                class="table-viewport"
+                (scrolledIndexChange)="onScrollIndexChange($event)">
+                
+                <!-- Empty State -->
+                <div *ngIf="employees.length === 0 && !isLoadingMore" class="empty-state">
+                    <p>No employees found</p>
+                </div>
+                
+                <div *cdkVirtualFor="let employee of employees; trackBy: trackByEmployeeId" 
+                     class="table-row"
+                     [routerLink]="['/home/hrms-core/employees/employee-edit', employee._id]">
+                    
+                    <div class="table-cell checkbox-col">
+                        <mat-checkbox 
+                            (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(employee) : null" 
+                            [checked]="selection.isSelected(employee)">
                         </mat-checkbox>
-                    </th>
-                    <td mat-cell *matCellDef="let row">
-                        <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
-                        </mat-checkbox>
-                    </td>
-                </ng-container>
-
-                <!-- Name Column -->
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef> Name </th>
-                    <td mat-cell *matCellDef="let element">
+                    </div>
+                    
+                    <div class="table-cell name-col">
                         <div class="name-cell">
-                            <img [src]="element.avatar" alt="avatar" class="avatar">
-                            <span>{{element.name}}</span>
+                            <img [src]="employee.avatar || 'assets/default-avatar.png'" 
+                                 (error)="$event.target.src='assets/default-avatar.png'" 
+                                 alt="avatar" 
+                                 class="avatar">
+                            <span>{{employee.name}}</span>
                         </div>
-                    </td>
-                </ng-container>
-
-                <!-- Role Column -->
-                <ng-container matColumnDef="role">
-                    <th mat-header-cell *matHeaderCellDef> Role </th>
-                    <td mat-cell *matCellDef="let element"> {{element.role}} </td>
-                </ng-container>
-
-                <!-- Department Column -->
-                <ng-container matColumnDef="department">
-                    <th mat-header-cell *matHeaderCellDef> Department </th>
-                    <td mat-cell *matCellDef="let element"> {{element.department}} </td>
-                </ng-container>
-
-                <!-- Mobile Column -->
-                <ng-container matColumnDef="mobile">
-                    <th mat-header-cell *matHeaderCellDef> Mobile </th>
-                    <td mat-cell *matCellDef="let element">
+                    </div>
+                    
+                    <div class="table-cell">{{employee.role}}</div>
+                    
+                    <div class="table-cell">{{employee.department}}</div>
+                    
+                    <div class="table-cell">
                         <div class="icon-text">
                             <mat-icon class="icon-phone">phone</mat-icon>
-                            {{element.mobile}}
+                            {{employee.mobile}}
                         </div>
-                    </td>
-                </ng-container>
-
-                <!-- Joining Date Column -->
-                <ng-container matColumnDef="joiningDate">
-                    <th mat-header-cell *matHeaderCellDef> Joining Date </th>
-                    <td mat-cell *matCellDef="let element">
+                    </div>
+                    
+                    <div class="table-cell">
                         <div class="icon-text">
                             <mat-icon class="icon-date">calendar_today</mat-icon>
-                            {{element.joiningDate | date:'MM/dd/yyyy'}}
+                            {{employee.joiningDate | date:'MM/dd/yyyy'}}
                         </div>
-                    </td>
-                </ng-container>
-
-                <!-- Email Column -->
-                <ng-container matColumnDef="email">
-                    <th mat-header-cell *matHeaderCellDef> Email </th>
-                    <td mat-cell *matCellDef="let element">
+                    </div>
+                    
+                    <div class="table-cell email-col">
                         <div class="icon-text">
                             <mat-icon class="icon-email">email</mat-icon>
-                            <span class="email-text">{{element.email}}</span>
+                            <span class="email-text">{{employee.email}}</span>
                         </div>
-                    </td>
-                </ng-container>
-
-                <!-- Gender Column -->
-                <ng-container matColumnDef="gender">
-                    <th mat-header-cell *matHeaderCellDef> Gender </th>
-                    <td mat-cell *matCellDef="let element">
-                        <span class="gender-badge" [ngClass]="element.gender.toLowerCase()">
-                            {{element.gender}}
+                    </div>
+                    
+                    <div class="table-cell">
+                        <span class="gender-badge" [ngClass]="employee.gender.toLowerCase()">
+                            {{employee.gender}}
                         </span>
-                    </td>
-                </ng-container>
-
-                <!-- Address Column -->
-                <ng-container matColumnDef="address">
-                    <th mat-header-cell *matHeaderCellDef> Address </th>
-                    <td mat-cell *matCellDef="let element">
+                    </div>
+                    
+                    <div class="table-cell address-col">
                         <div class="icon-text">
                             <mat-icon class="icon-loc">location_on</mat-icon>
-                            <span class="address-text">{{element.address}}</span>
+                            <span class="address-text">{{employee.address}}</span>
                         </div>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                    [routerLink]="['/home/hrms-core/employees/employee-edit', row._id]" style="cursor: pointer;">
-                </tr>
-            </table>
-
-            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
         </div>
     </div>
 </div>

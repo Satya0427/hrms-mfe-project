@@ -2,16 +2,20 @@ import { Component, input, model, output } from '@angular/core';
 import { MATERIAL } from '../../material/materials';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 // Interface for the tabs (Exported so parent components can use it)
 export interface HeaderTab {
   label: string;
-  id: string | number;
+  id?: string | number;
+  route?: string;
+  subFeatureKey?: string;
+  key: string;
 }
 
 @Component({
   selector: 'app-page-header',
-  imports: [MATERIAL, CommonModule, FormsModule],
+  imports: [MATERIAL, CommonModule, FormsModule, RouterModule],
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
 })
@@ -34,7 +38,13 @@ export class PageHeader {
   onBack = output<void>();
 
   // Helper method to switch tabs
-  selectTab(id: string | number) {
+  selectTab(tab: HeaderTab) {
+    const id = tab.key || tab.route || null;
     this.activeTab.set(id);
+  }
+
+  // Helper to get tab identifier
+  getTabId(tab: HeaderTab): string | number {
+    return tab.key || tab.route || '';
   }
 }

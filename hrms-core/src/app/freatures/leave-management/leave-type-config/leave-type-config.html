@@ -1,13 +1,36 @@
-<app-page-header title="Employee Profile" [breadcrumbs]="['Home', 'Employees', 'Profile']" [tabs]="pageTabs"
-    [(activeTab)]="currentTab">
+<!-- Reusable Page Header -->
+<app-page-header title="Leave Types" [breadcrumbs]="['Home', 'Leave & Attendance', 'Leave Types']" [tabs]="pageTabs"
+    [(activeTab)]="currentTab" (onBack)="handleBack()">
 </app-page-header>
-<div class="page-container">
-    <!-- Content Card -->
-    <mat-card class="content-card">
+
+<div class="page-wrapper">
+    <!-- Toolbar Section -->
+    <div class="table-card">
+        <div class="table-toolbar">
+            <div class="search-box">
+                <mat-icon>search</mat-icon>
+                <input type="text" placeholder="Search" (keyup)="applyFilter($event)">
+            </div>
+
+            <div class="actions">
+                <button mat-icon-button color="primary" class="action-btn">
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+                <button mat-icon-button class="add-btn" (click)="openDialog()">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                <button mat-icon-button class="action-btn">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <button mat-icon-button class="action-btn">
+                    <mat-icon>download</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Table Container -->
         <div class="table-container">
-
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-
                 <!-- Color Column -->
                 <ng-container matColumnDef="color">
                     <th mat-header-cell *matHeaderCellDef style="width: 60px;"> Color </th>
@@ -89,5 +112,5 @@
             </table>
 
         </div>
-    </mat-card>
+    </div>
 </div>

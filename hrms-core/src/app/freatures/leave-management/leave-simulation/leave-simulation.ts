@@ -1,7 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
 import { MATERIAL } from '../../../shared/material/materials';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { CommonService } from '../../../core/services/common.service';
 
 interface LedgerItem {
   month: string;
@@ -15,16 +18,34 @@ interface LedgerItem {
 
 @Component({
   selector: 'app-leave-simulation',
-  imports: [MATERIAL, CommonModule, FormsModule],
+  imports: [MATERIAL, CommonModule, FormsModule, PageHeader],
   templateUrl: './leave-simulation.html',
   styleUrl: './leave-simulation.scss',
 })
-export class LeaveSimulation {
+export class LeaveSimulation implements OnInit {
+  private _commonService = inject(CommonService);
+  private _location = inject(Location);
+
+  currentTab: string | number | null = null;
+  pageTabs: any[] = [];
   simulationRan = signal(false);
   displayedColumns = ['month', 'opening', 'credit', 'debit', 'expiry', 'closing'];
+  dataSource = new MatTableDataSource<LedgerItem>([]);
 
   // Mock Data
   ledgerData = signal<LedgerItem[]>([]);
+  
+  // Simulation inputs
+  selectedEmployee = 'emp1';
+  selectedPolicy = 'pol1';
+  selectedLeaveType = 'CL';
+
+  async ngOnInit() {
+    this.pageTabs = await this._commonService.getTabs('LEAVE_ADMIN');
+    if (this.pageTabs.length > 0) {
+      this.currentTab = this.pageTabs[4].key; // Simulation tab
+    }
+  }
 
   runSimulation() {
     this.simulationRan.set(true);
@@ -51,5 +72,10 @@ export class LeaveSimulation {
     });
 
     this.ledgerData.set(data);
+    this.dataSource.data = data;
+  }
+
+  handleBack() {
+    this._location.back();
   }
 }

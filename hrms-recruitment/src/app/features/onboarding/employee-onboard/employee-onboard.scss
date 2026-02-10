@@ -6,7 +6,7 @@ $border-color: #e2e8f0;
 $text-dark: #1e293b;
 
 .page-container {
-  padding: 24px;
+  padding: 12px;
   background-color: $bg-light;
   min-height: 100vh;
 
@@ -31,7 +31,7 @@ $text-dark: #1e293b;
   .form-section-card {
     background: white;
     border-radius: 12px;
-    padding: 24px;
+    padding: 12px;
     margin-bottom: 24px;
     border: 1px solid $border-color;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);

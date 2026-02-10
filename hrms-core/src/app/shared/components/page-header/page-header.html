@@ -23,13 +23,30 @@
     <!-- Tabs (Designed to look integrated with the white card) -->
     @if (tabs().length > 0) {
     <div class="tabs-line">
-        @for (tab of tabs(); track tab.id) {
-        <button class="tab-btn" [class.active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+        @for (tab of tabs(); track getTabId(tab)) {
+        @if (tab.route) {
+        <!-- Tab with routing -->
+        <a class="tab-btn" 
+           [class.active]="activeTab() === getTabId(tab)" 
+           [routerLink]="tab.route"
+           routerLinkActive="active"
+           (click)="selectTab(tab)">
             {{ tab.label }}
-            @if(activeTab() === tab.id) {
+            @if(activeTab() === getTabId(tab)) {
+            <div class="active-indicator" layoutId="indicator"></div>
+            }
+        </a>
+        } @else {
+        <!-- Tab without routing (legacy support) -->
+        <button class="tab-btn" 
+                [class.active]="activeTab() === getTabId(tab)" 
+                (click)="selectTab(tab)">
+            {{ tab.label }}
+            @if(activeTab() === getTabId(tab)) {
             <div class="active-indicator" layoutId="indicator"></div>
             }
         </button>
+        }
         }
     </div>
     }

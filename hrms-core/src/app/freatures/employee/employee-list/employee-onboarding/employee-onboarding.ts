@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL } from '../../../../shared/material/materials';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 import { CommonService } from '../../../../core/services/common.service';
@@ -10,10 +10,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { DocumentCollection } from '../document-collection/document-collection';
 import { Compensation } from '../compensation/compensation';
 import { environment } from '../../../../../environments/environment.dev';
+import { PageHeader, HeaderTab } from '../../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-employee-onboarding',
-  imports: [MATERIAL, FormsModule, CommonModule, ReactiveFormsModule, RouterModule, DocumentCollection, Compensation],
+  imports: [MATERIAL, FormsModule, CommonModule, ReactiveFormsModule, RouterModule, DocumentCollection, Compensation, PageHeader],
   templateUrl: './employee-onboarding.html',
   styleUrl: './employee-onboarding.scss',
 })
@@ -22,6 +23,11 @@ export class EmployeeOnboarding implements OnInit {
   private _commonService = inject(CommonService);
   private _httpClient = inject(ApiClient);
   private _route = inject(ActivatedRoute);
+  private _location = inject(Location);
+
+  // Page header tabs 
+
+  currentTab: string | number | null = null;
   // Enum Options based on your Schema
   // Dynamic Lookup Options
   roles = ['EMPLOYEE', 'MANAGER', 'HR_ADMIN', 'SUPER_ADMIN'];
@@ -78,10 +84,15 @@ export class EmployeeOnboarding implements OnInit {
   destroy$ = new Subject<void>();
   previewUrl = signal<string | null>(null);
   id!: string;
-  constructor() {
 
-  }
-  ngOnInit(): void {
+  pageTabs: any[] = []
+
+  async ngOnInit(): Promise<void> {
+    this.pageTabs = await this._commonService.getTabs('EMPLOYEE_ONBOARDING')
+    // Set the first tab as active by default
+    if (this.pageTabs.length > 0) {
+      this.currentTab = this.pageTabs[0].key
+    }
     this.id = this._route.snapshot.paramMap.get('id')!;
     this.loadLookupData();
     this.loadDepartments();
@@ -342,6 +353,10 @@ export class EmployeeOnboarding implements OnInit {
         console.error('Error fetching employees:', err);
       }
     })
+  }
+
+  handleBack() {
+    this._location.back();
   }
 
 }

@@ -1,15 +1,28 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../shared/material/materials';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeader, HeaderTab } from '../../../shared/components/page-header/page-header';
+import { CommonService } from '../../../core/services/common.service';
+import { ApiClient } from '../../../core/services/api-client.service';
+import { ToastrService } from 'ngx-toastr';
+import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
 
 @Component({
   selector: 'app-weekly-off-setup',
-  imports: [MATERIAL, CommonModule, FormsModule],
+  imports: [MATERIAL, CommonModule, FormsModule, PageHeader],
   templateUrl: './weekly-off-setup.html',
   styleUrl: './weekly-off-setup.scss',
 })
-export class WeeklyOffSetup {
+export class WeeklyOffSetup implements OnInit {
+  private _commonService = inject(CommonService);
+  private _location = inject(Location);
+  private _httpClient = inject(ApiClient);
+  private _toastr = inject(ToastrService);
+
+  currentTab: string | number | null = null;
+  pageTabs: any[] = [];
+
   policyName = '';
   effectiveDate = new Date();
   weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -17,6 +30,13 @@ export class WeeklyOffSetup {
   // Data Structure: { weekNumber: { dayName: boolean } }
   // Initialize grid where everything is working (false)
   matrix = signal<any>(this.initMatrix());
+
+  async ngOnInit() {
+    this.pageTabs = await this._commonService.getTabs('LEAVE_ADMIN');
+    if (this.pageTabs.length > 0) {
+      this.currentTab = this.pageTabs[3].key; // Weekly Off tab
+    }
+  }
 
   initMatrix() {
     const m: any = {};
@@ -49,13 +69,23 @@ export class WeeklyOffSetup {
     });
   }
 
-  savePolicy() {
+  saveWeekOffs() {
     const payload = {
       name: this.policyName,
       effectiveFrom: this.effectiveDate.toISOString(),
       offDays: this.matrix()
     };
-    console.log('Weekly Off Payload:', JSON.stringify(payload, null, 2));
-    alert('Policy Saved! Check Console.');
+    this._httpClient.post(API_ENDPOINTS.leave.create_weekly_off, payload).subscribe({
+      next: () => {
+        this._toastr.success('Weekly Off Policy saved successfully!');
+      },
+      error: (err: any) => {
+        console.error('Error saving policy:', err);
+      }
+    });
+  }
+
+  handleBack() {
+    this._location.back();
   }
 }

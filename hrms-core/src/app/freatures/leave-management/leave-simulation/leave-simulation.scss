@@ -1,23 +1,26 @@
 $primary: #3f51b5;
 $bg: #f3f4f6;
 
-.page-container {
-    padding: 24px;
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
     background: $bg;
-    min-height: 100vh;
 }
 
-.page-header {
-    margin-bottom: 24px;
+.content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
-    .title {
-        margin: 0;
-        font-size: 24px;
-        color: #1e293b;
-    }
-
+.intro-section {
     .subtitle {
-        margin: 4px 0 0;
+        margin: 0;
         color: #64748b;
         font-size: 14px;
     }
@@ -30,13 +33,14 @@ $bg: #f3f4f6;
 }
 
 .control-panel {
-    padding: 24px;
+    padding: 20px;
     border-radius: 12px;
     height: fit-content;
 
     h3 {
         margin-top: 0;
         color: #333;
+        font-size: 16px;
     }
 
     .form-stack {
@@ -50,6 +54,10 @@ $bg: #f3f4f6;
         height: 48px;
         font-size: 15px;
         margin-top: 8px;
+        
+        mat-icon {
+            margin-right: 8px;
+        }
     }
 }
 
@@ -108,24 +116,33 @@ $bg: #f3f4f6;
     h4 {
         margin: 0 0 16px 0;
         color: #333;
+        font-size: 16px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
     }
 }
 
 // Table Colors
 .text-green {
     color: #16a34a;
+    font-weight: 600;
 }
 
 .text-red {
     color: #ef4444;
+    font-weight: 600;
 }
 
 .text-orange {
     color: #f59e0b;
+    font-weight: 600;
 }
 
 .bold-cell {
     font-weight: 700;
+    color: $primary;
 }
 
 .month-cell {
@@ -150,5 +167,10 @@ $bg: #f3f4f6;
         width: 48px;
         margin-bottom: 12px;
         opacity: 0.5;
+    }
+
+    p {
+        font-size: 14px;
+        margin: 0;
     }
 }

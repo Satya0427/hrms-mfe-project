@@ -16,10 +16,10 @@ $text-gray: #64748b; // Added based on new salary-row styles
 
 // --- 0. SETTINGS CARD ---
 .settings-card {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     border-radius: $border-radius;
     background: white;
-    padding: 24px;
+    padding: 12px;
     border-left: 5px solid $primary;
 
     .settings-grid {
@@ -42,7 +42,7 @@ $text-gray: #64748b; // Added based on new salary-row styles
     border-radius: $border-radius;
     background: linear-gradient(135deg, $primary 0%, darken($primary, 15%) 100%);
     color: white;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 
     .ctc-content {
         padding: 32px;

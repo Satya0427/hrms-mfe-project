@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { API_ENDPOINTS } from '../config/api-endpoints';
 import { ApiClient } from '../services/api-client.service';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { TOP_NAV_TABS_CONFIG } from './tabs.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,7 @@ export class CommonService {
       return [];
     }
   }
+
   async getBulkLookupData(categories: string[]) {
     try {
       const payload = {
@@ -48,6 +50,12 @@ export class CommonService {
       console.error('Error fetching lookup data:', error);
       return [];
     }
+  }
+
+  async getTabs(subFeatureKey: string) {
+    return TOP_NAV_TABS_CONFIG.filter(
+      (tab: any) => tab.subFeatureKey === subFeatureKey
+    );
   }
 }
 

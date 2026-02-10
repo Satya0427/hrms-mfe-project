@@ -38,9 +38,27 @@
 
       <mat-menu #subMenu="matMenu" class="glass-menu" xPosition="after">
         @for (sub of item.subItems; track sub.label) {
+        @if (sub.subFeatures?.length) {
+        <!-- Sub-item with sub-features -->
+        <button mat-menu-item [matMenuTriggerFor]="subFeatureMenu">
+          {{ sub.label }}
+          <mat-icon class="menu-chevron">chevron_right</mat-icon>
+        </button>
+        <mat-menu #subFeatureMenu="matMenu" class="glass-menu" xPosition="after">
+          @for (subFeature of sub.subFeatures; track subFeature.label) {
+          <button mat-menu-item [routerLink]="subFeature.route" 
+                  (click)="activateSubFeature(item, sub, subFeature)">
+            {{ subFeature.label }}
+          </button>
+          }
+        </mat-menu>
+        }
+        @else {
+        <!-- Regular sub-item -->
         <button mat-menu-item [routerLink]="sub.route" (click)="activateSubItem(item, sub)">
           {{ sub.label }}
         </button>
+        }
         }
       </mat-menu>
       }
@@ -65,11 +83,45 @@
       <div class="sub-menu-container" [@expandCollapse]="item.expanded ? 'expanded' : 'collapsed'">
         <div class="tree-line"></div>
         @for (sub of item.subItems; track sub.label) {
-        <a class="sub-item" [routerLink]="sub.route" [class.active-sub]="sub.active" routerLinkActive="active-sub"
-          (click)="activateSubItem(item, sub)">
-          <span class="tree-curve"></span>
-          <span class="sub-label">{{ sub.label }}</span>
-        </a>
+        <div class="sub-item-wrapper">
+          <!-- Sub-item with or without sub-features -->
+          @if (sub.subFeatures?.length) {
+          <!-- Sub-item with sub-features (clickable to expand) -->
+          <a class="sub-item" [class.active-sub]="sub.active" 
+             [class.has-children]="sub.subFeatures?.length"
+             (click)="toggleSubFeature(item, sub); $event.preventDefault()">
+            <span class="tree-curve"></span>
+            <span class="sub-label">{{ sub.label }}</span>
+            <mat-icon class="sub-chevron" [class.rotated]="sub.expanded">
+              chevron_right
+            </mat-icon>
+          </a>
+          
+          <!-- Sub-features (third level) -->
+          @if (sub.expanded) {
+          <div class="sub-feature-container" [@expandCollapse]="sub.expanded ? 'expanded' : 'collapsed'">
+            <div class="sub-tree-line"></div>
+            @for (subFeature of sub.subFeatures; track subFeature.label) {
+            <a class="sub-feature-item" [routerLink]="subFeature.route" 
+               [class.active-sub-feature]="subFeature.active" 
+               routerLinkActive="active-sub-feature"
+               (click)="activateSubFeature(item, sub, subFeature)">
+              <span class="sub-tree-curve"></span>
+              <span class="sub-feature-label">{{ subFeature.label }}</span>
+            </a>
+            }
+          </div>
+          }
+          }
+          @else {
+          <!-- Regular sub-item without sub-features -->
+          <a class="sub-item" [routerLink]="sub.route" [class.active-sub]="sub.active" routerLinkActive="active-sub"
+            (click)="activateSubItem(item, sub)">
+            <span class="tree-curve"></span>
+            <span class="sub-label">{{ sub.label }}</span>
+          </a>
+          }
+        </div>
         }
       </div>
       }

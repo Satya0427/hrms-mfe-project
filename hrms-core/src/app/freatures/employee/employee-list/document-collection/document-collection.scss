@@ -5,7 +5,7 @@ $bg-color: #f3f4f6;
 $border-color: #e2e8f0;
 
 .page-container {
-    padding: 20px;
+    padding: 12px;
     background-color: $bg-color;
     // min-height: 100%;
 }
@@ -14,7 +14,7 @@ $border-color: #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     h3 {
         margin: 0;

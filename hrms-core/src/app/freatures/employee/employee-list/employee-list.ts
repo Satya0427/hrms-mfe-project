@@ -1,9 +1,9 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { MATERIAL } from '../../../shared/material/materials';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource } from '@angular/material/table';
+import { Location } from '@angular/common';
+import { PageHeader, HeaderTab } from '../../../shared/components/page-header/page-header';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { DynamicFieldsDialog, FieldConfig } from '../../../shared/components/dynamic-fields-dialog/dynamic-fields-dialog';
 import { Validators } from '@angular/forms';
@@ -13,12 +13,13 @@ import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
 import { CommonService } from '../../../core/services/common.service';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../../../environments/environment.dev';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 
 @Component({
   selector: 'app-employee-list',
-  imports: [MATERIAL, CommonModule, RouterModule],
+  imports: [MATERIAL, CommonModule, RouterModule, PageHeader, ScrollingModule],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
 })
@@ -26,184 +27,199 @@ export class EmployeeList {
   private dialog = inject(MatDialog);
   private _httpClient = inject(ApiClient);
   private _commonService = inject(CommonService);
+  private _location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
-  fieldsConfig: FieldConfig[] = [
-    // ================= PROFILE DETAILS =================
-    { controlName: 'profile_heading', label: 'Profile Details', type: 'heading' },
-    {
-      controlName: 'employee_code',
-      label: 'Employee Code',
-      type: 'text',
-      icon: 'badge',
-      width: 'half',
-      disabled: true
-    },
-    {
-      controlName: 'joining_date',
-      label: 'Joining Date*',
-      type: 'date',
-      icon: 'calendar_today',
-      width: 'half',
-      validators: [Validators.required]
-    },
-    {
-      controlName: 'confirmation_date',
-      label: 'Confirmation Date',
-      type: 'date',
-      icon: 'event_available',
-      width: 'half'
-    },
-    {
-      controlName: 'employment_type',
-      label: 'Employment Type',
-      type: 'select',
-      options: [],
-      width: 'half'
-    },
-    {
-      controlName: 'work_location',
-      label: 'Work Location',
-      type: 'text',
-      icon: 'location_city',
-      width: 'half'
-    },
-    {
-      controlName: 'work_mode',
-      label: 'Work Mode',
-      type: 'select',
-      options: [],
-      width: 'half'
-    },
-    {
-      controlName: 'status',
-      label: 'Employment Status',
-      type: 'select',
-      options: [],
-      width: 'half'
-    },
+  // Page header tabs (for the reusable header)
+  // pageTabs: HeaderTab[] = [
+  //   { id: 'all', label: 'All' },
+  //   { id: 'active', label: 'Active' },
+  //   { id: 'inactive', label: 'Inactive' }
+  // ];
 
-    // ================= PERSONAL DETAILS =================
-    { controlName: 'personal_heading', label: 'Personal Details', type: 'heading' },
-    {
-      controlName: 'dob',
-      label: 'Date of Birth*',
-      type: 'date',
-      icon: 'cake',
-      width: 'half',
-      validators: [Validators.required]
-    },
-    {
-      controlName: 'gender',
-      label: 'Gender*',
-      type: 'select',
-      options: [],
-      width: 'half',
-      validators: [Validators.required]
-    },
-    {
-      controlName: 'marital_status',
-      label: 'Marital Status',
-      type: 'select',
-      options: ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED'],
-      width: 'half'
-    },
-    {
-      controlName: 'blood_group',
-      label: 'Blood Group',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'nationality',
-      label: 'Nationality',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'personal_email',
-      label: 'Personal Email*',
-      type: 'email',
-      icon: 'email',
-      width: 'half',
-      validators: [Validators.required, Validators.email]
-    },
+  // Two-way bound active tab
+  currentTab: string | number | null = 'all';
 
-    // ================= JOB DETAILS =================
-    { controlName: 'job_heading', label: 'Job Details', type: 'heading' },
-    {
-      controlName: 'department_id',
-      label: 'Department',
-      type: 'text', // Later can be select
-      width: 'half'
-    },
-    {
-      controlName: 'designation_id',
-      label: 'Designation',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'manager_id',
-      label: 'Manager',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'grade',
-      label: 'Grade',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'cost_center',
-      label: 'Cost Center',
-      type: 'text',
-      width: 'half'
-    },
+  fieldsConfig: FieldConfig[] =[]
+  //  [
+  //   // ================= PROFILE DETAILS =================
+  //   { controlName: 'profile_heading', label: 'Profile Details', type: 'heading' },
+  //   {
+  //     controlName: 'employee_code',
+  //     label: 'Employee Code',
+  //     type: 'text',
+  //     icon: 'badge',
+  //     width: 'half',
+  //     disabled: true
+  //   },
+  //   {
+  //     controlName: 'joining_date',
+  //     label: 'Joining Date*',
+  //     type: 'date',
+  //     icon: 'calendar_today',
+  //     width: 'half',
+  //     validators: [Validators.required]
+  //   },
+  //   {
+  //     controlName: 'confirmation_date',
+  //     label: 'Confirmation Date',
+  //     type: 'date',
+  //     icon: 'event_available',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'employment_type',
+  //     label: 'Employment Type',
+  //     type: 'select',
+  //     options: [],
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'work_location',
+  //     label: 'Work Location',
+  //     type: 'text',
+  //     icon: 'location_city',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'work_mode',
+  //     label: 'Work Mode',
+  //     type: 'select',
+  //     options: [],
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'status',
+  //     label: 'Employment Status',
+  //     type: 'select',
+  //     options: [],
+  //     width: 'half'
+  //   },
 
-    // ================= EMERGENCY DETAILS =================
-    { controlName: 'emergency_heading', label: 'Emergency Contact', type: 'heading' },
-    {
-      controlName: 'emergency_name',
-      label: 'Contact Name',
-      type: 'text',
-      icon: 'person',
-      width: 'half'
-    },
-    {
-      controlName: 'emergency_relation',
-      label: 'Relation',
-      type: 'text',
-      width: 'half'
-    },
-    {
-      controlName: 'emergency_phone',
-      label: 'Phone Number',
-      type: 'text',
-      icon: 'phone',
-      width: 'half'
-    },
-    {
-      controlName: 'emergency_address',
-      label: 'Address',
-      type: 'textarea',
-      width: 'full'
-    }
-  ];
+  //   // ================= PERSONAL DETAILS =================
+  //   { controlName: 'personal_heading', label: 'Personal Details', type: 'heading' },
+  //   {
+  //     controlName: 'dob',
+  //     label: 'Date of Birth*',
+  //     type: 'date',
+  //     icon: 'cake',
+  //     width: 'half',
+  //     validators: [Validators.required]
+  //   },
+  //   {
+  //     controlName: 'gender',
+  //     label: 'Gender*',
+  //     type: 'select',
+  //     options: [],
+  //     width: 'half',
+  //     validators: [Validators.required]
+  //   },
+  //   {
+  //     controlName: 'marital_status',
+  //     label: 'Marital Status',
+  //     type: 'select',
+  //     options: ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED'],
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'blood_group',
+  //     label: 'Blood Group',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'nationality',
+  //     label: 'Nationality',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'personal_email',
+  //     label: 'Personal Email*',
+  //     type: 'email',
+  //     icon: 'email',
+  //     width: 'half',
+  //     validators: [Validators.required, Validators.email]
+  //   },
+
+  //   // ================= JOB DETAILS =================
+  //   { controlName: 'job_heading', label: 'Job Details', type: 'heading' },
+  //   {
+  //     controlName: 'department_id',
+  //     label: 'Department',
+  //     type: 'text', // Later can be select
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'designation_id',
+  //     label: 'Designation',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'manager_id',
+  //     label: 'Manager',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'grade',
+  //     label: 'Grade',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'cost_center',
+  //     label: 'Cost Center',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+
+  //   // ================= EMERGENCY DETAILS =================
+  //   { controlName: 'emergency_heading', label: 'Emergency Contact', type: 'heading' },
+  //   {
+  //     controlName: 'emergency_name',
+  //     label: 'Contact Name',
+  //     type: 'text',
+  //     icon: 'person',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'emergency_relation',
+  //     label: 'Relation',
+  //     type: 'text',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'emergency_phone',
+  //     label: 'Phone Number',
+  //     type: 'text',
+  //     icon: 'phone',
+  //     width: 'half'
+  //   },
+  //   {
+  //     controlName: 'emergency_address',
+  //     label: 'Address',
+  //     type: 'textarea',
+  //     width: 'full'
+  //   }
+  // ];
 
 
   displayedColumns: string[] = ['select', 'name', 'role', 'department', 'mobile', 'joiningDate', 'email', 'gender', 'address'];
-  dataSource = new MatTableDataSource<any>([]);
+  employees: any[] = [];
   selection = new SelectionModel<any>(true, []);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   destroy$ = new Subject<void>();
 
+  // Virtual scroll properties
+  itemSize = 60; // Height of each row in pixels
+  currentPage = 1;
+  pageSize = 20;
+  isLoadingMore = false;
+  hasMoreData = true;
+  totalItems = 0;
+
   ngOnInit() {
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-      return data.name.toLowerCase().includes(filter) ||
-        data.email.toLowerCase().includes(filter) ||
-        data.role.toLowerCase().includes(filter);
-    };
     this.loadLookupData();
     this.getEmployee();
   }
@@ -232,15 +248,10 @@ export class EmployeeList {
     }
   }
 
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
-
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.employees.length;
     return numSelected === numRows;
   }
 
@@ -250,12 +261,16 @@ export class EmployeeList {
       this.selection.clear();
       return;
     }
-    this.selection.select(...this.dataSource.data);
+    this.selection.select(...this.employees);
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    // Reset and fetch with search
+    this.currentPage = 1;
+    this.employees = [];
+    this.hasMoreData = true;
+    this.getEmployee(1, filterValue);
   }
 
   // openEmployeePopup() {
@@ -279,15 +294,26 @@ export class EmployeeList {
   //   });
   // }
 
-  getEmployee() {
+  getEmployee(page: number = 1, searchKey: string = '') {
+    if (this.isLoadingMore || !this.hasMoreData) return;
+
+    this.isLoadingMore = true;
     const payload = {
-      page: 1,
-      limit: 10,
-      search_key: ''
+      page: page,
+      limit: this.pageSize,
+      search_key: searchKey
     }
+    
+    console.log('Fetching employees with payload:', payload);
+    
     this._httpClient.post(API_ENDPOINTS.employee.get, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
+        console.log('Full API Response:', res);
+        this.isLoadingMore = false;
+        
         if (res.sts === 200 && res.data?.data) {
+          console.log('Raw employee data:', res.data.data);
+          
           const mappedData = res.data.data.map((emp: any) => ({
             _id: emp._id,
             name: emp.personal_details ? `${emp.personal_details.firstName || ''} ${emp.personal_details.lastName || ''}`.trim() : 'N/A',
@@ -301,14 +327,66 @@ export class EmployeeList {
             avatar: emp.profileImageUrl ? `${environment.apiUrl}${emp.profileImageUrl}` :
               `https://ui-avatars.com/api/?name=${encodeURIComponent(`${emp.personal_details?.firstName || 'Emp'}`)}&background=random`
           }));
-          this.dataSource.data = mappedData;
-          console.log('Employees loaded:', this.dataSource.data);
+          
+          console.log('Mapped employee data:', mappedData);
+          
+          // Append new data to existing data
+          if (page === 1) {
+            this.employees = mappedData;
+          } else {
+            this.employees = [...this.employees, ...mappedData];
+          }
+          
+          console.log('Total employees after assignment:', this.employees.length);
+          console.log('Employees array:', this.employees);
+          
+          // Update pagination info
+          if (res.data.pagination) {
+            this.totalItems = res.data.pagination.total;
+          }
+          
+          // Check if there's more data
+          if (mappedData.length < this.pageSize || (res.data.pagination && page >= res.data.pagination.totalPages)) {
+            this.hasMoreData = false;
+          }
+          
+          // Manually trigger change detection
+          this.cdr.detectChanges();
+        } else {
+          console.warn('Invalid response structure or no data');
+          this.hasMoreData = false;
         }
       },
       error: (err) => {
         console.error('Error fetching employees:', err);
+        this.isLoadingMore = false;
+        this.hasMoreData = false;
       }
     })
+  }
+
+  onScrollIndexChange(index: number) {
+    // Load more when user scrolls near the end
+    const end = this.employees.length;
+    const threshold = end - 5; // Load more when 5 items from the end
+    
+    if (index >= threshold && !this.isLoadingMore && this.hasMoreData) {
+      this.currentPage++;
+      this.getEmployee(this.currentPage);
+    }
+  }
+
+  trackByEmployeeId(index: number, employee: any): string {
+    return employee._id;
+  }
+
+  handleBack() {
+    this._location.back();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }
