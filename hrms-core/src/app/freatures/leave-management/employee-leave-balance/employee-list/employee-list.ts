@@ -7,6 +7,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 import { environment } from '../../../../../environments/environment.dev';
 import { RouterLink } from "@angular/router";
+import { PageHeader } from "../../../../shared/components/page-header/page-header";
+import { CommonService } from '../../../../core/services/common.service';
 
 export interface Employee {
   _id: string;
@@ -23,19 +25,26 @@ export interface Employee {
 }
 @Component({
   selector: 'app-employee-list',
-  imports: [MATERIAL, CommonModule, FormsModule, RouterLink],
+  imports: [MATERIAL, CommonModule, FormsModule, RouterLink, PageHeader],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
 })
-export class EmployeeList {
+export class EmployeeList implements OnInit, OnDestroy {
   private _httpClient = inject(ApiClient);
   private destroy$ = new Subject<void>();
-
+  private _commonService = inject(CommonService);
   // Data
   employees = signal<Employee[]>([]);
   searchKey = '';
 
-  ngOnInit() {
+  currentTab: string | number | null = null;
+  pageTabs: any[] = [];
+
+  async ngOnInit() {
+    this.pageTabs = await this._commonService.getTabs('LEAVE_BALANCE');
+    if (this.pageTabs.length > 0) {
+      this.currentTab = this.pageTabs[4]?.key || null; // Leave Balance tab
+    }
     this.loadEmployees();
   }
 
@@ -45,7 +54,7 @@ export class EmployeeList {
       limit: 50,
       search_key: this.searchKey
     };
-    this._httpClient.post(API_ENDPOINTS.employee.get, payload).pipe(takeUntil(this.destroy$)).subscribe({
+    this._httpClient.post(API_ENDPOINTS.employee.get_employee_list, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
         if (res.sts === 200 && res.data?.data) {
           const mappedData: Employee[] = res.data.data.map((emp: any) => ({

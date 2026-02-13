@@ -9,6 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../core/services/common.service';
 import { MODULE_FEATURES } from './menus';
+import { Environment } from '../../../environments/environement';
 @Component({
   selector: 'app-side-nav',
   imports: [
@@ -43,9 +44,16 @@ export class SideNav implements OnInit {
   destroy$ = new Subject<void>()
 
   menuItems = signal<any[]>(MODULE_FEATURES);
-
-  ngOnInit(): void {
+  userDetails = signal<any>(null);
+  async ngOnInit(): Promise<void> {
     // this.getModuleList()
+    const userDetails = await this._commonService.getUserDetails();
+    if(userDetails) {
+      this.userDetails.set(userDetails);
+      this.userDetails.update(details => ({ ...details,profile_url: `${Environment.baseApiUrl}/common/get_image/${userDetails?.profile_image}` }));
+      console.log('User Details in SideNav:', this.userDetails());
+    }
+
   }
 
   async getModuleList() {
@@ -110,7 +118,7 @@ export class SideNav implements OnInit {
 
     this.menuItems.update(items =>
       items.map(item => {
-        if (item.label === clickedItem.label) {
+        if (item.key === clickedItem.key) {
           // Toggle expanded state for clicked item
           const newExpanded = !item.expanded;
           return {
@@ -135,13 +143,13 @@ export class SideNav implements OnInit {
 
     this.menuItems.update(items =>
       items.map(item => {
-        if (item.label === parent.label) {
+        if (item.key === parent.key) {
           return {
             ...item,
             expanded: true,
             active: true,
             subItems: item.subItems?.map((sub: any) => {
-              if (sub.label === subItem.label) {
+              if (sub.key === subItem.key) {
                 return {
                   ...sub,
                   expanded: !sub.expanded
@@ -162,15 +170,15 @@ export class SideNav implements OnInit {
   activateSubItem(parent: any, sub: any) {
     this.menuItems.update(items =>
       items.map(item => {
-        if (item.label === parent.label) {
+        if (item.key === parent.key) {
           return {
             ...item,
             expanded: true, // Keep parent expanded when subitem is clicked
             active: true,
             subItems: item.subItems?.map((s: any) => ({
               ...s,
-              active: s.label === sub.label,
-              expanded: s.label === sub.label ? s.expanded : false
+              active: s.key === sub.key,
+              expanded: s.key === sub.key ? s.expanded : false
             }))
           };
         } else {
@@ -192,20 +200,20 @@ export class SideNav implements OnInit {
   activateSubFeature(parent: any, subItem: any, subFeature: any) {
     this.menuItems.update(items =>
       items.map(item => {
-        if (item.label === parent.label) {
+        if (item.key === parent.key) {
           return {
             ...item,
             expanded: true,
             active: true,
             subItems: item.subItems?.map((sub: any) => {
-              if (sub.label === subItem.label) {
+              if (sub.key === subItem.key) {
                 return {
                   ...sub,
                   expanded: true,
                   active: true,
                   subFeatures: sub.subFeatures?.map((sf: any) => ({
                     ...sf,
-                    active: sf.label === subFeature.label
+                    active: sf.key === subFeature.key
                   }))
                 };
               }
@@ -253,7 +261,7 @@ export class SideNav implements OnInit {
       this.menuItems.update(items =>
         items.map(i => ({
           ...i,
-          active: i.label === item.label,
+          active: i.key === item.key,
           expanded: false
         }))
       );

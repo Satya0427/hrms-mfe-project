@@ -41,169 +41,6 @@ export class EmployeeList {
   currentTab: string | number | null = 'all';
 
   fieldsConfig: FieldConfig[] =[]
-  //  [
-  //   // ================= PROFILE DETAILS =================
-  //   { controlName: 'profile_heading', label: 'Profile Details', type: 'heading' },
-  //   {
-  //     controlName: 'employee_code',
-  //     label: 'Employee Code',
-  //     type: 'text',
-  //     icon: 'badge',
-  //     width: 'half',
-  //     disabled: true
-  //   },
-  //   {
-  //     controlName: 'joining_date',
-  //     label: 'Joining Date*',
-  //     type: 'date',
-  //     icon: 'calendar_today',
-  //     width: 'half',
-  //     validators: [Validators.required]
-  //   },
-  //   {
-  //     controlName: 'confirmation_date',
-  //     label: 'Confirmation Date',
-  //     type: 'date',
-  //     icon: 'event_available',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'employment_type',
-  //     label: 'Employment Type',
-  //     type: 'select',
-  //     options: [],
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'work_location',
-  //     label: 'Work Location',
-  //     type: 'text',
-  //     icon: 'location_city',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'work_mode',
-  //     label: 'Work Mode',
-  //     type: 'select',
-  //     options: [],
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'status',
-  //     label: 'Employment Status',
-  //     type: 'select',
-  //     options: [],
-  //     width: 'half'
-  //   },
-
-  //   // ================= PERSONAL DETAILS =================
-  //   { controlName: 'personal_heading', label: 'Personal Details', type: 'heading' },
-  //   {
-  //     controlName: 'dob',
-  //     label: 'Date of Birth*',
-  //     type: 'date',
-  //     icon: 'cake',
-  //     width: 'half',
-  //     validators: [Validators.required]
-  //   },
-  //   {
-  //     controlName: 'gender',
-  //     label: 'Gender*',
-  //     type: 'select',
-  //     options: [],
-  //     width: 'half',
-  //     validators: [Validators.required]
-  //   },
-  //   {
-  //     controlName: 'marital_status',
-  //     label: 'Marital Status',
-  //     type: 'select',
-  //     options: ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED'],
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'blood_group',
-  //     label: 'Blood Group',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'nationality',
-  //     label: 'Nationality',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'personal_email',
-  //     label: 'Personal Email*',
-  //     type: 'email',
-  //     icon: 'email',
-  //     width: 'half',
-  //     validators: [Validators.required, Validators.email]
-  //   },
-
-  //   // ================= JOB DETAILS =================
-  //   { controlName: 'job_heading', label: 'Job Details', type: 'heading' },
-  //   {
-  //     controlName: 'department_id',
-  //     label: 'Department',
-  //     type: 'text', // Later can be select
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'designation_id',
-  //     label: 'Designation',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'manager_id',
-  //     label: 'Manager',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'grade',
-  //     label: 'Grade',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'cost_center',
-  //     label: 'Cost Center',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-
-  //   // ================= EMERGENCY DETAILS =================
-  //   { controlName: 'emergency_heading', label: 'Emergency Contact', type: 'heading' },
-  //   {
-  //     controlName: 'emergency_name',
-  //     label: 'Contact Name',
-  //     type: 'text',
-  //     icon: 'person',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'emergency_relation',
-  //     label: 'Relation',
-  //     type: 'text',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'emergency_phone',
-  //     label: 'Phone Number',
-  //     type: 'text',
-  //     icon: 'phone',
-  //     width: 'half'
-  //   },
-  //   {
-  //     controlName: 'emergency_address',
-  //     label: 'Address',
-  //     type: 'textarea',
-  //     width: 'full'
-  //   }
-  // ];
 
 
   displayedColumns: string[] = ['select', 'name', 'role', 'department', 'mobile', 'joiningDate', 'email', 'gender', 'address'];
@@ -273,27 +110,6 @@ export class EmployeeList {
     this.getEmployee(1, filterValue);
   }
 
-  // openEmployeePopup() {
-  //   const dialogRef = this.dialog.open(DynamicFieldsDialog, {
-  //     width: '900px',
-  //     maxWidth: '90vw',
-  //     panelClass: 'dynamic-dialog-panel',
-  //     disableClose: true,
-  //     data: {
-  //       title: 'New Employee',
-  //       fields: this.fieldsConfig,
-  //       onSave: (result: any) => this.saveEmployee(result)
-  //     }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       // Handle post-success logic here if needed (e.g., refresh list)
-  //       this.loadEmployees();
-  //     }
-  //   });
-  // }
-
   getEmployee(page: number = 1, searchKey: string = '') {
     if (this.isLoadingMore || !this.hasMoreData) return;
 
@@ -306,7 +122,7 @@ export class EmployeeList {
     
     console.log('Fetching employees with payload:', payload);
     
-    this._httpClient.post(API_ENDPOINTS.employee.get, payload).pipe(takeUntil(this.destroy$)).subscribe({
+    this._httpClient.post(API_ENDPOINTS.employee.get_employee_list, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
         console.log('Full API Response:', res);
         this.isLoadingMore = false;

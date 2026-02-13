@@ -8,7 +8,7 @@
 
   <div class="profile-section">
     <div class="avatar">
-      <img src="https://i.pravatar.cc/150?img=11" alt="User">
+      <img [src]="userDetails()?.profile_url || 'https://i.pravatar.cc/150?img=11'" alt="User">
       <!-- <img src="../../../../public/image.png" alt="User"> -->
 
     </div>
@@ -16,7 +16,7 @@
     @if (!isCollapsed()) {
     <div class="profile-info fade-in">
       <span class="role">SUPER ADMIN</span>
-      <span class="name">Satya Manikanta</span>
+      <span class="name">{{ userDetails()?.name }}</span>
     </div>
     }
   </div>
@@ -26,7 +26,7 @@
     <span class="menu-label">MAIN</span>
     } -->
 
-    @for (item of menuItems(); track item.label; let i = $index) {
+    @for (item of menuItems(); track item.key; let i = $index) {
     <div class="menu-item-wrapper">
 
       <!-- MAIN MENU ITEM -->
@@ -37,7 +37,7 @@
       </button>
 
       <mat-menu #subMenu="matMenu" class="glass-menu" xPosition="after">
-        @for (sub of item.subItems; track sub.label) {
+        @for (sub of item.subItems; track sub.key) {
         @if (sub.subFeatures?.length) {
         <!-- Sub-item with sub-features -->
         <button mat-menu-item [matMenuTriggerFor]="subFeatureMenu">
@@ -45,7 +45,7 @@
           <mat-icon class="menu-chevron">chevron_right</mat-icon>
         </button>
         <mat-menu #subFeatureMenu="matMenu" class="glass-menu" xPosition="after">
-          @for (subFeature of sub.subFeatures; track subFeature.label) {
+          @for (subFeature of sub.subFeatures; track subFeature.key) {
           <button mat-menu-item [routerLink]="subFeature.route" 
                   (click)="activateSubFeature(item, sub, subFeature)">
             {{ subFeature.label }}
@@ -82,7 +82,7 @@
       @if (!isCollapsed() && item.subItems?.length) {
       <div class="sub-menu-container" [@expandCollapse]="item.expanded ? 'expanded' : 'collapsed'">
         <div class="tree-line"></div>
-        @for (sub of item.subItems; track sub.label) {
+        @for (sub of item.subItems; track sub.key) {
         <div class="sub-item-wrapper">
           <!-- Sub-item with or without sub-features -->
           @if (sub.subFeatures?.length) {
@@ -101,10 +101,9 @@
           @if (sub.expanded) {
           <div class="sub-feature-container" [@expandCollapse]="sub.expanded ? 'expanded' : 'collapsed'">
             <div class="sub-tree-line"></div>
-            @for (subFeature of sub.subFeatures; track subFeature.label) {
+            @for (subFeature of sub.subFeatures; track subFeature.key) {
             <a class="sub-feature-item" [routerLink]="subFeature.route" 
-               [class.active-sub-feature]="subFeature.active" 
-               routerLinkActive="active-sub-feature"
+               [class.active-sub-feature]="subFeature.active"
                (click)="activateSubFeature(item, sub, subFeature)">
               <span class="sub-tree-curve"></span>
               <span class="sub-feature-label">{{ subFeature.label }}</span>
@@ -115,7 +114,7 @@
           }
           @else {
           <!-- Regular sub-item without sub-features -->
-          <a class="sub-item" [routerLink]="sub.route" [class.active-sub]="sub.active" routerLinkActive="active-sub"
+          <a class="sub-item" [routerLink]="sub.route" [class.active-sub]="sub.active"
             (click)="activateSubItem(item, sub)">
             <span class="tree-curve"></span>
             <span class="sub-label">{{ sub.label }}</span>

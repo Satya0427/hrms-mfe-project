@@ -86,7 +86,15 @@
                                         }
                                     </mat-select>
                                 </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Password</mat-label>
+                                    <input matInput formControlName="password" type="password">
+                                    <mat-icon matSuffix>lock</mat-icon>
+                                </mat-form-field>
                             </div>
+
+
                         </mat-card-content>
                     </mat-card>
 
@@ -166,7 +174,7 @@
                                     <mat-label>Reporting Manager</mat-label>
                                     <mat-select formControlName="reported_to">
                                         @for (emp of employeesList(); track emp.id) {
-                                        <mat-option [value]="emp.id">{{emp.emp_name}}</mat-option>
+                                        <mat-option [value]="emp.id">{{emp.name}} ({{emp.employee_id}})</mat-option>
                                         }
                                     </mat-select>
                                 </mat-form-field>
@@ -197,8 +205,8 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>Role</mat-label>
                                     <mat-select formControlName="role_id">
-                                        @for (role of roles; track role) {
-                                        <mat-option [value]="role">{{role}}</mat-option>
+                                        @for (role of roles(); track role.id) {
+                                        <mat-option [value]="role.id">{{role.name}}</mat-option>
                                         }
                                     </mat-select>
                                 </mat-form-field>
@@ -228,6 +236,15 @@
                                     <mat-datepicker-toggle matIconSuffix
                                         [for]="probationdatePicker"></mat-datepicker-toggle>
                                     <mat-datepicker #probationdatePicker></mat-datepicker>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Shift</mat-label>
+                                    <mat-select formControlName="shift">
+                                        @for (shift of shiftList(); track shift.id) {
+                                        <mat-option [value]="shift.id">{{shift.name}}</mat-option>
+                                        }
+                                    </mat-select>
                                 </mat-form-field>
 
                             </div>

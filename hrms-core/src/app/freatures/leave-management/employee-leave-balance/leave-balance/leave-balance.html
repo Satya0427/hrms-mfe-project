@@ -4,11 +4,34 @@
 
 <div class="page-container">
     <div class="content-wrapper">
-        <!-- Leave Balance Summary -->
+        <!-- Employee + Apply Leave Row -->
         <div class="section-header">
-            <h3>Leave Balance Summary</h3>
-            <span class="hint">Calculated as of {{ endDate | date: 'dd MMM yyyy' }}</span>
+            @if(employeeDetails(); as employee) {
+            <div class="emp-strip">
+                <div class="emp__avatar">
+                    {{ (employee.name || 'U').charAt(0) }}
+                </div>
+                <div class="emp__info">
+                    <h2 class="emp__name">{{ employee.name }}</h2>
+                    <div class="emp__meta">
+                        <span class="emp__detail">
+                            <mat-icon>email</mat-icon>
+                            {{ employee.work_email || '-' }}
+                        </span>
+                        <span class="emp__detail">
+                            <mat-icon>supervisor_account</mat-icon>
+                            {{ employee.reporting_manager_name || '-' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            }
+            <button mat-flat-button color="primary" (click)="openApplyLeaveDialog()">
+                <mat-icon>add</mat-icon>
+                Apply Leave
+            </button>
         </div>
+
         <!-- Stats Overview -->
         <div class="stats-row">
             <div class="stat-card total">
@@ -214,8 +237,7 @@
     <!-- Fixed Footer -->
     <div class="fixed-footer">
         <button mat-stroked-button (click)="handleBack()" class="footer-btn">Back</button>
-        <button mat-flat-button color="primary" (click)="exportData()"
-            class="footer-btn">
+        <button mat-flat-button color="primary" (click)="exportData()" class="footer-btn">
             <mat-icon>download</mat-icon>
             <span>Export Report</span>
         </button>

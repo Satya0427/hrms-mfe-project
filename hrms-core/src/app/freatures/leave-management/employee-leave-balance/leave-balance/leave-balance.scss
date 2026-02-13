@@ -54,6 +54,61 @@ $info: #2196f3;
     }
 }
 
+// Employee Strip
+.emp-strip {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.emp__avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, $primary, darken($primary, 15%));
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.emp__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.emp__name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.emp__meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.emp__detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #64748b;
+
+    mat-icon {
+        font-size: 15px;
+        width: 15px;
+        height: 15px;
+    }
+}
+
 // Stats Row
 .stats-row {
     display: grid;
@@ -459,6 +514,10 @@ $info: #2196f3;
     .balance-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .employee-info-card .employee-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
@@ -466,10 +525,6 @@ $info: #2196f3;
     .stats-row,
     .filters-row,
     .balance-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .employee-grid {
         grid-template-columns: 1fr;
     }
 }

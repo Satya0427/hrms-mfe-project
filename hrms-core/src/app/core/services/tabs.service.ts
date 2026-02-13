@@ -6,6 +6,11 @@ export const TOP_NAV_TABS_CONFIG = [
     { subFeatureKey: 'LEAVE_ADMIN', key: 'WEEKLY_OFF', label: 'Weekly Off', route: '/home/hrms-core/leave/week-off-config' },
     // { subFeatureKey: 'LEAVE_ADMIN', key: 'SIMULATION', label: 'Simulation', route: '/home/hrms-core/leave/leave-simulation' },
 
+    /* ===== LEAVE BALANCE ===== */
+    { subFeatureKey: 'LEAVE_BALANCE', key: 'EMPLOYEE_LIST', label: 'Employee List', route: '/home/hrms-core/leave/employee-list' },
+    { subFeatureKey: 'LEAVE_BALANCE', key: 'DASHBOARD', label: 'Leave Balance & Ledger', route: '/home/hrms-core/leave/leave-balance' },
+    { subFeatureKey: 'LEAVE_BALANCE', key: 'LEAVE_REQUESTS', label: 'Leave Requests', route: '/home/hrms-core/leave/leave-requests' },
+
     /* ===== ATTENDANCE ADMIN ===== */
     { subFeatureKey: 'ATTENDANCE_ADMIN', key: 'ATTENDANCE_RULES', label: 'Attendance Rules', route: '/home/attendance/admin/rules' },
     { subFeatureKey: 'ATTENDANCE_ADMIN', key: 'SHIFT_CONFIGURATION', label: 'Shift Configuration', route: '/home/attendance/admin/shifts' },
@@ -43,4 +48,13 @@ export const TOP_NAV_TABS_CONFIG = [
     { subFeatureKey: 'EMPLOYEE_ONBOARDING', key: 'ONBOARDING', label: 'Onboarding', },
     { subFeatureKey: 'EMPLOYEE_ONBOARDING', key: 'BANK_AND_DOCUMENT', label: 'Bank And Document', },
     { subFeatureKey: 'EMPLOYEE_ONBOARDING', key: 'COMPENSATION', label: 'Compensation', },
+
+    /* ===== ATTENDANCE ADMIN ===== */
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Attendance Rules', route: '/home/attendance/admin/rules' },
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Shift Configuration', route: '/home/attendance/admin/shifts' },
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Work Types', route: '/home/attendance/admin/work-types' },
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Geo / IP Rules', route: '/home/attendance/admin/geo-ip' },
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Attendance Policies', route: '/home/attendance/admin/policies' },
+    { subFeatureKey: 'ATTENDANCE_ADMIN', label: 'Simulation', route: '/home/attendance/admin/simulation' }
+
 ];

@@ -85,8 +85,6 @@ export class EmployeeOnboard {
 
     // Construct payload matching user request
     const payload = {
-      user_id: 'user_placeholder', // TODO: Get from auth/context
-      organization_id: 'org_placeholder', // TODO: Get from auth/context
       employee_code: formValue.profile.employee_code,
       joining_date: formValue.profile.joining_date,
       employment_type: formValue.profile.employment_type,

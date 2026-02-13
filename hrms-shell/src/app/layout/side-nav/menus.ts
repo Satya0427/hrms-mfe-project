@@ -1,3 +1,5 @@
+import { routes } from "../../app.routes";
+
 export const MODULE_FEATURES = [
     /* ================= DASHBOARD ================= */
     {
@@ -63,9 +65,9 @@ export const MODULE_FEATURES = [
                 subFeatures: [
                     { label: 'Leave Admin', route: '/home/hrms-core/leave', key: 'LEAVE_ADMIN', active: false },
                     { label: 'Leave Balance', route: '/home/hrms-core/leave/leave-balance', key: 'LEAVE_BALANCE', active: false },
-                    { label: 'My Leave', route: '', key: 'MY_LEAVE', active: false },
-                    { label: 'Team Leave', route: '', key: 'TEAM_LEAVE', active: false },
-                    { label: 'Leave Requests', route: '', key: 'LEAVE_REQUESTS', active: false },
+                    // { label: 'My Leave', route: '/home/hrms-core/leave/my-leaves', key: 'MY_LEAVE', active: false },
+                    { label: 'Team Leave', route: '/home/hrms-core/leave/employee-list', key: 'TEAM_LEAVE', active: false },
+                    { label: 'Leave Requests', route: '/home/hrms-core/leave/leave-requests', key: 'LEAVE_REQUESTS', active: false },
                 ]
             },
             {
@@ -75,10 +77,23 @@ export const MODULE_FEATURES = [
                 active: false,
                 expanded: false,
                 subFeatures: [
-                    { label: 'My Attendance', route: '/home/attendance/my', key: 'MY_ATTENDANCE', active: false },
-                    { label: 'Team Attendance', route: '/home/attendance/team', key: 'TEAM_ATTENDANCE', active: false },
-                    { label: 'Regularization', route: '/home/attendance/regularization', key: 'REGULARIZATION', active: false },
-                    { label: 'Attendance Admin', route: '/home/attendance/admin', key: 'ATTENDANCE_ADMIN', active: false }
+                    { label: 'My Attendance', route: '/home/hrms-core/attendance/my-attendance', key: 'MY_ATTENDANCE', active: false },
+                    { label: 'Team Attendance', route: '/home/hrms-core/attendance/team-attendance', key: 'TEAM_ATTENDANCE', active: false },
+                    { label: 'Regularization', route: '/home/hrms-core/attendance/regularization', key: 'REGULARIZATION', active: false },
+                    { label: 'Attendance Admin', route: '/home/hrms-core/attendance/admin', key: 'ATTENDANCE_ADMIN', active: false }
+                ]
+            },
+            {
+                label: 'Approvals',
+                icon: 'task',
+                key: 'APPROVALS',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Leave Requests', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
+                    { label: 'Attendance Regularization', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
+                    { label: 'WFH Requests', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
+                    { label: 'Approval History', route: '/home/hrms-core/attendance/my-attendance', key: 'APPROVAL_HISTORY', active: false }
                 ]
             },
             { label: 'Reports', route: '/home/leave-attendance/reports', key: 'LEAVE_ATTENDANCE_REPORTS', active: false }
@@ -173,7 +188,7 @@ export const MODULE_FEATURES = [
             { label: 'Roles & Permissions', route: '/home/settings/roles', key: 'ROLES_PERMISSIONS', active: false },
             { label: 'Integrations', route: '/home/settings/integrations', key: 'INTEGRATIONS', active: false }
         ]
-    }
+    },
 ]
 
 export const TOP_NAV_TABS_CONFIG = [

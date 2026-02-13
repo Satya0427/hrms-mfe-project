@@ -247,10 +247,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 6px 10px 6px 20px;
+    padding: 9px 10px 9px 20px;
     cursor: pointer;
     color: #888;
-    font-size: 12px;
+    font-size: 13px;
     text-decoration: none;
     margin-left: 5px;
 
@@ -265,6 +265,7 @@
         font-weight: 600;
         background: rgba(0, 0, 0, 0.06);
         border-radius: 6px;
+        margin-top: 6px;
     }
 
     .sub-tree-curve {

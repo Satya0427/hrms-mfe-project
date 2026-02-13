@@ -16,10 +16,13 @@ export const API_ENDPOINTS = {
         departments: '/common/departments-dropdown',
         employees: '/common/employee-dropdown',
         leave_types: '/common/leave-types-dropdown',
+        roles: '/common/roles-dropdown',
+        shifts: '/common/shifts-dropdown'
     },
     employee: {
         create: `/onboarding/employee-onboarding`,
-        get: `/onboarding/employee-list`,
+        get_employee_list: `/onboarding/employee-list-pagination`,
+        get_employee_details: `/onboarding/employee-details`,
         auto_generated_emp_id: `/onboarding/auto_generated_emp_id`,
         uploadDocument: `/onboarding/upload-document`,
         getDocuments: `/onboarding/get-document`,
@@ -45,8 +48,26 @@ export const API_ENDPOINTS = {
 
         // Leave Balance & Ledger
         get_leave_balance: '/leave-config/leave_balance/get_by_employee',
-        get_ledger_entries: '/leave-management/ledger/entries',
-        create_ledger_entry: '/leave-management/ledger/create',
-        export_balance_report: '/leave-management/balance/export',
+
+        // Leave Request (Apply Leave)
+        apply_leave: '/leave-config/leave_requests/apply',
+        check_leave_overlap: '/leave-config/leave_requests/check_overlap',
+
+        // leave approval
+        get_pending_requests: '/leave-config/leave_requests/get_list',
+        update_request_status: '/leave-config/leave_requests/update_status'
+    },
+    attendance: {
+        clock_in: '/attendance/check_in',
+        clock_out: '/attendance/check_out',
+        attendance_calculation: '/attendance/calculate',
+        get_clock_status: '/attendance/history',
+        get_monthly_attendance: '/attendance/monthly-summary',
+
+        get_clock_logs: '/attendance/clock_logs',
+
+        get_my_attendance: '/attendance/my-attendance',
+        request_regularization: '/attendance/regularization/request',
+        request_wfh: '/attendance/wfh/rise-request'
     }
 };

@@ -3,12 +3,15 @@ import { MATERIAL } from '../../../../shared/material/materials';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { ApiClient } from '../../../../core/services/api-client.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 import { ActivatedRoute } from '@angular/router';
+import { ApplyLeaveDialog } from '../../../../shared/dialogs/apply-leave-dialog/apply-leave-dialog';
+import { CommonService } from '../../../../core/services/common.service';
 
 export interface ILeaveBalance {
   leave_type_id: string;
@@ -33,6 +36,18 @@ export interface LedgerEntry {
   remarks?: string;
 }
 
+export interface EmployeeBasicDetails {
+  name: string;
+  employee_id: string;
+  work_email: string;
+  department: string;
+  designation: string;
+  joining_date: string;
+  work_mode: string;
+  reporting_manager_name?: string;
+  manager?: string;
+}
+
 @Component({
   selector: 'app-leave-balance',
   imports: [MATERIAL, CommonModule, FormsModule, PageHeader],
@@ -45,6 +60,8 @@ export class LeaveBalance {
   private _toastr = inject(ToastrService);
   private destroy$ = new Subject<void>();
   private _route = inject(ActivatedRoute);
+  private _dialog = inject(MatDialog);
+  private _commonService = inject(CommonService);
 
   startDate = new Date(new Date().getFullYear(), 0, 1); // Jan 1 of current year
   endDate = new Date();
@@ -54,6 +71,7 @@ export class LeaveBalance {
   // Data
   leaveBalances = signal<ILeaveBalance[]>([]);
   ledgerEntries = signal<LedgerEntry[]>([]);
+  employeeDetails = signal<EmployeeBasicDetails | null>(null);
 
   // Table
   displayedColumns = ['date', 'leave_type', 'entry_type', 'quantity', 'balance_after', 'reference', 'remarks'];
@@ -66,9 +84,18 @@ export class LeaveBalance {
 
   id!: string;
 
-  ngOnInit() {
+
+  currentTab: string | number | null = null;
+  pageTabs: any[] = [];
+
+  async ngOnInit() {
+    this.pageTabs = await this._commonService.getTabs('LEAVE_BALANCE');
+    if (this.pageTabs.length > 0) {
+      this.currentTab = this.pageTabs[4]?.key || null; // Leave Balance tab
+    }
     this.id = this._route.snapshot.paramMap.get('id')!;
     this.loadLeaveBalance();
+    this.getEmployeeDetails()
   }
 
   loadLeaveBalance() {
@@ -90,9 +117,9 @@ export class LeaveBalance {
           pending_requests: 0,
           color: this.getLeaveTypeColor(item.leave_type_code)
         }));
-        
+
         this.leaveBalances.set(mappedBalances);
-        
+
         // Use summary data from API
         const summary = res?.data?.summary;
         if (summary) {
@@ -143,6 +170,35 @@ export class LeaveBalance {
     this.dataSource.data = filtered;
   }
 
+  getEmployeeDetails() {
+    const payload = {
+      employee_uuid: this.id
+    }
+    this._httpClient.post(API_ENDPOINTS.employee.get_employee_details, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => {
+        const employee = res?.data;
+        if (employee) {
+          const firstName = employee?.personal_details?.firstName || '';
+          const lastName = employee?.personal_details?.lastName || '';
+          const fullName = `${firstName} ${lastName}`.trim();
+          const details: EmployeeBasicDetails = {
+            name: fullName || '-',
+            employee_id: employee?.job_details?.employee_id || '-',
+            work_email: employee?.job_details?.workEmail || '-',
+            department: employee?.job_details?.department_name || '-',
+            designation: employee?.job_details?.designation_name || '-',
+            joining_date: employee?.job_details?.joiningDate || '',
+            work_mode: employee?.job_details?.workMode || '-'
+          };
+          this.employeeDetails.set(details);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching employees:', err);
+      }
+    })
+  }
+
   onDateChange() {
     this.applyFilters();
   }
@@ -185,6 +241,25 @@ export class LeaveBalance {
       'LWP': '#f44336'
     };
     return colors[code] || '#607d8b';
+  }
+
+  openApplyLeaveDialog() {
+    const dialogRef = this._dialog.open(ApplyLeaveDialog, {
+      width: '600px',
+      maxWidth: '90vw',
+      maxHeight: '90vh',
+      disableClose: false,
+      data: {
+        employee_id: this.id,
+        leaveBalances: this.leaveBalances()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success) {
+        this.loadLeaveBalance();
+      }
+    });
   }
 
   handleBack() {
