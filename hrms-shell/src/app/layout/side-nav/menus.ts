@@ -67,7 +67,7 @@ export const MODULE_FEATURES = [
                     { label: 'Leave Balance', route: '/home/hrms-core/leave/leave-balance', key: 'LEAVE_BALANCE', active: false },
                     // { label: 'My Leave', route: '/home/hrms-core/leave/my-leaves', key: 'MY_LEAVE', active: false },
                     { label: 'Team Leave', route: '/home/hrms-core/leave/employee-list', key: 'TEAM_LEAVE', active: false },
-                    { label: 'Leave Requests', route: '/home/hrms-core/leave/leave-requests', key: 'LEAVE_REQUESTS', active: false },
+                    // { label: 'Leave Requests', route: '/home/hrms-core/leave/leave-requests', key: 'LEAVE_REQUESTS', active: false },
                 ]
             },
             {
@@ -79,8 +79,8 @@ export const MODULE_FEATURES = [
                 subFeatures: [
                     { label: 'My Attendance', route: '/home/hrms-core/attendance/my-attendance', key: 'MY_ATTENDANCE', active: false },
                     { label: 'Team Attendance', route: '/home/hrms-core/attendance/team-attendance', key: 'TEAM_ATTENDANCE', active: false },
-                    { label: 'Regularization', route: '/home/hrms-core/attendance/regularization', key: 'REGULARIZATION', active: false },
-                    { label: 'Attendance Admin', route: '/home/hrms-core/attendance/admin', key: 'ATTENDANCE_ADMIN', active: false }
+                    // { label: 'Regularization', route: '/home/hrms-core/attendance/regularization', key: 'REGULARIZATION', active: false },
+                    // { label: 'Attendance Admin', route: '/home/hrms-core/attendance/admin', key: 'ATTENDANCE_ADMIN', active: false }
                 ]
             },
             {
@@ -90,10 +90,10 @@ export const MODULE_FEATURES = [
                 active: false,
                 expanded: false,
                 subFeatures: [
-                    { label: 'Leave Requests', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
-                    { label: 'Attendance Regularization', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
-                    { label: 'WFH Requests', route: '/home/hrms-core/attendance/my-attendance', key: 'PENDING_APPROVALS', active: false },
-                    { label: 'Approval History', route: '/home/hrms-core/attendance/my-attendance', key: 'APPROVAL_HISTORY', active: false }
+                    { label: 'Leave Requests', route: '/home/hrms-core/requests/leave-requests', key: 'LEAVE_REQUESTS', active: false },
+                    { label: 'Attendance Regularization', route: '/home/hrms-core/requests/attendance-regularization', key: 'ATTENDANCE_REGULARIZATION', active: false },
+                    { label: 'WFH Requests', route: '/home/hrms-core/requests/wfh-requests', key: 'WFH_REQUESTS', active: false },
+                    { label: 'Approval History', route: '/home/hrms-core/requests/approval-history', key: 'APPROVAL_HISTORY', active: false }
                 ]
             },
             { label: 'Reports', route: '/home/leave-attendance/reports', key: 'LEAVE_ATTENDANCE_REPORTS', active: false }
@@ -108,12 +108,110 @@ export const MODULE_FEATURES = [
         active: false,
         expanded: false,
         subItems: [
-            { label: 'Payroll Overview', route: '/home/payroll/overview', key: 'PAYROLL_OVERVIEW', active: false },
-            { label: 'Run Payroll', route: '/home/payroll/run', key: 'RUN_PAYROLL', active: false },
-            { label: 'Payslips', route: '/home/payroll/payslips', key: 'PAYSLIPS', active: false },
-            { label: 'Payroll Admin', route: '/home/payroll/admin', key: 'PAYROLL_ADMIN', active: false }
+
+            // ================= DASHBOARD =================
+            { label: 'Dashboard', route: '/home/payroll/dashboard', key: 'PAYROLL_DASHBOARD', active: false },
+
+            // ================= RUN PAYROLL =================
+            {
+                label: 'Run Payroll',
+                key: 'RUN_PAYROLL',
+                icon: 'play_circle',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Process Payroll', route: '/home/payroll/process', key: 'PROCESS_PAYROLL', active: false },
+                    { label: 'Payroll History', route: '/home/payroll/history', key: 'PAYROLL_HISTORY', active: false },
+                    { label: 'Locked Payroll', route: '/home/payroll/locked', key: 'LOCKED_PAYROLL', active: false }
+                ]
+            },
+
+            // ================= PAYSLIPS =================
+            {
+                label: 'Payslips',
+                key: 'PAYSLIPS',
+                icon: 'receipt_long',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Employee Payslips', route: '/home/payroll/payslips', key: 'EMPLOYEE_PAYSLIPS', active: false },
+                    { label: 'Bulk Download', route: '/home/payroll/payslips/bulk-download', key: 'BULK_PAYSLIP_DOWNLOAD', active: false },
+                    { label: 'Payslip Settings', route: '/home/payroll/payslips/settings', key: 'PAYSLIP_SETTINGS', active: false }
+                ]
+            },
+
+            // ================= SALARY STRUCTURE =================
+            {
+                label: 'Salary Structure',
+                key: 'SALARY_STRUCTURE',
+                icon: 'account_balance_wallet',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Components', route: '/home/hrms-core/payroll/components', key: 'SALARY_COMPONENTS', active: false },
+                    { label: 'Templates', route: '/home/hrms-core/payroll/templates', key: 'SALARY_TEMPLATES', active: false },
+                    { label: 'Employee Assignment', route: '/home/hrms-core/payroll/employee-assignment', key: 'ASSIGN_SALARY_STRUCTURE', active: false }
+                ]
+            },
+
+            // ================= REIMBURSEMENTS =================
+            {
+                label: 'Reimbursements',
+                key: 'REIMBURSEMENTS',
+                icon: 'request_quote',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Claims', route: '/home/payroll/reimbursements/claims', key: 'REIMBURSEMENT_CLAIMS', active: false },
+                    { label: 'Reimbursement Types', route: '/home/payroll/reimbursements/types', key: 'REIMBURSEMENT_TYPES', active: false }
+                ]
+            },
+
+            // ================= LOANS & ADVANCES =================
+            {
+                label: 'Loans & Advances',
+                key: 'LOANS_ADVANCES',
+                icon: 'credit_score',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'Loan Requests', route: '/home/payroll/loans', key: 'LOAN_REQUESTS', active: false },
+                    { label: 'EMI Schedule', route: '/home/payroll/loans/emi-schedule', key: 'EMI_SCHEDULE', active: false },
+                ]
+            },
+
+            // ================= COMPLIANCE =================
+            {
+                label: 'Compliance',
+                key: 'PAYROLL_COMPLIANCE',
+                icon: 'gavel',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'PF Reports', route: '/home/payroll/compliance/pf', key: 'PF_REPORTS', active: false },
+                    { label: 'ESI Reports', route: '/home/payroll/compliance/esi', key: 'ESI_REPORTS', active: false },
+                    { label: 'Professional Tax', route: '/home/payroll/compliance/pt', key: 'PT_REPORTS', active: false },
+                    { label: 'TDS Reports', route: '/home/payroll/compliance/tds', key: 'TDS_REPORTS', active: false },
+                ]
+            },
+
+            // ================= PAYROLL SETTINGS =================
+            {
+                label: 'Payroll Settings',
+                key: 'PAYROLL_SETTINGS',
+                icon: 'settings',
+                active: false,
+                expanded: false,
+                subFeatures: [
+                    { label: 'General Settings', route: '/home/payroll/settings/general', key: 'PAYROLL_GENERAL_SETTINGS', active: false },
+                    { label: 'Statutory Settings', route: '/home/payroll/settings/statutory', key: 'PAYROLL_STATUTORY_SETTINGS', active: false },
+                    { label: 'Pay Cycle', route: '/home/payroll/settings/pay-cycle', key: 'PAY_CYCLE_SETTINGS', active: false },
+                    { label: 'Pay Cycle', route: '/home/payroll/settings/pay-cycle', key: 'PAY_CYCLE_SETTINGS', active: false }
+                ]
+            }
         ]
     },
+
 
     /* ================= PERFORMANCE ================= */
     {

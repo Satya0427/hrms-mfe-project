@@ -1,6 +1,6 @@
-import { Component, input, model, output } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
 import { MATERIAL } from '../../material/materials';
-import { CommonModule } from '@angular/common';
+import { CommonModule,Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -21,6 +21,8 @@ export interface HeaderTab {
 })
 export class PageHeader {
 
+  private _location = inject(Location);
+
   // 1. Title of the page (Required)
   title = input.required<string>();
 
@@ -35,7 +37,6 @@ export class PageHeader {
   activeTab = model<string | number | null>(null);
 
   // 5. Back Button Click Event
-  onBack = output<void>();
 
   // Helper method to switch tabs
   selectTab(tab: HeaderTab) {
@@ -46,5 +47,9 @@ export class PageHeader {
   // Helper to get tab identifier
   getTabId(tab: HeaderTab): string | number {
     return tab.key || tab.route || '';
+  }
+
+  goBack() {
+    this._location.back();
   }
 }

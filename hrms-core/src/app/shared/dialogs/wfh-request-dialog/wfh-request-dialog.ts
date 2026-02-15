@@ -32,7 +32,7 @@ export class WfhRequestDialog {
     requestType: ['FULL_DAY', Validators.required],
     halfDayType: ['FIRST_HALF'],
     workLocation: ['HOME', Validators.required],
-    workPlan: ['', [ Validators.minLength(10)]],
+    workPlan: ['', [Validators.minLength(10)]],
     reason: ['', [Validators.required, Validators.minLength(10)]]
   });
 
@@ -49,28 +49,27 @@ export class WfhRequestDialog {
     this.isSubmitting = true;
     const formVal = this.form.value;
 
-    const payload:any = {
+    const payload: any = {
       request_date: formVal.requestDate,
       request_type: formVal.requestType,
       reason: formVal.reason
     };
     if (formVal.requestType === 'HALF_DAY') {
-      payload['half_day_type'] = formVal.halfDayType;
+      payload['half_day_session'] = formVal.halfDayType;
     }
 
-    this._httpClient.post(API_ENDPOINTS.attendance.request_wfh, payload)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this._toastr.success('WFH request submitted successfully!', 'Success', { timeOut: 3000 });
-          this.dialogRef.close({ submitted: true });
-        },
-        error: (err) => {
-          this._toastr.error(err?.error?.msg || 'Failed to submit WFH request.', 'Error', { timeOut: 4000 });
-        }
-      }).add(() => {
+    this._httpClient.post(API_ENDPOINTS.attendance.rise_wfh_request, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this._toastr.success('WFH request submitted successfully!', 'Success', { timeOut: 3000 });
+        this.dialogRef.close({ submitted: true });
+      },
+      error: (err) => {
         this.isSubmitting = false;
-      });
+        this._toastr.error(err?.error?.msg || 'Failed to submit WFH request.', 'Error', { timeOut: 4000 });
+      }
+    }).add(() => {
+      this.isSubmitting = false;
+    });
   }
 
   ngOnDestroy(): void {

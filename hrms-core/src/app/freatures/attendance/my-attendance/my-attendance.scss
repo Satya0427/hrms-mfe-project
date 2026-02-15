@@ -139,6 +139,20 @@ $bg: #f1f5f9;
     }
 }
 
+.btn-wfh-clockin {
+    background: #6366f1 !important;
+    color: #fff !important;
+
+    mat-icon {
+        color: #fff;
+    }
+
+    &:disabled {
+        background: rgba(#6366f1, 0.4) !important;
+        color: rgba(#fff, 0.7) !important;
+    }
+}
+
 /* ─── Today Strip ─── */
 .att__today {
     display: flex;

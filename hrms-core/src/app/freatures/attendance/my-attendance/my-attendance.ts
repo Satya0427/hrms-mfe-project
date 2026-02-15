@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCalendar, MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -11,9 +11,11 @@ import { WfhRequestDialog } from '../../../shared/dialogs/wfh-request-dialog/wfh
 import { RegularizationDialog } from '../../../shared/dialogs/regularization-dialog/regularization-dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ApiClient } from '../../../core/services/api-client.service';
-import { CommonService } from '../../../core/services/common.service';
+import { BasicEmployeeDetails, CommonService } from '../../../core/services/common.service';
 import { Subject, take, takeUntil } from 'rxjs';
 import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
+import { ActivatedRoute } from '@angular/router';
+import { PageHeader } from "../../../shared/components/page-header/page-header";
 
 
 @Component({
@@ -26,8 +28,9 @@ import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
     ReactiveFormsModule,
     MatDialogModule,
     MatTooltipModule,
-    MatRippleModule
-  ],
+    MatRippleModule,
+    PageHeader
+],
   templateUrl: './my-attendance.html',
   styleUrls: ['./my-attendance.scss'],
 })
@@ -36,13 +39,16 @@ export class MyAttendance implements OnInit, OnDestroy {
   private _toastr = inject(ToastrService);
   private _httpClient = inject(ApiClient);
   private _commonService = inject(CommonService);
+  private _route = inject(ActivatedRoute);
+  private _cdr = inject(ChangeDetectorRef);
 
   @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
 
-  userDetails: any = null;
+  userDetails!: BasicEmployeeDetails | null;
 
   isClockingIn = false;
   isClockingOut = false;
+  isWfhClockingIn = false;
   destroy$ = new Subject<void>();
 
   // ===== TODAY STRIP DYNAMIC STATE =====
@@ -55,10 +61,11 @@ export class MyAttendance implements OnInit, OnDestroy {
   clockOutDisplay = '--';
   breakMinutes = 0;
   lateMinutes = 0;
-  workedDisplay = '00:00';
+  workedDisplay = '00:00:00';
   workedPercent = 0;
   private shiftDurationHrs = 9; // 9-hour shift
   private timerInterval: any = null;
+  id!: string;
 
   get ringGradient(): string {
     let color = '#94a3b8'; // gray - not checked in
@@ -68,10 +75,11 @@ export class MyAttendance implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.userDetails = await this._commonService.getUserDetails();
+    this.id = this._route.snapshot.paramMap.get('id')!;
     this.todayDate = new Date().toLocaleDateString('en-US', {
       month: 'short', day: '2-digit', year: 'numeric', weekday: 'long'
     });
+    this.userDetails = await this._commonService.getBasicEmployeeDetails(this.id);
     this.getClockLogs();
     this.monthlySummary();
     this.getMonthlyLogs();
@@ -124,6 +132,43 @@ export class MyAttendance implements OnInit, OnDestroy {
     this.clockInDisplay = this.formatTime(punchTime);
     this.todayStatus = 'checked-in';
     this.startLiveTimer();
+  }
+
+  // ======== WFH CLOCK IN ========
+  async wfhClockIn(): Promise<void> {
+    this.isWfhClockingIn = true;
+    const payload = {
+      punch_time: new Date(),
+      source: 'WEB',
+      work_mode: 'WFH',
+      device_info: navigator.userAgent,
+      geo_location: {},
+      is_manual_entry: false
+    };
+
+    if (navigator.geolocation) {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+      ).catch(() => null);
+      if (position) {
+        payload.geo_location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+      }
+    }
+
+    this._httpClient.post(API_ENDPOINTS.attendance.wfh_clock_in, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (_res) => {
+        this._toastr.success('WFH Clock-in successful!', 'Close', { timeOut: 3000 });
+        this.onClockInSuccess(payload.punch_time);
+      },
+      error: (error) => {
+        console.error('WFH Clock-in failed', error);
+      }
+    }).add(() => {
+      this.isWfhClockingIn = false;
+    });
   }
 
 
@@ -183,7 +228,10 @@ export class MyAttendance implements OnInit, OnDestroy {
 
   // ======== GET CLOCK STATUS ON INIT (IN CASE OF PAGE REFRESH) ========
   private getClockLogs() {
-    this._httpClient.get(API_ENDPOINTS.attendance.get_clock_status).pipe(takeUntil(this.destroy$)).subscribe({
+    const payload = {
+      employee_uuid: this.id
+    };
+    this._httpClient.post(API_ENDPOINTS.attendance.get_clock_status, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: any) => {
         const data = response?.data || response;
         const shift = data.attendance_record?.shift_snapshot;
@@ -217,7 +265,8 @@ export class MyAttendance implements OnInit, OnDestroy {
         const workedSec = data.worked_seconds || 0;
         const hrs = Math.floor(workedSec / 3600);
         const mins = Math.floor((workedSec % 3600) / 60);
-        this.workedDisplay = `${this.pad(hrs)}:${this.pad(mins)}`;
+        const secs = workedSec % 60;
+        this.workedDisplay = `${this.pad(hrs)}:${this.pad(mins)}:${this.pad(secs)}`;
         this.workedPercent = Math.min(100, Math.round((workedSec / (this.shiftDurationHrs * 3600)) * 100));
       },
       error: (error) => {
@@ -228,7 +277,10 @@ export class MyAttendance implements OnInit, OnDestroy {
 
   // ====== MONTHLY SUMMARY ======
   monthlySummary() {
-    this._httpClient.get(API_ENDPOINTS.attendance.get_monthly_attendance).pipe(takeUntil(this.destroy$)).subscribe({
+    const payload = {
+      employee_uuid: this.id
+    };
+    this._httpClient.post(API_ENDPOINTS.attendance.get_monthly_attendance, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: any) => {
         const data = response?.data || response;
         this.summaryCards[0].value = String(data.present ?? 0).padStart(2, '0');
@@ -246,7 +298,10 @@ export class MyAttendance implements OnInit, OnDestroy {
 
   // ======== GET ATTENDANCE LOGS FOR THE MONTH ========
   getMonthlyLogs() {
-    this._httpClient.get(API_ENDPOINTS.attendance.get_clock_logs).pipe(takeUntil(this.destroy$)).subscribe({
+    const payload = {
+      employee_uuid: this.id
+    };
+    this._httpClient.post(API_ENDPOINTS.attendance.get_clock_logs, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: any) => {
         const data = response?.data || response;
         const records: any[] = data.records || [];
@@ -383,8 +438,9 @@ export class MyAttendance implements OnInit, OnDestroy {
     const mins = Math.floor((totalSec % 3600) / 60);
     const secs = totalSec % 60;
 
-    this.workedDisplay = `${this.pad(hrs)}:${this.pad(mins)}`;
+    this.workedDisplay = `${this.pad(hrs)}:${this.pad(mins)}:${this.pad(secs)}`;
     this.workedPercent = Math.min(100, Math.round((totalSec / (this.shiftDurationHrs * 3600)) * 100));
+    this._cdr.markForCheck();
   }
 
   private formatTime(date: Date): string {

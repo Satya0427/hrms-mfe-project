@@ -1,14 +1,9 @@
-<app-page-header title="Leave Balance Engine" [breadcrumbs]="['Home', 'Leave & Attendance', 'Leave Balance']"
+<app-page-header title="Leave Requests" [breadcrumbs]="['Home', 'Leave & Attendance', 'Leave Requests']"
   (onBack)="handleBack()">
 </app-page-header>
 
 <div class="page-container">
   <div class="page-header">
-    <div>
-      <h2>Leave Requests</h2>
-      <p>Review and action pending employee leave applications.</p>
-    </div>
-
     <div class="pending-chip">
       {{ leaveRequests().length }} Pending
     </div>

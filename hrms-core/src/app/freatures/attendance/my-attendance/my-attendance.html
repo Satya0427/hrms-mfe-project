@@ -1,3 +1,4 @@
+<app-page-header title="My Attendance" [breadcrumbs]="['Attendance', 'My Attendance']"></app-page-header>
 <div class="att">
     <!-- ─── Top Bar ─── -->
     <div class="att__topbar">
@@ -6,19 +7,20 @@
                 {{ (userDetails?.name || 'U').charAt(0) }}
             </div>
             <div class="emp__info">
-                <h2 class="emp__name">{{ userDetails?.name || userDetails?.full_name || 'Employee' }}</h2>
+                <h2 class="emp__name">{{ userDetails?.name || '--' }}</h2>
                 <div class="emp__meta">
                     <span class="emp__detail">
                         <mat-icon>email</mat-icon>
-                        {{ userDetails?.email || userDetails?.work_email || '-' }}
+                        {{ userDetails?.email || userDetails?.email }}
                     </span>
                     <span class="emp__detail">
                         <mat-icon>supervisor_account</mat-icon>
-                        {{ userDetails?.reporting_manager_name || userDetails?.manager || '-' }}
+                        {{ userDetails?.manager_name || '-' }}
                     </span>
                 </div>
             </div>
         </div>
+        @if (!this.id) {
         <div class="att__actions">
             <button mat-flat-button class="btn-clock-in" (click)="webClockIn()"
                 [disabled]=" todayStatus == 'checked-in'">
@@ -35,10 +37,17 @@
                 <mat-icon>home_work</mat-icon>
                 WFH Request
             </button>
+            <button mat-flat-button class="btn-wfh-clockin" (click)="wfhClockIn()"
+                [disabled]="todayStatus === 'checked-in' || isWfhClockingIn">
+                <mat-icon>home</mat-icon>
+                {{ isWfhClockingIn ? 'Clocking In...' : 'WFH Clock In' }}
+            </button>
         </div>
+        }
     </div>
 
     <!-- ─── Today Strip ─── -->
+
     <div class="att__today" [ngClass]="{
 		'today--checked-in': todayStatus === 'checked-in',
 		'today--checked-out': todayStatus === 'checked-out',
@@ -81,7 +90,7 @@
                 </div>
             </div>
         </div>
-
+        @if (!this.id) {
         <div class="today__actions">
             <button mat-flat-button color="primary" *ngIf="todayStatus === 'checked-in'">
                 <mat-icon>free_breakfast</mat-icon>
@@ -92,6 +101,7 @@
                 Regularize
             </button>
         </div>
+        }
     </div>
 
     <!-- ─── Stats Strip ─── -->
@@ -154,41 +164,6 @@
                     <span class="legend__dot wfh"></span><span>WFH</span>
                 </div>
             </mat-card>
-
-            <!-- Insights -->
-            <!-- <mat-card class="card card--insights">
-				<h3>Quick Insights</h3>
-				<div class="insights">
-					<div class="insight">
-						<mat-icon class="insight__icon">login</mat-icon>
-						<div>
-							<span class="insight__label">Avg Check-in</span>
-							<span class="insight__value">09:24 AM</span>
-						</div>
-					</div>
-					<div class="insight">
-						<mat-icon class="insight__icon">logout</mat-icon>
-						<div>
-							<span class="insight__label">Avg Check-out</span>
-							<span class="insight__value">06:08 PM</span>
-						</div>
-					</div>
-					<div class="insight">
-						<mat-icon class="insight__icon">trending_down</mat-icon>
-						<div>
-							<span class="insight__label">Late Streak</span>
-							<span class="insight__value">2 days</span>
-						</div>
-					</div>
-					<div class="insight">
-						<mat-icon class="insight__icon">pending_actions</mat-icon>
-						<div>
-							<span class="insight__label">Pending Requests</span>
-							<span class="insight__value">1</span>
-						</div>
-					</div>
-				</div>
-			</mat-card> -->
         </div>
 
         <!-- Right: Filters + Logs Table -->

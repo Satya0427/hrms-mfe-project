@@ -44,6 +44,13 @@ export const TOP_NAV_TABS_CONFIG = [
     { subFeatureKey: 'MODULE_FEATURE_MANAGEMENT', key: 'FEATURES', label: 'Features', route: '/home/platform-management/module-feature-management/features' },
     { subFeatureKey: 'USAGE_LIMITS', key: 'AUDIT_LOGS', label: 'Audit Logs', route: '/home/platform-management/usage-limits/audit' },
 
+    /* ===== PAYROLL TEMPLATE WIZARD ===== */
+    { subFeatureKey: 'PAYROLL_TEMPLATE_WIZARD', key: 'BASIC_INFO', label: 'Basic Information' },
+    { subFeatureKey: 'PAYROLL_TEMPLATE_WIZARD', key: 'EARNINGS_CONFIG', label: 'Earnings Configuration' },
+    { subFeatureKey: 'PAYROLL_TEMPLATE_WIZARD', key: 'DEDUCTIONS_CONFIG', label: 'Deductions Configuration' },
+    { subFeatureKey: 'PAYROLL_TEMPLATE_WIZARD', key: 'CTC_PREVIEW', label: 'CTC Distribution & Preview' },
+    { subFeatureKey: 'PAYROLL_TEMPLATE_WIZARD', key: 'DISPLAY_CONTROLS', label: 'Display & Controls' },
+
     /* ===== EMPLOYEE PROFILE ===== */
     { subFeatureKey: 'EMPLOYEE_ONBOARDING', key: 'ONBOARDING', label: 'Onboarding', },
     { subFeatureKey: 'EMPLOYEE_ONBOARDING', key: 'BANK_AND_DOCUMENT', label: 'Bank And Document', },

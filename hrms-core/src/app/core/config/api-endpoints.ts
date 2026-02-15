@@ -19,6 +19,9 @@ export const API_ENDPOINTS = {
         roles: '/common/roles-dropdown',
         shifts: '/common/shifts-dropdown'
     },
+    common: {
+        employee_list_by_manager: '/common/employees-by-manager',
+    },
     employee: {
         create: `/onboarding/employee-onboarding`,
         get_employee_list: `/onboarding/employee-list-pagination`,
@@ -60,14 +63,42 @@ export const API_ENDPOINTS = {
     attendance: {
         clock_in: '/attendance/check_in',
         clock_out: '/attendance/check_out',
+        wfh_clock_in: '/attendance/wfh/check_in',
         attendance_calculation: '/attendance/calculate',
         get_clock_status: '/attendance/history',
         get_monthly_attendance: '/attendance/monthly-summary',
 
         get_clock_logs: '/attendance/clock_logs',
+        rise_wfh_request: '/attendance/wfh/rise-request',
+        get_wfh_requests_list: '/attendance/wfh/requests-list',
+        update_wfh_request_status: '/attendance/wfh/status-update',
 
         get_my_attendance: '/attendance/my-attendance',
         request_regularization: '/attendance/regularization/request',
-        request_wfh: '/attendance/wfh/rise-request'
+
+    },
+    payroll: {
+        // Salary Components
+        create_component: '/payroll/component/create',
+        get_components: '/payroll/component/get_all',
+        update_component: '/payroll/component/update',
+        get_component_by_id: '/payroll/component/get_by_id',
+        toggle_component_status: '/payroll/component/toggle-status-change',
+        delete_component: '/payroll/component/delete',
+
+        // Salary Templates
+        create_template: '/payroll/template/create',
+        get_templates: '/payroll/template/get_list',
+        get_template_by_id: '/payroll/template/get_by_id',
+        update_template: '/payroll/template/update',
+        duplicate_template: '/payroll/template/duplicate',
+        toggle_template_status: '/payroll/template/toggle_status_change',
+        delete_template: '/payroll/template/delete',
+
+        // Employee Assignment
+        assign_template: '/payroll/assignment/assign',
+        get_assignments: '/payroll/assignment/get_list',
+        get_assignment_by_employee: '/payroll/assignment/get_by_employee',
+        remove_assignment: '/payroll/assignment/remove',
     }
 };

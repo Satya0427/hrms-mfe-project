@@ -48,31 +48,26 @@ export class EmployeeList implements OnInit, OnDestroy {
     this.loadEmployees();
   }
 
+
   loadEmployees() {
     const payload = {
       page: 1,
       limit: 50,
       search_key: this.searchKey
     };
-    this._httpClient.post(API_ENDPOINTS.employee.get_employee_list, payload).pipe(takeUntil(this.destroy$)).subscribe({
+    this._httpClient.post(API_ENDPOINTS.common.employee_list_by_manager, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
-        if (res.sts === 200 && res.data?.data) {
-          const mappedData: Employee[] = res.data.data.map((emp: any) => ({
+        if (res.sts === 200 && res.data?.employees) {
+          const mappedData: any = res.data.employees.map((emp: any) => ({
             _id: emp._id,
-            emp_id: emp.job_details?.employee_id || 'N/A',
-            name: emp.personal_details
-              ? `${emp.personal_details.firstName || ''} ${emp.personal_details.lastName || ''}`.trim()
-              : 'N/A',
-            email: emp.job_details?.workEmail || emp.personal_details?.email || 'N/A',
-            role: emp.job_details?.department_name || 'N/A',
-            department: emp.job_details?.department_id || 'N/A',
-            mobile: emp.personal_details?.phone || 'N/A',
-            joiningDate: emp.job_details?.joiningDate || null,
-            gender: emp.personal_details?.gender || 'N/A',
-            address: emp.personal_details?.address || 'N/A',
-            avatar: emp?.profileImageUrl
-              ? `${environment.apiUrl}${emp.profileImageUrl}`
-              : `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.personal_details?.firstName || 'Emp')}&background=random`
+            emp_id: emp.emp_id || emp.employee_id || 'N/A',
+            name: emp.name || 'N/A',
+            role: emp.role || 'N/A',
+            joiningDate: emp.joiningDate || null,
+            avatar: emp.avatar
+              ? `${environment.apiUrl}/common/get_image/${emp.avatar}`
+              : `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name || 'Emp')}&background=random`
+
           }));
           this.employees.set(mappedData);
         }

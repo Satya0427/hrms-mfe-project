@@ -257,44 +257,42 @@ export class EmployeeOnboarding implements OnInit {
     // Constructing the specific JSON structure for API
     const apiPayload: any = {
       "personal_details": {
-        "firstName": personal.firstName,
-        "lastName": personal.lastName,
-        "email": personal.email,
-        "phone": personal.phone,
-        "dob": formatDate(personal.dob),
-        "gender": personal.gender,
-        "address": personal.address,
-        "maritalStatus": personal.maritalStatus,
-        "nationality": personal.nationality,
+        "firstName": personal?.firstName || null,
+        "lastName": personal?.lastName || null,
+        "email": personal?.email || null,
+        "phone": personal?.phone || null,
+        "dob": formatDate(personal?.dob),
+        "gender": personal?.gender || null,
+        "address": personal?.address || null,
+        "maritalStatus": personal?.maritalStatus || null,
+        "nationality": personal?.nationality || null,
       },
 
       "job_details": {
-        "designation_id": job.designation_id || null,
-        "department_id": job.department_id || null,
-        "joiningDate": formatDate(job.joiningDate),
-        "workEmail": job.workEmail,
-        "reported_to": job.reported_to || null,
-        "work_location": job.work_location || null,
-        "workMode": job.workMode || null,
-        "role_id": job.role_id || null,
-        "probationStartDate": formatDate(job.probationStartDate),
-        "probationEndDate": formatDate(job.probationEndDate),
-        "probationStatus": job.probationStatus,
-        "probationNotes": job.probationNotes,
-        "employee_id": job.employee_id || null,
-        "employmentType": job.employmentType || null,
-        "shift_id": job.shift || null
+        "designation_id": job?.designation_id || null,
+        "department_id": job?.department_id || null,
+        "joiningDate": job?.joiningDate ? formatDate(job?.joiningDate) : null,
+        "workEmail": job?.workEmail || null,
+        "reported_to": job?.reported_to || null,
+        "work_location": job?.work_location || null,
+        "workMode": job?.workMode || null,
+        "role_id": job?.role_id || null,
+        "probationStartDate": job?.probationStartDate ? formatDate(job?.probationStartDate) : null,
+        "probationEndDate": job?.probationEndDate ? formatDate(job?.probationEndDate) : null,
+        "probationStatus": job?.probationStatus || null,
+        "probationNotes": job?.probationNotes || null,
+        "employee_id": job?.employee_id || null,
+        "employmentType": job?.employmentType || null,
+        "shift_id": job?.shift || null
       },
 
       "emergency_contact": {
-        "contactName": emergency.contactName,
-        "relation": emergency.relation,
-        "phone": emergency.phone
+        "contactName": emergency?.contactName || null,
+        "relation": emergency?.relation || null,
+        "phone": emergency?.phone || null
       },
     };
-    if(this.id && personal.password){
-      apiPayload.personal_details.password = personal.password;
-    }
+    apiPayload.personal_details.password = personal?.password || null;
     let formData = new FormData();
     formData.append('personal_details', JSON.stringify(apiPayload.personal_details));
     formData.append('job_details', JSON.stringify(apiPayload.job_details));

@@ -156,8 +156,8 @@ export class ApplyLeaveDialog implements OnInit {
             return;
         }
 
-        const isValid = await this.validateLeaveRequest();
-        if (!isValid) return;
+        // const isValid = await this.validateLeaveRequest();
+        // if (!isValid) return;
 
         this.submittingLeave.set(true);
         const formValue = this.applyLeaveForm.value;

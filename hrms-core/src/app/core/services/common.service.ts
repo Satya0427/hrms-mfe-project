@@ -4,6 +4,15 @@ import { ApiClient } from '../services/api-client.service';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { TOP_NAV_TABS_CONFIG } from './tabs.service';
 
+
+export interface BasicEmployeeDetails {
+  name: string;
+  email: string;
+  manager_id: string;
+  phone_number: string;
+  manager_name?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -57,5 +66,29 @@ export class CommonService {
       (tab: any) => tab.subFeatureKey === subFeatureKey
     );
   }
+
+  async getBasicEmployeeDetails(employee_uuid: string): Promise<BasicEmployeeDetails | null> {
+    try {
+      const payload = { employee_uuid };
+
+      const res: any = await firstValueFrom(
+        this._httpClient.post(API_ENDPOINTS.employee.get_employee_details, payload)
+      );
+      const employee = res?.data;
+      if (!employee) return null;
+      return {
+        name: `${employee.personal_details?.firstName || ''} ${employee.personal_details?.lastName || ''}`.trim(),
+        email: employee.personal_details?.email || '',
+        manager_id: employee.job_details?.reported_to || '',
+        phone_number: employee.personal_details?.phone || '',
+        manager_name: employee.manager_details
+      };
+
+    } catch (error) {
+      console.error('Error fetching employee details:', error);
+      return null;
+    }
+  }
+
 }
 
