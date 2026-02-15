@@ -94,11 +94,16 @@ export const API_ENDPOINTS = {
         duplicate_template: '/payroll/template/duplicate',
         toggle_template_status: '/payroll/template/toggle_status_change',
         delete_template: '/payroll/template/delete',
+        get_template_for_assignment: '/payroll/template/for_assignment',
 
         // Employee Assignment
-        assign_template: '/payroll/assignment/assign',
-        get_assignments: '/payroll/assignment/get_list',
-        get_assignment_by_employee: '/payroll/assignment/get_by_employee',
-        remove_assignment: '/payroll/assignment/remove',
+        assign_salary: '/payroll/employee-assignment/assign',
+        get_assignments: '/payroll/employee-assignment/get_list',
+        get_assignment_by_employee: '/payroll/employee-assignment/get_by_employee_id',
+        get_salary_history: '/payroll/employee-assignment/history',
+        revise_salary: '/payroll/employee-assignment/revise',
+        deactivate_assignment: '/payroll/employee-assignment/deactivate',
+        remove_assignment: '/payroll/employee-assignment/remove',
+
     }
 };

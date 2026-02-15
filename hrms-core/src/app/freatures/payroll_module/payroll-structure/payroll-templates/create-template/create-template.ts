@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular
 import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin } from 'rxjs';
 import { MATERIAL } from '../../../../../shared/material/materials';
 import { PageHeader, HeaderTab } from '../../../../../shared/components/page-header/page-header';
 import { CommonService } from '../../../../../core/services/common.service';
@@ -232,11 +232,33 @@ export class CreateTemplate implements OnInit, OnDestroy {
         this.templateId = this._route.snapshot.paramMap.get('id')!;
         if (this.templateId) {
             this.isEditMode.set(true);
-            this.loadTemplateDetails();
         }
 
-        this.loadEarningsComponents();
-        this.loadDeductionsComponents();
+        // Load components first, then template details (so formula lookup works)
+        this.loadComponentsThenTemplate();
+    }
+
+    private loadComponentsThenTemplate(): void {
+        const earningsPayload = { type: 'EARNINGS', status: 'ACTIVE', search: null, page: 1, limit: 200 };
+        const deductionsPayload = { type: 'DEDUCTIONS', status: 'ACTIVE', search: null, page: 1, limit: 200 };
+
+        forkJoin({
+            earnings: this._httpClient.post(API_ENDPOINTS.payroll.get_components, earningsPayload),
+            deductions: this._httpClient.post(API_ENDPOINTS.payroll.get_components, deductionsPayload),
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (responses: any) => {
+                const earningsComponents = responses.earnings?.data?.components || responses.earnings?.data || [];
+                const deductionsComponents = responses.deductions?.data?.components || responses.deductions?.data || [];
+                this.availableEarnings.set(earningsComponents);
+                this.availableDeductions.set(deductionsComponents);
+
+                // Now load template details (components are available for formula lookup)
+                if (this.isEditMode()) {
+                    this.loadTemplateDetails();
+                }
+            },
+            error: (error) => console.error('Error loading components:', error)
+        });
     }
 
     // ─── Load Components ───
@@ -279,7 +301,7 @@ export class CreateTemplate implements OnInit, OnDestroy {
     // ─── Load Template (Edit mode) ───
     loadTemplateDetails(): void {
         const payload = {
-            template_id: this.templateId,
+            id: this.templateId,
         };
         this._httpClient.post(API_ENDPOINTS.payroll.get_template_by_id, payload)
             .pipe(takeUntil(this.destroy$))
@@ -294,7 +316,7 @@ export class CreateTemplate implements OnInit, OnDestroy {
             });
     }
 
-    patchFormData(template: PayrollTemplate): void {
+    patchFormData(template: any): void {
         this.basicInfoForm.patchValue({
             template_name: template.template_name,
             template_code: template.template_code,
@@ -303,19 +325,65 @@ export class CreateTemplate implements OnInit, OnDestroy {
             status: template.status,
         });
 
+        // Flatten nested component_id objects for earnings
         if (template.earnings?.length) {
-            this.selectedEarnings.set(template.earnings);
+            const flatEarnings: TemplateEarning[] = template.earnings.map((e: any) => {
+                const comp = typeof e.component_id === 'object' ? e.component_id : null;
+                const compId = comp ? comp._id : e.component_id;
+                const compName = comp?.component_name || e.component_name || '';
+                const compCode = comp?.component_code || e.component_code || '';
+                const isBasic = comp?.is_basic ?? e.is_basic ?? false;
+                const calcType = comp?.calculation_type || e.calculation_type || '';
+
+                // Look up formula from available components (formula lives on the component, not template)
+                let formula = e.formula;
+                if (!formula && e.value_type === 'formula') {
+                    const availComp = this.availableEarnings().find(ac => ac._id === compId);
+                    formula = availComp?.formula || '';
+                }
+
+                return {
+                    component_id: compId,
+                    component_name: compName,
+                    component_code: compCode,
+                    value_type: e.value_type,
+                    fixed_amount: e.fixed_amount ?? undefined,
+                    percentage: e.percentage ?? undefined,
+                    formula: formula ?? undefined,
+                    override_allowed: e.override_allowed ?? true,
+                    calculation_order: e.calculation_order ?? 0,
+                    is_mandatory: e.is_mandatory ?? false,
+                    is_basic: isBasic,
+                    calculation_type: calcType,
+                } as TemplateEarning;
+            });
+            this.selectedEarnings.set(flatEarnings);
         }
+
+        // Flatten nested component_id objects for deductions
         if (template.deductions?.length) {
-            this.selectedDeductions.set(template.deductions);
+            const flatDeductions: TemplateDeduction[] = template.deductions.map((d: any) => {
+                const comp = typeof d.component_id === 'object' ? d.component_id : null;
+                return {
+                    component_id: comp ? comp._id : d.component_id,
+                    component_name: comp?.component_name || d.component_name || '',
+                    component_code: comp?.component_code || d.component_code || '',
+                    deduction_nature: comp?.deduction_nature || d.deduction_nature || '',
+                    override_allowed: d.override_allowed ?? false,
+                } as TemplateDeduction;
+            });
+            this.selectedDeductions.set(flatDeductions);
         }
+
         if (template.ctc_preview) {
             if (template.ctc_preview.annual_ctc) {
                 this.ctcInputType.set('annual');
                 this.annualCtc.set(template.ctc_preview.annual_ctc);
+                this.monthlyGross.set(Math.round(template.ctc_preview.annual_ctc / 12));
             } else if (template.ctc_preview.monthly_gross) {
                 this.ctcInputType.set('monthly');
                 this.monthlyGross.set(template.ctc_preview.monthly_gross);
+                this.annualCtc.set(template.ctc_preview.monthly_gross * 12);
             }
         }
         this.displayControlsForm.patchValue({
@@ -504,7 +572,7 @@ export class CreateTemplate implements OnInit, OnDestroy {
         };
 
         if (this.isEditMode() && this.templateId) {
-            payload.template_id = this.templateId;
+            payload.id = this.templateId;
         }
 
         return payload;
@@ -541,9 +609,7 @@ export class CreateTemplate implements OnInit, OnDestroy {
         if (!this.validateTemplate()) return;
 
         const payload = this.constructTemplatePayload();
-        const endpoint = this.isEditMode()
-            ? API_ENDPOINTS.payroll.update_template
-            : API_ENDPOINTS.payroll.create_template;
+        const endpoint = this.isEditMode() ? API_ENDPOINTS.payroll.update_template : API_ENDPOINTS.payroll.create_template;
 
         this._httpClient.post(endpoint, payload)
             .pipe(takeUntil(this.destroy$))
