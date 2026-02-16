@@ -204,8 +204,8 @@ export class SalaryComponentDialog implements OnInit {
   formulaValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;
-    // Basic formula validation — checks balanced parentheses & valid tokens
-    const validPattern = /^[A-Z_a-z0-9\s+\-*/(). ]+$/;
+    // Allow letters, digits, operators, parentheses, commas, %, decimal points, spaces
+    const validPattern = /^[A-Z_a-z0-9\s+\-*/().,% ]+$/;
     if (!validPattern.test(value)) {
       return { invalidFormula: 'Formula contains invalid characters' };
     }

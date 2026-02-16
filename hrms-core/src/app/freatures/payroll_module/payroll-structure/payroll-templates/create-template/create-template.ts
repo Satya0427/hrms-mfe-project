@@ -158,13 +158,25 @@ export class CreateTemplate implements OnInit, OnDestroy {
         }
         const baseCTC = this.ctcInputType() === 'annual' ? this.annualCtc() : this.monthlyGross() * 12;
         earningResolved['GROSS'] = baseCTC;
+        const basicAnnual = earningResolved['BASIC'] || 0;
 
         return this.selectedDeductions().map(d => {
+            // Look up the full component to get calculation_type, fixed_amount, percentage
+            const comp = this.availableDeductions().find(c => c._id === d.component_id);
+            const calcType = comp?.calculation_type || '';
+            let annual = 0;
+
+            if (calcType === 'fixed' && comp?.fixed_amount) {
+                annual = (comp.fixed_amount || 0) * 12;
+            } else if ((calcType === 'percentage_of_basic' || calcType === 'percentage') && comp?.percentage) {
+                annual = basicAnnual * (comp.percentage || 0) / 100;
+            }
+
             return {
                 component_name: d.component_name || '',
                 component_code: d.component_code || '',
-                monthly: 0,
-                annual: 0,
+                monthly: Math.round(annual / 12),
+                annual: Math.round(annual),
             };
         });
     });
@@ -187,8 +199,16 @@ export class CreateTemplate implements OnInit, OnDestroy {
                 }
             }
 
-            // Safety: only allow digits, decimals, operators, spaces, parentheses
-            if (!/^[\d\s+\-*/().]+$/.test(expression)) {
+            // Convert percentage syntax: 12% → /100  (e.g. BASIC*12% → BASIC*12/100)
+            expression = expression.replace(/%/g, '/100');
+
+            // Convert MIN/MAX/ROUND to Math.min/Math.max/Math.round
+            expression = expression.replace(/\bMIN\b/gi, 'Math.min');
+            expression = expression.replace(/\bMAX\b/gi, 'Math.max');
+            expression = expression.replace(/\bROUND\b/gi, 'Math.round');
+
+            // Safety: allow digits, decimals, operators, spaces, parentheses, commas, Math.*
+            if (!/^[\d\s+\-*/().,a-zA-Z]+$/.test(expression)) {
                 return 0;
             }
 
@@ -364,11 +384,20 @@ export class CreateTemplate implements OnInit, OnDestroy {
         if (template.deductions?.length) {
             const flatDeductions: TemplateDeduction[] = template.deductions.map((d: any) => {
                 const comp = typeof d.component_id === 'object' ? d.component_id : null;
+                const compId = comp ? comp._id : d.component_id;
+
+                // Look up full component to get calculation_type, fixed_amount, percentage, formula
+                const availComp = this.availableDeductions().find(ac => ac._id === compId);
+
                 return {
-                    component_id: comp ? comp._id : d.component_id,
+                    component_id: compId,
                     component_name: comp?.component_name || d.component_name || '',
                     component_code: comp?.component_code || d.component_code || '',
                     deduction_nature: comp?.deduction_nature || d.deduction_nature || '',
+                    calculation_type: availComp?.calculation_type || d.calculation_type || '',
+                    fixed_amount: d.fixed_amount ?? availComp?.fixed_amount ?? undefined,
+                    percentage: d.percentage ?? availComp?.percentage ?? undefined,
+                    formula: d.formula ?? availComp?.formula ?? undefined,
                     override_allowed: d.override_allowed ?? false,
                 } as TemplateDeduction;
             });
@@ -465,6 +494,10 @@ export class CreateTemplate implements OnInit, OnDestroy {
             component_name: component.component_name,
             component_code: component.component_code,
             deduction_nature: component.deduction_nature,
+            calculation_type: component.calculation_type,
+            fixed_amount: component.fixed_amount || undefined,
+            percentage: component.percentage || undefined,
+            formula: component.formula || undefined,
             override_allowed: component.deduction_nature !== 'statutory',
         };
         this.selectedDeductions.update(deductions => [...deductions, deduction]);
@@ -543,6 +576,10 @@ export class CreateTemplate implements OnInit, OnDestroy {
 
         const deductions = this.selectedDeductions().map(d => ({
             component_id: d.component_id,
+            calculation_type: d.calculation_type || null,
+            fixed_amount: d.calculation_type === 'fixed' ? (d.fixed_amount || null) : null,
+            percentage: (d.calculation_type === 'percentage_of_basic' || d.calculation_type === 'percentage') ? (d.percentage || null) : null,
+            formula: d.calculation_type === 'formula' ? (d.formula || null) : null,
             override_allowed: d.override_allowed,
         }));
 

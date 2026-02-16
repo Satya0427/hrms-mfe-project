@@ -50,6 +50,10 @@ export interface TemplateDeduction {
   component_name?: string;
   component_code?: string;
   deduction_nature?: string;
+  calculation_type?: string;
+  fixed_amount?: number;
+  percentage?: number;
+  formula?: string;
   override_allowed: boolean;
 }
 

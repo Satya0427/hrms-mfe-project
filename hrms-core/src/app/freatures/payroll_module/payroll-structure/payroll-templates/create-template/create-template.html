@@ -327,6 +327,31 @@
                   </div>
 
                   <div class="selected-config">
+                    @if (deduction.calculation_type === 'fixed') {
+                      <mat-form-field appearance="outline" class="config-field">
+                        <mat-label>Fixed Amount (Monthly)</mat-label>
+                        <input matInput type="number" [value]="deduction.fixed_amount"
+                               (input)="updateDeduction(i, 'fixed_amount', +$any($event.target).value)">
+                        <span matPrefix>&#8377;&nbsp;</span>
+                      </mat-form-field>
+                    }
+
+                    @if (deduction.calculation_type === 'percentage_of_basic' || deduction.calculation_type === 'percentage') {
+                      <mat-form-field appearance="outline" class="config-field">
+                        <mat-label>Percentage of Basic (%)</mat-label>
+                        <input matInput type="number" [value]="deduction.percentage"
+                               (input)="updateDeduction(i, 'percentage', +$any($event.target).value)">
+                        <span matSuffix>%</span>
+                      </mat-form-field>
+                    }
+
+                    @if (deduction.calculation_type === 'formula') {
+                      <div class="formula-display">
+                        <mat-icon class="formula-icon">functions</mat-icon>
+                        <span class="formula-text">{{ deduction.formula || 'No formula defined' }}</span>
+                      </div>
+                    }
+
                     <div class="config-toggles">
                       <mat-slide-toggle [checked]="deduction.override_allowed"
                                         (change)="updateDeduction(i, 'override_allowed', $event.checked)"

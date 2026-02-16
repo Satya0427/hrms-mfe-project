@@ -293,17 +293,35 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
             return;
         }
         const deductions = this.normalizeDeductions(template.deductions);
-        const snapshots: DeductionSnapshot[] = deductions.map(d => ({
-            component_id: d.component_id,
-            component_code: d.component_code || '',
-            component_name: d.component_name || '',
-            calculation_type: d.calculation_type || 'fixed',
-            percentage: d.percentage || null,
-            fixed_amount: d.fixed_amount || null,
-            employer_contribution: d.employer_contribution || 0,
-            employee_contribution: d.employee_contribution || 0,
-            monthly_value: 0,
-        }));
+        const basicMonthly = this.earningsSnapshot().find(e => e.component_code === 'BASIC')?.monthly_value || 0;
+
+        const snapshots: DeductionSnapshot[] = deductions.map(d => {
+            // Calculate actual monthly deduction amount
+            let monthlyAmount = 0;
+            const calcType = d.calculation_type || 'fixed';
+
+            if (calcType === 'fixed' && d.fixed_amount) {
+                monthlyAmount = d.fixed_amount;
+            } else if (calcType === 'percentage_of_basic' && d.percentage) {
+                monthlyAmount = Math.round(basicMonthly * d.percentage / 100);
+            }
+
+            // API returns booleans — convert to actual amounts
+            const hasEmployer = d.employer_contribution === true || d.employer_contribution === 'true';
+            const hasEmployee = d.employee_contribution === true || d.employee_contribution === 'true';
+
+            return {
+                component_id: d.component_id,
+                component_code: d.component_code || '',
+                component_name: d.component_name || '',
+                calculation_type: calcType,
+                percentage: d.percentage || null,
+                fixed_amount: d.fixed_amount || null,
+                employer_contribution: hasEmployer ? monthlyAmount : 0,
+                employee_contribution: hasEmployee ? monthlyAmount : 0,
+                monthly_value: hasEmployee ? monthlyAmount : 0,
+            };
+        });
         this.deductionsSnapshot.set(snapshots);
     }
 
@@ -324,6 +342,8 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
     private evaluateFormula(formula: string, resolved: Record<string, number>): number {
         try {
             let expression = formula.trim();
+
+            // Replace component code tokens with resolved values (longest first)
             const sortedKeys = Object.keys(resolved).sort((a, b) => b.length - a.length);
             for (const key of sortedKeys) {
                 if (key) {
@@ -331,7 +351,18 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                     expression = expression.replace(regex, String(resolved[key] || 0));
                 }
             }
-            if (!/^[\d\s+\-*/().]+$/.test(expression)) return 0;
+
+            // Convert percentage syntax: 12% → /100  (e.g. BASIC*12% → BASIC*12/100)
+            expression = expression.replace(/%/g, '/100');
+
+            // Convert MIN/MAX/ROUND to Math.min/Math.max/Math.round
+            expression = expression.replace(/\bMIN\b/gi, 'Math.min');
+            expression = expression.replace(/\bMAX\b/gi, 'Math.max');
+            expression = expression.replace(/\bROUND\b/gi, 'Math.round');
+
+            // Safety: allow digits, decimals, operators, parentheses, commas, Math.*
+            if (!/^[\d\s+\-*/().,a-zA-Z]+$/.test(expression)) return 0;
+
             const result = Function(`"use strict"; return (${expression});`)();
             return typeof result === 'number' && isFinite(result) ? result : 0;
         } catch {
