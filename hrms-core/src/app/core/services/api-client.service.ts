@@ -22,6 +22,7 @@ export class ApiClient {
     return this.http.post<T>(`${this.apiUrl}${path}`, body, options) as Observable<T>;
   }
 
+
   // Generic DELETE method
   delete<T>(path: string): Observable<T> {
     return this.http.delete<T>(`${this.apiUrl}${path}`)

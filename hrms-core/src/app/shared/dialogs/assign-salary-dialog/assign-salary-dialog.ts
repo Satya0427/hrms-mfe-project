@@ -216,6 +216,8 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                 is_basic: comp?.is_basic ?? e.is_basic ?? false,
                 calculation_type: comp?.calculation_type || e.calculation_type || '',
                 formula: e.formula || comp?.formula || '',
+                // employee_contribution: comp?.employee_contribution ?? e.employee_contribution ?? false,
+                // employer_contribution: comp?.employer_contribution ?? e.employer_contribution ?? false,
             };
         });
     }
@@ -230,6 +232,9 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                 component_code: comp?.component_code || d.component_code || '',
                 deduction_nature: comp?.deduction_nature || d.deduction_nature || '',
                 calculation_type: comp?.calculation_type || d.calculation_type || 'fixed',
+                formula: d.formula || comp?.formula || '',
+                employee_contribution: comp?.employee_contribution ?? d.employee_contribution ?? false,
+                employer_contribution: comp?.employer_contribution ?? d.employer_contribution ?? false,
             };
         });
     }
@@ -293,6 +298,12 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
             return;
         }
         const deductions = this.normalizeDeductions(template.deductions);
+        const resolvedAnnual: Record<string, number> = { GROSS: this.annualCtc() };
+        for (const e of this.earningsSnapshot()) {
+            if (e.component_code) {
+                resolvedAnnual[e.component_code] = e.annual_value || 0;
+            }
+        }
         const basicMonthly = this.earningsSnapshot().find(e => e.component_code === 'BASIC')?.monthly_value || 0;
 
         const snapshots: DeductionSnapshot[] = deductions.map(d => {
@@ -304,11 +315,14 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                 monthlyAmount = d.fixed_amount;
             } else if (calcType === 'percentage_of_basic' && d.percentage) {
                 monthlyAmount = Math.round(basicMonthly * d.percentage / 100);
+            } else if (calcType === 'formula' && d.formula) {
+                const annualAmount = this.evaluateFormula(d.formula, resolvedAnnual);
+                monthlyAmount = Math.round(annualAmount / 12);
             }
 
             // API returns booleans — convert to actual amounts
-            const hasEmployer = d.employer_contribution === true || d.employer_contribution === 'true';
-            const hasEmployee = d.employee_contribution === true || d.employee_contribution === 'true';
+            const hasEmployer = d?.employer_contribution === true || d?.employer_contribution === 'true';
+            const hasEmployee = d?.employee_contribution === true || d?.employee_contribution === 'true';
 
             return {
                 component_id: d.component_id,
@@ -320,6 +334,7 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                 employer_contribution: hasEmployer ? monthlyAmount : 0,
                 employee_contribution: hasEmployee ? monthlyAmount : 0,
                 monthly_value: hasEmployee ? monthlyAmount : 0,
+                value_type: calcType === 'formula' ? 'formula' : calcType === 'percentage_of_basic' ? 'percentage' : 'fixed',
             };
         });
         this.deductionsSnapshot.set(snapshots);
@@ -342,8 +357,6 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
     private evaluateFormula(formula: string, resolved: Record<string, number>): number {
         try {
             let expression = formula.trim();
-
-            // Replace component code tokens with resolved values (longest first)
             const sortedKeys = Object.keys(resolved).sort((a, b) => b.length - a.length);
             for (const key of sortedKeys) {
                 if (key) {
@@ -351,18 +364,11 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                     expression = expression.replace(regex, String(resolved[key] || 0));
                 }
             }
-
-            // Convert percentage syntax: 12% → /100  (e.g. BASIC*12% → BASIC*12/100)
             expression = expression.replace(/%/g, '/100');
-
-            // Convert MIN/MAX/ROUND to Math.min/Math.max/Math.round
             expression = expression.replace(/\bMIN\b/gi, 'Math.min');
             expression = expression.replace(/\bMAX\b/gi, 'Math.max');
             expression = expression.replace(/\bROUND\b/gi, 'Math.round');
-
-            // Safety: allow digits, decimals, operators, parentheses, commas, Math.*
             if (!/^[\d\s+\-*/().,a-zA-Z]+$/.test(expression)) return 0;
-
             const result = Function(`"use strict"; return (${expression});`)();
             return typeof result === 'number' && isFinite(result) ? result : 0;
         } catch {
@@ -407,7 +413,7 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
         const formData = this.basicForm.getRawValue();
 
         const payload = {
-            employee_id: formData.employee_id,
+            employee_uuid: formData.employee_id,
             template_id: formData.template_id,
             annual_ctc: this.annualCtc(),
             monthly_gross: this.monthlyGross(),
@@ -436,6 +442,7 @@ export class AssignSalaryDialog implements OnInit, OnDestroy {
                 employer_contribution: d.employer_contribution,
                 employee_contribution: d.employee_contribution,
                 monthly_value: d.monthly_value,
+                value_type: d.value_type,
             })),
         };
 

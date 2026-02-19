@@ -19,7 +19,7 @@ export interface EmployeeAssignmentRecord {
   employee_code?: string;
   department?: string;
   designation?: string;
-  template_id: string;
+  template_id: string | null;
   template_name?: string;
   template_code?: string;
   annual_ctc: number;
@@ -32,6 +32,43 @@ export interface EmployeeAssignmentRecord {
   deductions_snapshot: DeductionSnapshot[];
   created_at?: string;
   updated_at?: string;
+  monthly_ctc?: number;
+  employee_email?: string;
+}
+
+interface AssignmentApiRecord {
+  _id?: string;
+  employee_id?: string;
+  template_id?: string | null;
+  annual_ctc?: number;
+  monthly_gross?: number;
+  effective_from?: string | Date;
+  status?: 'ACTIVE' | 'REVISED' | 'INACTIVE';
+  version?: number;
+  is_active?: boolean;
+  earnings_snapshot?: EarningSnapshot[];
+  deductions_snapshot?: DeductionSnapshot[];
+  createdAt?: string;
+  updatedAt?: string;
+  employee_name?: string;
+  employee_code?: string;
+  employee_email?: string;
+  template_name?: string;
+  template_code?: string;
+  Employee_details?: {
+    personal_details?: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+    };
+    job_details?: {
+      employee_id?: string;
+    };
+  };
+  template_details?: {
+    template_name?: string;
+    template_code?: string;
+  };
 }
 
 export interface EarningSnapshot {
@@ -57,6 +94,9 @@ export interface DeductionSnapshot {
   employer_contribution?: number;
   employee_contribution?: number;
   monthly_value: number;
+  value_type: 'fixed' | 'percentage' | 'formula';
+  annual_value?: number;
+  
 }
 
 @Component({
@@ -119,7 +159,7 @@ export class EmployeeAssignment implements OnInit, OnDestroy {
 
   // Table columns
   displayedColumns = [
-    'employee_name', 'employee_code', 'department', 'designation',
+    'employee_name', 'employee_email', 'employee_code', 'earnings', 'deductions',
     'template_name', 'monthly_ctc', 'effective_from', 'status', 'actions'
   ];
 
@@ -132,28 +172,58 @@ export class EmployeeAssignment implements OnInit, OnDestroy {
     this.loadAssignments();
   }
 
+  private mapAssignment(apiItem: AssignmentApiRecord): EmployeeAssignmentRecord {
+    const firstName = apiItem?.Employee_details?.personal_details?.firstName || '';
+    const lastName = apiItem?.Employee_details?.personal_details?.lastName || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    return {
+      _id: apiItem?._id,
+      employee_id: apiItem?.employee_id || '',
+      employee_name: apiItem?.employee_name || fullName || 'Unknown',
+      employee_email: apiItem?.employee_email || apiItem?.Employee_details?.personal_details?.email || '--',
+      employee_code: apiItem?.employee_code || apiItem?.Employee_details?.job_details?.employee_id || '--',
+      department: '',
+      designation: '',
+      template_id: apiItem?.template_id || null,
+      template_name: apiItem?.template_id ? (apiItem?.template_name || apiItem?.template_details?.template_name || '') : '',
+      template_code: apiItem?.template_id ? (apiItem?.template_code || apiItem?.template_details?.template_code || '') : '',
+      annual_ctc: apiItem?.annual_ctc || 0,
+      monthly_gross: apiItem?.monthly_gross || 0,
+      monthly_ctc: apiItem?.monthly_gross || 0,
+      effective_from: apiItem?.effective_from ? new Date(apiItem.effective_from) : '',
+      status: apiItem?.is_active ? (apiItem?.status || 'ACTIVE') : 'INACTIVE',
+      version: apiItem?.version || 1,
+      is_active: !!apiItem?.is_active,
+      earnings_snapshot: apiItem?.earnings_snapshot ?? [],
+      deductions_snapshot: apiItem?.deductions_snapshot ?? [],
+      created_at: apiItem?.createdAt,
+      updated_at: apiItem?.updatedAt,
+    };
+  }
+
   // ─── Load All Assignments ───
   loadAssignments(): void {
     this.loading.set(true);
+    const backendStatus = this.statusFilter() === 'ASSIGNED' ? 'ACTIVE' : null;
     const payload = {
-      status: this.statusFilter() === 'ALL' ? null : this.statusFilter(),
+      status: backendStatus,
       search: this.searchQuery() || null,
       page: 1,
       limit: 200,
     };
-    this._httpClient.post(API_ENDPOINTS.payroll.get_assignments, payload)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response: any) => {
-          const data = response?.data?.assignments || response?.data || [];
-          this.allAssignments.set(data);
-          this.loading.set(false);
-        },
-        error: (error) => {
-          console.error('Error loading assignments:', error);
-          this.loading.set(false);
-        }
-      });
+    this._httpClient.post(API_ENDPOINTS.payroll.get_assignments, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response: any) => {
+        const data = response?.data?.assignments || response?.data || [];
+        const mappedData = data.map((a: AssignmentApiRecord) => this.mapAssignment(a));
+        this.allAssignments.set(mappedData);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading assignments:', error);
+        this.loading.set(false);
+      }
+    });
   }
 
   onSearch(query: string): void {
@@ -210,9 +280,7 @@ export class EmployeeAssignment implements OnInit, OnDestroy {
       data: dialogData,
     });
 
-    dialogRef.componentInstance.saveRequested
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: any) => {
+    dialogRef.componentInstance.saveRequested.pipe(takeUntil(this.destroy$)).subscribe((result: any) => {
         if (result?.data) {
           this._httpClient.post(API_ENDPOINTS.payroll.assign_salary, result.data)
             .pipe(takeUntil(this.destroy$))
@@ -288,22 +356,16 @@ export class EmployeeAssignment implements OnInit, OnDestroy {
       this.salaryHistory.set([]);
       return;
     }
+
     this.expandedRow.set(empId);
     this.historyLoading.set(true);
-    const payload = { employee_id: empId };
-    this._httpClient.post(API_ENDPOINTS.payroll.get_salary_history, payload)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response: any) => {
-          const history = response?.data?.history || response?.data || [];
-          this.salaryHistory.set(history);
-          this.historyLoading.set(false);
-        },
-        error: (error) => {
-          console.error('Error loading salary history:', error);
-          this.historyLoading.set(false);
-        }
-      });
+
+    const localHistory = this.allAssignments()
+      .filter(item => item.employee_id === empId)
+      .sort((a, b) => (b.version || 0) - (a.version || 0));
+
+    this.salaryHistory.set(localHistory.length ? localHistory : [assignment]);
+    this.historyLoading.set(false);
   }
 
   // ─── Deactivate Assignment ───

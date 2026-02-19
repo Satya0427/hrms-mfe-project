@@ -1,0 +1,158 @@
+<app-page-header title="Payroll Process Engine" [breadcrumbs]="breadcrumbs">
+  <div header-actions>
+    <button mat-flat-button color="primary" [disabled]="loadingRun() || actionLoading()" (click)="createPayrollRun()">
+      <mat-icon>play_circle</mat-icon> Run Payroll
+    </button>
+  </div>
+</app-page-header>
+
+<div class="page-content">
+  <div class="run-config-card">
+    <h3>Step 1 - Select Payroll Month</h3>
+    <div class="run-config-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Payroll Month</mat-label>
+        <input matInput type="month" [ngModel]="selectedMonth()" (ngModelChange)="onMonthChange($event)" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Payroll Cycle</mat-label>
+        <input matInput [ngModel]="payrollCycle()" disabled />
+      </mat-form-field>
+
+      <mat-slide-toggle [ngModel]="validatePreviousLock()" (ngModelChange)="onValidatePreviousLockChange($event)">
+        Validate Previous Payroll Lock
+      </mat-slide-toggle>
+
+      <button mat-stroked-button [disabled]="!currentRun()?.run_id || loadingEmployees()" (click)="fetchPayrollEmployees()">
+        <mat-icon>groups</mat-icon> Fetch Eligible Employees
+      </button>
+    </div>
+  </div>
+
+  @if (currentRun(); as run) {
+    <div class="run-info-strip">
+      <div>
+        <span class="label">Run ID</span>
+        <span class="value">{{ run.run_id }}</span>
+      </div>
+      <div>
+        <span class="label">Month</span>
+        <span class="value">{{ run.month }}/{{ run.year }}</span>
+      </div>
+      <div>
+        <span class="label">Status</span>
+        <span class="status-chip" [class]="getStatusClass(run.status)">{{ run.status | titlecase }}</span>
+      </div>
+    </div>
+  }
+
+  <div class="stats-row">
+    @for (stat of stats(); track stat.label) {
+      <div class="stat-card" [style.--card-color]="stat.color" [style.--card-bg]="stat.bgColor">
+        <div class="stat-icon"><mat-icon>{{ stat.icon }}</mat-icon></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stat.isCurrency ? formatCurrency(stat.value) : stat.value }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="flow-actions">
+    <button mat-flat-button color="primary" [disabled]="!canApprove || actionLoading()" (click)="approvePayroll()">
+      <mat-icon>task_alt</mat-icon> Approve
+    </button>
+    <button mat-flat-button color="accent" [disabled]="!canLock || actionLoading()" (click)="lockPayroll()">
+      <mat-icon>lock</mat-icon> Lock
+    </button>
+    <button mat-stroked-button color="warn" [disabled]="!canReverse || actionLoading()" (click)="reversePayroll()">
+      <mat-icon>settings_backup_restore</mat-icon> Reverse
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search employee, id or template..." [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)" />
+      </mat-form-field>
+
+      <mat-button-toggle-group [value]="statusFilter()" (change)="onStatusFilter($event.value)">
+        <mat-button-toggle value="ALL">All</mat-button-toggle>
+        <mat-button-toggle value="READY">Ready</mat-button-toggle>
+        <mat-button-toggle value="ERROR">Error</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="toolbar-right">{{ filteredEmployees().length }} employee(s)</div>
+  </div>
+
+  @if (loadingRun() || loadingEmployees()) {
+    <div class="loading-state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Loading payroll data...</span>
+    </div>
+  } @else if (filteredEmployees().length === 0) {
+    <div class="empty-state">
+      <mat-icon>assignment_late</mat-icon>
+      <h4>No payroll employees found</h4>
+      <p>Create run and fetch employees to continue payroll calculation.</p>
+    </div>
+  } @else {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="filteredEmployees()" class="employee-table">
+        <ng-container matColumnDef="employee_name">
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="employee-cell">
+              <span class="avatar">{{ row.employee_name[0] }}</span>
+              <div>
+                <span class="primary">{{ row.employee_name }}</span>
+                <span class="secondary">{{ row.employee_id }}</span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="template_name">
+          <th mat-header-cell *matHeaderCellDef>Template</th>
+          <td mat-cell *matCellDef="let row">{{ row.template_name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="gross">
+          <th mat-header-cell *matHeaderCellDef>Gross</th>
+          <td mat-cell *matCellDef="let row">{{ formatCurrency(row.gross) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lop_days">
+          <th mat-header-cell *matHeaderCellDef>LOP Days</th>
+          <td mat-cell *matCellDef="let row">{{ row.lop_days }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="net_preview">
+          <th mat-header-cell *matHeaderCellDef>Net Preview</th>
+          <td mat-cell *matCellDef="let row"><b>{{ formatCurrency(row.net_preview) }}</b></td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-chip" [class]="getStatusClass(row.status)">{{ row.status }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="Recalculate Employee" [disabled]="getRunStatus() !== 'draft' || actionLoading()" (click)="recalculateEmployee(row)">
+              <mat-icon>autorenew</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  }
+</div>

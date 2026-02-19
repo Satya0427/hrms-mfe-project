@@ -161,7 +161,7 @@ export class CreateTemplate implements OnInit, OnDestroy {
         const basicAnnual = earningResolved['BASIC'] || 0;
 
         return this.selectedDeductions().map(d => {
-            // Look up the full component to get calculation_type, fixed_amount, percentage
+            // Look up the full component to get calculation_type, fixed_amount, percentage, formula
             const comp = this.availableDeductions().find(c => c._id === d.component_id);
             const calcType = comp?.calculation_type || '';
             let annual = 0;
@@ -170,6 +170,9 @@ export class CreateTemplate implements OnInit, OnDestroy {
                 annual = (comp.fixed_amount || 0) * 12;
             } else if ((calcType === 'percentage_of_basic' || calcType === 'percentage') && comp?.percentage) {
                 annual = basicAnnual * (comp.percentage || 0) / 100;
+            } else if (calcType === 'formula' && comp?.formula) {
+                // Use the same formula evaluation as earnings, passing resolved earnings and baseCTC
+                annual = this.evaluateFormula(comp.formula, earningResolved, baseCTC);
             }
 
             return {

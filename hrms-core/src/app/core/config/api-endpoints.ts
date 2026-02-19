@@ -105,5 +105,13 @@ export const API_ENDPOINTS = {
         deactivate_assignment: '/payroll/employee-assignment/deactivate',
         remove_assignment: '/payroll/employee-assignment/remove',
 
+        // Payroll Process Engine (Run Lifecycle)
+        create_payroll_run: '/payroll/run',
+        get_payroll_employees: (runId: string) => `/payroll/run/${runId}/employees`,
+        recalculate_employee: (runId: string, employeeId: string) => `/payroll/run/${runId}/recalculate/${employeeId}`,
+        approve_payroll: (runId: string) => `/payroll/run/${runId}/approve`,
+        lock_payroll: (runId: string) => `/payroll/run/${runId}/lock`,
+        reverse_payroll: (runId: string) => `/payroll/run/${runId}/reverse`,
+
     }
 };

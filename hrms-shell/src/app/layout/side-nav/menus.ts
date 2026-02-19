@@ -120,9 +120,9 @@ export const MODULE_FEATURES = [
                 active: false,
                 expanded: false,
                 subFeatures: [
-                    { label: 'Process Payroll', route: '/home/payroll/process', key: 'PROCESS_PAYROLL', active: false },
-                    { label: 'Payroll History', route: '/home/payroll/history', key: 'PAYROLL_HISTORY', active: false },
-                    { label: 'Locked Payroll', route: '/home/payroll/locked', key: 'LOCKED_PAYROLL', active: false }
+                    { label: 'Process Payroll', route:  '/home/hrms-core/payroll/run-payroll/payroll-process', key: 'PROCESS_PAYROLL', active: false },
+                    { label: 'Payroll History', route: '/home/hrms-core/payroll/run-payroll/payroll-history', key: 'PAYROLL_HISTORY', active: false },
+                    { label: 'Locked Payroll', route: '/home/hrms-core/payroll/run-payroll/locked-payroll', key: 'LOCKED_PAYROLL', active: false }
                 ]
             },
 
@@ -148,9 +148,9 @@ export const MODULE_FEATURES = [
                 active: false,
                 expanded: false,
                 subFeatures: [
-                    { label: 'Components', route: '/home/hrms-core/payroll/components', key: 'SALARY_COMPONENTS', active: false },
-                    { label: 'Templates', route: '/home/hrms-core/payroll/templates', key: 'SALARY_TEMPLATES', active: false },
-                    { label: 'Employee Assignment', route: '/home/hrms-core/payroll/employee-assignment', key: 'ASSIGN_SALARY_STRUCTURE', active: false }
+                    { label: 'Components', route: '/home/hrms-core/payroll/payroll-structure/components', key: 'SALARY_COMPONENTS', active: false },
+                    { label: 'Templates', route: '/home/hrms-core/payroll/payroll-structure/templates', key: 'SALARY_TEMPLATES', active: false },
+                    { label: 'Employee Assignment', route: '/home/hrms-core/payroll/payroll-structure/employee-assignment', key: 'ASSIGN_SALARY_STRUCTURE', active: false }
                 ]
             },
 

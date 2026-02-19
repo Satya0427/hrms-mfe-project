@@ -2,7 +2,7 @@ import { Routes } from "@angular/router";
 
 export const PAYROLL_MODULE_ROUTES: Routes = [
     {
-        path: '', loadComponent: () => import('./payroll-module').then(m => m.PayrollModule),
+        path: 'payroll-structure', loadComponent: () => import('./payroll-module').then(m => m.PayrollModule),
         children: [
             { path: 'components', loadComponent: () => import('./payroll-structure/payroll-components/payroll-components').then(m => m.PayrollComponents) },
             { path: 'templates', loadComponent: () => import('./payroll-structure/payroll-templates/payroll-templates').then(m => m.PayrollTemplates) },
@@ -12,4 +12,12 @@ export const PAYROLL_MODULE_ROUTES: Routes = [
             { path: '', redirectTo: 'components', pathMatch: 'full' }
         ]
     },
+    {
+        path: 'run-payroll', loadComponent: () => import('./run-payroll/run-payroll').then(m => m.RunPayroll),
+        children: [
+            { path: 'payroll-process', loadComponent: () => import('./run-payroll/payroll-process/payroll-process').then(m => m.PayrollProcess) },
+            { path: '', redirectTo: 'payroll-process', pathMatch: 'full' }
+        ]
+    },
+    { path: '', redirectTo: 'payroll-structure', pathMatch: 'full' }
 ]

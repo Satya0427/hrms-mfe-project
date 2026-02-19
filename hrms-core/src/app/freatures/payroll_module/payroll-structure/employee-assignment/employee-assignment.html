@@ -33,8 +33,8 @@
         <div class="toolbar-left">
             <mat-form-field appearance="outline" class="search-field">
                 <mat-icon matPrefix>search</mat-icon>
-                <input matInput placeholder="Search by name, code, department..."
-                    [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)">
+                <input matInput placeholder="Search by name, code, department..." [ngModel]="searchQuery()"
+                    (ngModelChange)="onSearch($event)">
                 @if (searchQuery()) {
                 <button matSuffix mat-icon-button (click)="onSearch('')" aria-label="Clear">
                     <mat-icon>close</mat-icon>
@@ -103,8 +103,8 @@
                             {{ (row.employee_name || 'U')[0] }}
                         </div>
                         <div class="name-text">
-                            <span class="primary-text">{{ row.employee_name || 'N/A' }}</span>
-                            <span class="secondary-text">{{ row.designation || '' }}</span>
+                            <span class="primary-text">{{ row?.employee_name || 'N/A' }}</span>
+                            <span class="secondary-text">{{ row?.designation || 'Software Engineer' }}</span>
                         </div>
                     </div>
                 </td>
@@ -114,20 +114,63 @@
             <ng-container matColumnDef="employee_code">
                 <th mat-header-cell *matHeaderCellDef>Emp ID</th>
                 <td mat-cell *matCellDef="let row">
-                    <code class="code-badge">{{ row.employee_code || '--' }}</code>
+                    <code class="code-badge">{{ row?.employee_code || '--' }}</code>
                 </td>
             </ng-container>
 
-            <!-- Department -->
-            <ng-container matColumnDef="department">
-                <th mat-header-cell *matHeaderCellDef>Department</th>
-                <td mat-cell *matCellDef="let row">{{ row.department || '--' }}</td>
+            <!-- Employee Email -->
+            <ng-container matColumnDef="employee_email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let row">
+                    <span class="email-text">{{ row?.employee_email || '--' }}</span>
+                </td>
             </ng-container>
 
-            <!-- Designation -->
-            <ng-container matColumnDef="designation">
-                <th mat-header-cell *matHeaderCellDef>Designation</th>
-                <td mat-cell *matCellDef="let row">{{ row.designation || '--' }}</td>
+            <!-- Earnings Breakdown -->
+            <ng-container matColumnDef="earnings">
+                <th mat-header-cell *matHeaderCellDef>Earnings</th>
+                <td mat-cell *matCellDef="let row"><b>{{ row?.earnings_snapshot?.length || 0 }}</b></td>
+
+
+                <!-- <td mat-cell *matCellDef="let row">
+                    <div class="component-list">
+                        @if (row.earnings_snapshot?.length > 0) {
+                        <ul>
+                            @for (e of row.earnings_snapshot; track e.component_id) {
+                            <li>
+                                <span class="comp-name">{{ e.component_name || e.component_code }}</span>:
+                                <span class="comp-value">{{ formatCurrency(e.monthly_value) }}</span>
+                            </li>
+                            }
+                        </ul>
+                        } @else {
+                        <span class="empty-comp">--</span>
+                        }
+                    </div>
+                </td> -->
+            </ng-container>
+
+            <!-- Deductions Breakdown -->
+            <ng-container matColumnDef="deductions">
+                <th mat-header-cell *matHeaderCellDef>Deductions</th>
+                <td mat-cell *matCellDef="let row"><b>{{ row?.deductions_snapshot?.length || 0 }}</b></td>
+
+                <!-- <td mat-cell *matCellDef="let row">
+                    <div class="component-list">
+                        @if (row.deductions_snapshot?.length > 0) {
+                            <ul>
+                                @for (d of row.deductions_snapshot; track d.component_id) {
+                                    <li>
+                                        <span class="comp-name">{{ d.component_name || d.component_code }}</span>:
+                                        <span class="comp-value">{{ formatCurrency(d.monthly_value) }}</span>
+                                    </li>
+                                }
+                            </ul>
+                        } @else {
+                            <span class="empty-comp">--</span>
+                        }
+                    </div>
+                </td> -->
             </ng-container>
 
             <!-- Template Name -->
@@ -138,8 +181,8 @@
                     <div class="template-cell">
                         <mat-icon class="tpl-icon">description</mat-icon>
                         <div>
-                            <span class="tpl-name">{{ row.template_name }}</span>
-                            <span class="tpl-code">{{ row.template_code }}</span>
+                            <span class="tpl-name">{{ row?.template_name }}</span>
+                            <span class="tpl-code">{{ row?.template_code }}</span>
                         </div>
                     </div>
                     } @else {
@@ -154,7 +197,7 @@
             <ng-container matColumnDef="monthly_ctc">
                 <th mat-header-cell *matHeaderCellDef>Monthly CTC</th>
                 <td mat-cell *matCellDef="let row">
-                    <span class="currency-value">{{ formatCurrency(row.monthly_gross) }}</span>
+                    <span class="currency-value">{{ formatCurrency(row?.monthly_ctc) }}</span>
                 </td>
             </ng-container>
 
@@ -162,8 +205,9 @@
             <ng-container matColumnDef="effective_from">
                 <th mat-header-cell *matHeaderCellDef>Effective From</th>
                 <td mat-cell *matCellDef="let row">
-                    @if (row.effective_from) {
-                    <span class="date-cell">{{ row.effective_from | date:'mediumDate' }}</span>
+                    @if (row?.effective_from) {
+                    <span class="date-cell">{{ row?.effective_from ? (row?.effective_from | date:'mediumDate') : '--'
+                        }}</span>
                     } @else {
                     <span>--</span>
                     }
@@ -174,11 +218,11 @@
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let row">
-                    @if (row.template_id) {
-                    <span class="status-badge" [class]="getStatusColor(row.status)">
-                        {{ row.status }}
-                        @if (row.version > 1) {
-                        <span class="version-tag">v{{ row.version }}</span>
+                    @if (row?.template_id) {
+                    <span class="status-badge" [class]="getStatusColor(row?.status)">
+                        {{ row?.status }}
+                        @if (row?.version > 1) {
+                        <span class="version-tag">v{{ row?.version }}</span>
                         }
                     </span>
                     } @else {
@@ -192,21 +236,23 @@
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let row">
                     <div class="action-btns">
-                        @if (row.template_id) {
+                        @if (row?.template_id) {
                         <button mat-icon-button matTooltip="View Details" (click)="openViewDialog(row)">
                             <mat-icon>visibility</mat-icon>
                         </button>
                         <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(row)">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button matTooltip="Revise Salary" class="revise-btn" (click)="openReviseDialog(row)">
+                        <button mat-icon-button matTooltip="Revise Salary" class="revise-btn"
+                            (click)="openReviseDialog(row)">
                             <mat-icon>history</mat-icon>
                         </button>
                         <button mat-icon-button matTooltip="Salary History" (click)="toggleHistory(row)">
-                            <mat-icon>{{ expandedRow() === row.employee_id ? 'expand_less' : 'expand_more' }}</mat-icon>
+                            <mat-icon>{{ expandedRow() === row?.employee_id ? 'expand_less' : 'expand_more'
+                                }}</mat-icon>
                         </button>
                         <button mat-icon-button matTooltip="Deactivate" class="danger-btn"
-                            (click)="deactivateAssignment(row)" [disabled]="row.status === 'INACTIVE'">
+                            (click)="deactivateAssignment(row)" [disabled]="row?.status === 'INACTIVE'">
                             <mat-icon>block</mat-icon>
                         </button>
                         } @else {
