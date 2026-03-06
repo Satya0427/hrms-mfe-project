@@ -16,6 +16,8 @@ export const PAYROLL_MODULE_ROUTES: Routes = [
         path: 'run-payroll', loadComponent: () => import('./run-payroll/run-payroll').then(m => m.RunPayroll),
         children: [
             { path: 'payroll-process', loadComponent: () => import('./run-payroll/payroll-process/payroll-process').then(m => m.PayrollProcess) },
+            {path:'payroll-history', loadComponent: () => import('./run-payroll/payroll-history/payroll-history').then(m => m.PayrollHistory)},
+            {path:'locked-payroll', loadComponent: () => import('./run-payroll/locked-payroll/locked-payroll').then(m => m.LockedPayroll)},
             { path: '', redirectTo: 'payroll-process', pathMatch: 'full' }
         ]
     },

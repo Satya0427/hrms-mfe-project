@@ -10,7 +10,7 @@ export const layoutRoutes: Routes = [
         children: [
             { path: '', redirectTo: 'hrms-core', pathMatch: 'full' },
             {
-                path: 'paltform-management',
+                path: 'platform-management',
                 loadChildren: () =>
                     loadRemoteModule({
                         type: 'module',

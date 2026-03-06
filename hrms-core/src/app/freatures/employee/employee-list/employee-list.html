@@ -1,8 +1,7 @@
 <div class="page-wrapper">
     <!-- Reusable Page Header -->
-    <app-page-header title="All Employees"
-                     [breadcrumbs]="['Home', 'Employees', 'All Employees']"
-                     (onBack)="handleBack()">
+    <app-page-header title="All Employees" [breadcrumbs]="['Home', 'Employees', 'All Employees']"
+        (onBack)="handleBack()">
     </app-page-header>
     <!-- Toolbar Section -->
     <div class="table-card">
@@ -34,7 +33,7 @@
             <div style="padding: 8px; background: #f0f0f0; font-size: 12px;">
                 Total Employees: {{ employees.length }}
             </div>
-            
+
             <!-- Table Header -->
             <div class="table-header">
                 <div class="header-cell checkbox-col">
@@ -54,71 +53,63 @@
             </div>
 
             <!-- Virtual Scroll Viewport -->
-            <cdk-virtual-scroll-viewport 
-                [itemSize]="itemSize"
-                [minBufferPx]="200"
-                [maxBufferPx]="400"
-                class="table-viewport"
-                (scrolledIndexChange)="onScrollIndexChange($event)">
-                
+            <cdk-virtual-scroll-viewport [itemSize]="itemSize" [minBufferPx]="200" [maxBufferPx]="400"
+                class="table-viewport" (scrolledIndexChange)="onScrollIndexChange($event)">
+
                 <!-- Empty State -->
                 <div *ngIf="employees.length === 0 && !isLoadingMore" class="empty-state">
                     <p>No employees found</p>
                 </div>
-                
-                <div *cdkVirtualFor="let employee of employees; trackBy: trackByEmployeeId" 
-                     class="table-row"
-                     [routerLink]="['/home/hrms-core/employees/employee-edit', employee._id]">
-                    
+
+                <div *cdkVirtualFor="let employee of employees; trackBy: trackByEmployeeId" class="table-row"
+                    [routerLink]="['/home/hrms-core/employees/employee-edit', employee._id]">
+
                     <div class="table-cell checkbox-col">
-                        <mat-checkbox 
-                            (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(employee) : null" 
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(employee) : null"
                             [checked]="selection.isSelected(employee)">
                         </mat-checkbox>
                     </div>
-                    
+
                     <div class="table-cell name-col">
                         <div class="name-cell">
-                            <img [src]="employee.avatar || 'assets/default-avatar.png'" 
-                                 (error)="$event.target.src='assets/default-avatar.png'" 
-                                 alt="avatar" 
-                                 class="avatar">
+                            <img [src]="employee.avatar || 'assets/default-avatar.png'"
+                                (error)="$event.target.src='assets/default-avatar.png'" alt="avatar" class="avatar">
                             <span>{{employee.name}}</span>
                         </div>
                     </div>
-                    
+
                     <div class="table-cell">{{employee.role}}</div>
-                    
+
                     <div class="table-cell">{{employee.department}}</div>
-                    
+
                     <div class="table-cell">
                         <div class="icon-text">
                             <mat-icon class="icon-phone">phone</mat-icon>
                             {{employee.mobile}}
                         </div>
                     </div>
-                    
+
                     <div class="table-cell">
                         <div class="icon-text">
                             <mat-icon class="icon-date">calendar_today</mat-icon>
                             {{employee.joiningDate | date:'MM/dd/yyyy'}}
                         </div>
                     </div>
-                    
+
                     <div class="table-cell email-col">
                         <div class="icon-text">
                             <mat-icon class="icon-email">email</mat-icon>
                             <span class="email-text">{{employee.email}}</span>
                         </div>
                     </div>
-                    
+
                     <div class="table-cell">
                         <span class="gender-badge" [ngClass]="employee.gender.toLowerCase()">
                             {{employee.gender}}
                         </span>
                     </div>
-                    
+
                     <div class="table-cell address-col">
                         <div class="icon-text">
                             <mat-icon class="icon-loc">location_on</mat-icon>

@@ -266,7 +266,7 @@ export const MODULE_FEATURES = [
         expanded: false,
         subItems: [
             { label: 'Platform Dashboard', route: '/home/platform-management/dashboard', key: 'PLATFORM_DASHBOARD', active: false },
-            { label: 'Organizations', route: '/home/platform-management/organizations', key: 'ORGANIZATIONS', active: false },
+            { label: 'Organizations', route: '/home/platform-management/orginization', key: 'ORGANIZATIONS', active: false },
             { label: 'Global Admin Users', route: '/home/platform-management/global-admin', key: 'GLOBAL_ADMIN_USERS', active: false },
             { label: 'Subscription & Plans', route: '/home/platform-management/subscription-plans', key: 'SUBSCRIPTION_PLANS', active: false },
             { label: 'Module & Feature Management', route: '/home/platform-management/module-feature-management', key: 'MODULE_FEATURE_MANAGEMENT', active: false },

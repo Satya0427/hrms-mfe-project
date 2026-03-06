@@ -1,19 +1,16 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
-import { MATERIAL } from '../../../shared/material/materials';
-import { CommonModule } from '@angular/common';
-import { Location } from '@angular/common';
-import { PageHeader, HeaderTab } from '../../../shared/components/page-header/page-header';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDialog } from '@angular/material/dialog';
-import { DynamicFieldsDialog, FieldConfig } from '../../../shared/components/dynamic-fields-dialog/dynamic-fields-dialog';
-import { Validators } from '@angular/forms';
-import { ApiClient } from '../../../core/services/api-client.service';
-import { Subject, takeUntil } from 'rxjs';
-import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
-import { CommonService } from '../../../core/services/common.service';
-import { RouterModule } from '@angular/router';
-import { environment } from '../../../../environments/environment.dev';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CommonModule, Location } from '@angular/common';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../../environments/environment.dev';
+import { API_ENDPOINTS } from '../../../core/config/api-endpoints';
+import { ApiClient } from '../../../core/services/api-client.service';
+import { CommonService } from '../../../core/services/common.service';
+import { FieldConfig } from '../../../shared/components/dynamic-fields-dialog/dynamic-fields-dialog';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { MATERIAL } from '../../../shared/material/materials';
 
 
 
@@ -24,7 +21,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   styleUrl: './employee-list.scss',
 })
 export class EmployeeList {
-  private dialog = inject(MatDialog);
   private _httpClient = inject(ApiClient);
   private _commonService = inject(CommonService);
   private _location = inject(Location);
@@ -40,7 +36,7 @@ export class EmployeeList {
   // Two-way bound active tab
   currentTab: string | number | null = 'all';
 
-  fieldsConfig: FieldConfig[] =[]
+  fieldsConfig: FieldConfig[] = []
 
 
   displayedColumns: string[] = ['select', 'name', 'role', 'department', 'mobile', 'joiningDate', 'email', 'gender', 'address'];
@@ -119,17 +115,17 @@ export class EmployeeList {
       limit: this.pageSize,
       search_key: searchKey
     }
-    
+
     console.log('Fetching employees with payload:', payload);
-    
+
     this._httpClient.post(API_ENDPOINTS.employee.get_employee_list, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
         console.log('Full API Response:', res);
         this.isLoadingMore = false;
-        
+
         if (res.sts === 200 && res.data?.data) {
           console.log('Raw employee data:', res.data.data);
-          
+
           const mappedData = res.data.data.map((emp: any) => ({
             _id: emp._id,
             name: emp.personal_details ? `${emp.personal_details.firstName || ''} ${emp.personal_details.lastName || ''}`.trim() : 'N/A',
@@ -143,29 +139,29 @@ export class EmployeeList {
             avatar: emp.profileImageUrl ? `${environment.apiUrl}${emp.profileImageUrl}` :
               `https://ui-avatars.com/api/?name=${encodeURIComponent(`${emp.personal_details?.firstName || 'Emp'}`)}&background=random`
           }));
-          
+
           console.log('Mapped employee data:', mappedData);
-          
+
           // Append new data to existing data
           if (page === 1) {
             this.employees = mappedData;
           } else {
             this.employees = [...this.employees, ...mappedData];
           }
-          
+
           console.log('Total employees after assignment:', this.employees.length);
           console.log('Employees array:', this.employees);
-          
+
           // Update pagination info
           if (res.data.pagination) {
             this.totalItems = res.data.pagination.total;
           }
-          
+
           // Check if there's more data
           if (mappedData.length < this.pageSize || (res.data.pagination && page >= res.data.pagination.totalPages)) {
             this.hasMoreData = false;
           }
-          
+
           // Manually trigger change detection
           this.cdr.detectChanges();
         } else {
@@ -185,7 +181,7 @@ export class EmployeeList {
     // Load more when user scrolls near the end
     const end = this.employees.length;
     const threshold = end - 5; // Load more when 5 items from the end
-    
+
     if (index >= threshold && !this.isLoadingMore && this.hasMoreData) {
       this.currentPage++;
       this.getEmployee(this.currentPage);

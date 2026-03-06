@@ -20,7 +20,7 @@
 <div class="page-content">
 
   <!-- ─── Tab Description Banner ─── -->
-  <div class="tab-banner" [style.border-left-color]="activeTab().color">
+  <!-- <div class="tab-banner" [style.border-left-color]="activeTab().color">
     <div class="banner-icon" [style.background]="activeTab().color + '12'" [style.color]="activeTab().color">
       <mat-icon>{{ activeTab().icon }}</mat-icon>
     </div>
@@ -28,7 +28,7 @@
       <strong>{{ activeTab().label }}</strong>
       <span>{{ activeTab().description }}</span>
     </div>
-  </div>
+  </div> -->
 
   <!-- ─── Stats Cards ─── -->
   <div class="stats-row">
@@ -46,8 +46,9 @@
   </div>
 
   <!-- ─── Toolbar: Search + Filters ─── -->
-  <div class="toolbar">
-    <div class="toolbar-left">
+
+  <div class="toolbar toolbar-flex-row">
+    <div class="toolbar-left toolbar-inline-flex">
       <mat-form-field appearance="outline" class="search-field">
         <mat-icon matPrefix>search</mat-icon>
         <input matInput placeholder="Search by name or code..."
@@ -58,9 +59,8 @@
           </button>
         }
       </mat-form-field>
-
       <mat-button-toggle-group [value]="statusFilter()" (change)="onStatusFilter($event.value)"
-                                class="status-toggle">
+           class="status-toggle">
         <mat-button-toggle value="ALL">All</mat-button-toggle>
         <mat-button-toggle value="ACTIVE">
           <span class="status-dot active"></span> Active
@@ -70,7 +70,6 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-
     <div class="toolbar-right">
       <span class="result-count">{{ filteredComponents().length }} component(s)</span>
     </div>

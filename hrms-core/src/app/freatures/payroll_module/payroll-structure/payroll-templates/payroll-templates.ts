@@ -161,11 +161,11 @@ export class PayrollTemplates implements OnInit, OnDestroy {
   }
 
   navigateToCreate(): void {
-    this._router.navigate(['/home/hrms-core/payroll/templates/create']);
+    this._router.navigate(['/home/hrms-core/payroll/payroll-structure/templates/create']);
   }
 
   navigateToEdit(template: PayrollTemplate): void {
-    this._router.navigate(['/home/hrms-core/payroll/templates/edit', template._id]);
+    this._router.navigate(['/home/hrms-core/payroll/payroll-structure/templates/edit', template._id]);
   }
 
   // API CALL TO DUPLICATE TEMPLATE

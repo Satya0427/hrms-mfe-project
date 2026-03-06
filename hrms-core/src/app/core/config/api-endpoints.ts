@@ -106,12 +106,14 @@ export const API_ENDPOINTS = {
         remove_assignment: '/payroll/employee-assignment/remove',
 
         // Payroll Process Engine (Run Lifecycle)
-        create_payroll_run: '/payroll/run',
-        get_payroll_employees: (runId: string) => `/payroll/run/${runId}/employees`,
-        recalculate_employee: (runId: string, employeeId: string) => `/payroll/run/${runId}/recalculate/${employeeId}`,
-        approve_payroll: (runId: string) => `/payroll/run/${runId}/approve`,
-        lock_payroll: (runId: string) => `/payroll/run/${runId}/lock`,
-        reverse_payroll: (runId: string) => `/payroll/run/${runId}/reverse`,
+        create_payroll_run: '/run-payroll/process',
+        get_payroll_runs: '/run-payroll/get-list',
+        get_employee_by_runId:'/run-payroll/get-employees', // ?runId=xxx&employeeId=yyy
+        recalculate_payroll:'/run-payroll/recalculate', // ?runId=xxx&employeeId=yyy
+        mark_payroll_processed: '/run-payroll/mark-processed', // { runId: xxx }
+        approve_payroll: '/run-payroll/approve', // { runId: xxx }
+        lock_payroll: '/run-payroll/lock', // { runId: xxx }
+        reverse_payroll: '/run-payroll/reverse', // { runId: xxx }
 
     }
 };

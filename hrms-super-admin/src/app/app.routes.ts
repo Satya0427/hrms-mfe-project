@@ -7,5 +7,6 @@ export const PLATFORM_MANAGEMENT_ROUTES: Routes = [
     { path: 'module-featurs-management', loadChildren: () => import('./features/module-features-management/platform-module.routes').then(m => m.MODULE_FEATURES_MANAGEMENT_ROUTES) },
     { path: 'platform-dashboard', loadChildren: () => import('./features/platform-dashboard/platform-dashboard.routes').then(m => m.PLATFORM_DASHBOARD_ROUTES) },
     { path: 'usage-limit', loadChildren: () => import('./features/usage-limits/usage-limits.routes').then(m => m.USATE_LIMIT_ROUTES) },
-    { path: '', redirectTo: 'orginization', pathMatch: 'full' }
+    { path: '', redirectTo: 'orginization', pathMatch: 'full' },
+    { path: '**', redirectTo: 'orginization' }
 ];

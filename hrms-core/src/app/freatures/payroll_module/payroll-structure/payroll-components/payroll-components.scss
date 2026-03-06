@@ -25,7 +25,7 @@ $radius-sm: 8px;
 }
 
 .page-content {
-    padding: 20px 24px 40px;
+    padding: 8px 24px 40px;
     overflow-x: auto;
     max-height: 530px;
 }
@@ -92,13 +92,13 @@ $radius-sm: 8px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 13px;
 
     .stat-card {
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 18px 20px;
+        padding: 8px 15px;
         background: $bg-card;
         border-radius: $radius;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -151,14 +151,14 @@ $radius-sm: 8px;
 .toolbar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    // align-items: center;
+    // margin-bottom: 16px;
     gap: 16px;
     flex-wrap: wrap;
 
     .toolbar-left {
         display: flex;
-        align-items: center;
+        // align-items: center;
         gap: 12px;
         flex: 1;
 

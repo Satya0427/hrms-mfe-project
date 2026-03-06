@@ -1,17 +1,17 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MATERIAL } from '../../../../shared/material/materials';
-import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
-import { CommonService } from '../../../../core/services/common.service';
-import { ApiClient } from '../../../../core/services/api-client.service';
-import { Subject, takeUntil } from 'rxjs';
-import { DocumentCollection } from '../document-collection/document-collection';
-import { Compensation } from '../compensation/compensation';
-import { environment } from '../../../../../environments/environment.dev';
-import { PageHeader, HeaderTab } from '../../../../shared/components/page-header/page-header';
 import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../../../environments/environment.dev';
+import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
+import { ApiClient } from '../../../../core/services/api-client.service';
+import { CommonService } from '../../../../core/services/common.service';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { MATERIAL } from '../../../../shared/material/materials';
+import { Compensation } from '../compensation/compensation';
+import { DocumentCollection } from '../document-collection/document-collection';
 
 @Component({
   selector: 'app-employee-onboarding',
